@@ -8,9 +8,11 @@ Firstly, we set off to understand the assignment, reading exactly what we are tr
 in simpler terms, we define what's the 'dirty work' and what's not, so we can later finish the 'dirty work' and focus completely on algorithms and brainstorming ideas as needed. </br>
 As for the workflow itself, after we have defined what can be done immediatly and what requires thinking, we set off to understanding what interfaces we must implement, in this project these are ``` public interface DirectedWeightedGraph  ``` and ``` public interface DirectedWeightedGraphAlgorithms ```, after that we will implement the bare minimum such that we can run the 'simpler' functions and proceed to finish the 'dirty work' of the project, after that is done we will proceed to design the algorithms we need to implement a solution in pseudo code, and after we are satisfied with our pen & paper solution we will begin to design tests for the functions we know we will implement, and naturally add tests as we go if at any point new functions are needed. </br>
 After the groundwork is done we will start implementing our algorithms while using TDD with our pre-designed tests and cases in which we know the answers beforehand.
-
+</br>
+Simultaneously, we will research which GUI library best suits our needs for this project, and use similar steps to represent our solution through the GUI we choose to use.
 ## The Algorithm
 
 ## Reading Material
 - About Directed, Weighted, and Directed + Weighted graphs: http://math.oxford.emory.edu/site/cs171/directedAndEdgeWeightedGraphs/
-- Problem Research 1: todo
+- Problem Research 1: TODO
+- GUI Reasearch: TODO
