@@ -1,6 +1,10 @@
+/**
+ * Authors - Yonatan Ratner & Shaked Levi
+ * Date - 21.11.2021
+ */
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
-
+// use > swing, dijkstra
 /**
  * This class is the main class for Ex2 - your implementation will be tested using this class.
  */
@@ -10,7 +14,7 @@ public class Ex2 {
      * @param json_file - a json file (e.g., G1.json - G3.gson)
      * @return
      */
-    public static DirectedWeightedGraph getGrapg(String json_file) {
+    public static DirectedWeightedGraph getGrapq(String json_file) {
         DirectedWeightedGraph ans = null;
         // ****** Add your code here ******
         //

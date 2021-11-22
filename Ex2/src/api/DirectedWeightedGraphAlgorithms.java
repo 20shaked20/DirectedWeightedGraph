@@ -1,15 +1,16 @@
 package api;
+
 import java.util.List;
 /**
  * This interface represents a Directed (positive) Weighted Graph Theory Algorithms including:
  * 0. clone(); (copy)
  * 1. init(graph);
  * 2. isConnected(); // strongly (all ordered pais connected)
- * 3. double shortestPathDist(int src, int dest);
- * 4. List<NodeData> shortestPath(int src, int dest);
- * 5. NodeData center(); // finds the NodeData which minimizes the max distance to all the other nodes.
- *                       // Assuming the graph isConnected, elese return null. See: https://en.wikipedia.org/wiki/Graph_center
- * 6. List<NodeData> tsp(List<NodeData> cities); // computes a list of consecutive nodes which go over all the nodes in cities.
+ * 3. double shortestPathDist(int src, int dest); < dijkstra < ?
+ * 4. List<api.NodeData> shortestPath(int src, int dest);
+ * 5. api.NodeData center(); // finds the api.NodeData which minimizes the max distance to all the other nodes.
+ *                       // Assuming the graph isConnected, else return null. See: https://en.wikipedia.org/wiki/Graph_center
+ * 6. List<api.NodeData> tsp(List<api.NodeData> cities); // computes a list of consecutive nodes which go over all the nodes in cities.
  *                                               // See: https://en.wikipedia.org/wiki/Travelling_salesman_problem
  * 7. save(file); // JSON file
  * 8. load(file); // JSON file
@@ -61,7 +62,7 @@ public interface DirectedWeightedGraphAlgorithms {
     public List<NodeData> shortestPath(int src, int dest);
 
     /**
-     * Finds the NodeData which minimizes the max distance to all the other nodes.
+     * Finds the api.NodeData which minimizes the max distance to all the other nodes.
      * Assuming the graph isConnected, elese return null. See: https://en.wikipedia.org/wiki/Graph_center
      * @return the Node data to which the max shortest path to all the other nodes is minimized.
      */
