@@ -72,7 +72,7 @@ public class Geo_Location implements GeoLocation {
      * @return true if equal, false if not.
      */
     public boolean is_equal(GeoLocation g) {
-        if (this.x == g.x() && this.y == g.y() && this.z == g.y()) {
+        if (this.x == g.x() && this.y == g.y() && this.z == g.z()) {
             return true;
         }
         return false;
