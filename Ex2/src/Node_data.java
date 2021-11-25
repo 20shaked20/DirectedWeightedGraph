@@ -15,8 +15,8 @@ public class Node_data implements NodeData {
 
     private int key;
     private Geo_Location geo_location;
-    private double weight = Integer.MAX_VALUE;
-    private String info = "White"; // the node is set to white unless touched.
+    private double weight; // Redundant code: = Integer.MAX_VALUE;
+    private String info; //the node is set to white unless touched. \\ Redundant code: = "White";
     private int tag;
 
     /**

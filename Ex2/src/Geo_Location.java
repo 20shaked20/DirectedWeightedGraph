@@ -2,7 +2,6 @@
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
-
 import api.GeoLocation;
 
 /**
@@ -56,10 +55,10 @@ public class Geo_Location implements GeoLocation {
      * A(x1,y1,z1), B(x2,y2,z2) = Math.sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2)
      */
     public double distance(GeoLocation g) {
-        double distance = 0;
+        double distance;
         double dist_x = Math.pow((g.x() - this.x), 2);
-        double dist_y = Math.pow((g.z() - this.y), 2);
-        double dist_z = Math.pow((g.y() - this.z), 2);
+        double dist_y = Math.pow((g.y() - this.y), 2); //was g.z -> g.y
+        double dist_z = Math.pow((g.z() - this.z), 2); //was g.y -> g.z
 
         distance = Math.sqrt(dist_x + dist_y + dist_z);
 
@@ -73,7 +72,7 @@ public class Geo_Location implements GeoLocation {
      * @return true if equal, false if not.
      */
     public boolean is_equal(GeoLocation g) {
-        if (this.x == g.x() && this.y == g.y() && this.z == g.y()) {
+        if (this.x == g.x() && this.y == g.y() && this.z == g.z()) {
             return true;
         }
         return false;
