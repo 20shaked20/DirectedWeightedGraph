@@ -6,8 +6,6 @@
 import api.GeoLocation;
 import api.NodeData;
 
-import java.lang.Double;
-
 public class Node_data implements NodeData {
     /**
      * This class is a representation of a Node in our DW_graph.
@@ -26,20 +24,19 @@ public class Node_data implements NodeData {
      *
      * @param key          integer
      * @param geo_location (x,y,z) Vector
-     * @param weight       double
      * @param info         data (white,black,gray...)
      * @param tag          ?
      */
-    public Node_data(int key, Geo_Location geo_location, double weight, String info, int tag) {
+    public Node_data(int key, Geo_Location geo_location, String info, int tag) {
         this.key = key;
         this.geo_location = geo_location;
-        this.weight = weight;
         this.info = info;
         this.tag = tag;
     }
 
     /**
      * deep copy constructor > this one we'd rather to use.
+     *
      * @param other Node_data.
      */
     public Node_data(Node_data other) {
@@ -78,43 +75,37 @@ public class Node_data implements NodeData {
     @Override
     public String getInfo() {
         return this.info;
-    }
+    } // algo helper info
 
     @Override
     public void setInfo(String s) {
         this.info = s;
-    }
+    } // algo helper info
 
     @Override
     public int getTag() {
         return this.tag;
-    }
+    } //color
 
     @Override
     public void setTag(int t) {
         this.tag = t;
-    }
+    } // color
 
+    @Override
     public String toString() {
-        return ""; // not sure what to print r.n
-    }
-
-    /**
-     * This method compares by weight two nodes ->
-     * I assume this one's the most needed because we'll use it mostly to check shortest paths...
-     * @param other Node_data object
-     * @return :
-     * return 0 -> equals
-     * return -1 -> less than 'n'
-     * return 1 -> more than 'n;
-     */
-    public int compare_by_weight(Node_data other) {
-        double compare_weight = other.weight;
-        return Double.compare(this.weight, compare_weight);
+        return "Node_data{" +
+                "key=" + key +
+                ", geo_location=" + geo_location +
+                ", weight=" + weight +
+                ", info='" + info + '\'' +
+                ", tag=" + tag +
+                '}';
     }
 
     /**
      * Checks if a current node is equal to another.
+     *
      * @param other Node_data object.
      * @return true for equals, false for not equals.
      */

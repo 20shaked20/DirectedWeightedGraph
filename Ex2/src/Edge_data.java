@@ -2,12 +2,13 @@
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
+
 import api.EdgeData;
 
 public class Edge_data implements EdgeData {
 
-//    private Node_data src; < maybe create using nodes? because its two nodes that create an EDGE :X?
-//    private Node_data dest;
+    //    private Node_data src; < maybe create using nodes? because its two nodes that create an EDGE :X?
+    //    private Node_data dest;
     private int src;
     private int dest;
     private double weight;
@@ -28,7 +29,7 @@ public class Edge_data implements EdgeData {
     /**
      * deep copy constructor
      */
-    public Edge_data(Edge_data other){
+    public Edge_data(Edge_data other) {
         this.src = other.src;
         this.dest = other.dest;
         this.weight = other.weight;
@@ -52,23 +53,54 @@ public class Edge_data implements EdgeData {
     }
 
     @Override
-    public String getInfo() {
+    public String getInfo() { // algo helper info
         return this.info;
     }
 
     @Override
     public void setInfo(String s) {
         this.info = s;
-    }
+    } // algo helper info
 
     @Override
     public int getTag() {
         return this.tag;
-    }
+    } // color
 
     @Override
     public void setTag(int t) {
         this.tag = t;
+    } //color
+
+    /**
+     * maybe use on nodes ? rn this method will be used on Edges.
+     * This method compares by weight two nodes ->
+     * I assume this one's the most needed because we'll use it mostly to check shortest paths...
+     *
+     * @param other Node_data object
+     * @return :
+     * return 0 -> equals
+     * return -1 -> less than 'n'
+     * return 1 -> more than 'n;
+     */
+    public int compare_by_weight(Edge_data other) {
+        double compare_weight = other.weight;
+        return Double.compare(this.weight, compare_weight);
+    }
+
+    /**
+     * Checks if a current edge is equal to another.
+     *
+     * @param other Node_data object.
+     * @return true for equals, false for not equals.
+     */
+    public boolean is_equals(Edge_data other) {
+        if (this.src == other.src && this.dest == other.dest && this.weight == other.weight && this.tag == other.tag) {
+            if (this.info.equals(other.info)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** implement edge location finder maybe// < we want to find a edge in given space.

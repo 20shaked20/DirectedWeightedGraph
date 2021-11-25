@@ -2,9 +2,11 @@
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
+
 import api.EdgeData;
 import api.NodeData;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -13,21 +15,34 @@ import java.util.Iterator;
  */
 
 public class DW_Graph implements api.DirectedWeightedGraph {
+
+    private HashMap<Integer, Node_data> Nodes;
+    private HashMap<Integer, HashMap<Integer, Edge_data>> Edges; // hash map of hashmaps > get.get in o(1)
+    //<src,<dest,edge> << info
+    private int MC; // every time our graph changes, increase this.
+
     @Override
-    public NodeData getNode(int key) {return null;}
-
+    public NodeData getNode(int key) { //o(1)
+        return this.Nodes.get(key); //simple return.
+    }
 
     @Override
-    public EdgeData getEdge(int src, int dest) {return null;}
+    public EdgeData getEdge(int src, int dest) {
+        return this.Edges.get(src).get(dest); //simple return.
 
+    }
     @Override
     public void addNode(NodeData n) {
-
+        this.Nodes.put(n.getKey(), (Node_data) n); // casting to my class.
+        this.MC++;
     }
 
     @Override
     public void connect(int src, int dest, double w) {
-
+        Edge_data e = new Edge_data(src,dest,w, "",0);
+        HashMap<Integer, Edge_data> tmp = new HashMap<>(); // creates a temporary edge.
+        tmp.put(dest,e);
+        this.Edges.put(src,tmp);
     }
 
     @Override
@@ -45,29 +60,38 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         return null;
     }
 
+    //TODO: check this function for Edges.remove
     @Override
     public NodeData removeNode(int key) {
-        return null;
+        this.Edges.remove(key); // < that simple? I don't think.
+        this.MC++; // increase changes to graph
+        return this.Nodes.remove(key); // simply remove key.
+
     }
 
     @Override
     public EdgeData removeEdge(int src, int dest) {
-        return null;
+        Edge_data e = this.Edges.get(src).get(dest); // gets the EDGE from the hashmap.
+        HashMap<Integer, Edge_data> tmp = new HashMap<>(); // creates a temporary Removable edge.
+        tmp.put(dest,e);
+        this.Edges.remove(src,tmp); //remove it.
+        this.MC++; // increase changes to graph
+        return e; // returns the EDGE (null if none)
     }
 
     @Override
     public int nodeSize() {
-        return 0;
+        return this.Nodes.size();
     }
 
     @Override
     public int edgeSize() {
-        return 0;
+        return this.Edges.size();
     }
 
     @Override
     public int getMC() {
-        return 0;
+        return this.MC;
     }
 
 }
