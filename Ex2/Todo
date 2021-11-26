@@ -1,21 +1,15 @@
 Ideas:
 
-Objects creation -->
 
-Node_data >
-simple node, representing:
-constructor, copy const, compare, equals, string, and more methods like get set..
+Node_data > toString.
 
-Edge_Data > consists of two nodes <src,dest>, representing:
-constructor, copy const, compare, equals, string, and more methods like get set..
+Edge_Data > toString.
 
-Geo_Location > is a vector location in terms of x,y,z ( actually its the node coordinates in space..)
-constructor, copy const
+Geo_Location > toString.
 
-
-
-DW_graph > has many Edges, nodes, etc : we will implement using HASH_MAP of nodes and edges.
+DW_graph > Iterators, toString, add deep copy method, fix removeNode method,
 
 DW_graph_algo > we will implement the algorithms by research and brainstorm,
 using courses we took and with the help of google.
+Create - const,deep const, methods, use json desi class.
 

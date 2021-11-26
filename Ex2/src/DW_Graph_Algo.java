@@ -2,6 +2,7 @@
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
+
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.NodeData;
@@ -9,6 +10,8 @@ import api.NodeData;
 import java.util.List;
 
 public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
+    DW_Graph g = null;
+
     @Override
     public void init(DirectedWeightedGraph g) {
 

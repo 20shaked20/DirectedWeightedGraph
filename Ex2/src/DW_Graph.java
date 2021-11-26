@@ -20,6 +20,25 @@ public class DW_Graph implements api.DirectedWeightedGraph {
     private HashMap<Integer, HashMap<Integer, Edge_data>> Edges; // hash map of hashmaps > get.get in o(1)
     //<src,<dest,edge> << info
     private int MC; // every time our graph changes, increase this.
+    private int EdgesCounter;
+    private int NodesCounter;
+
+    // default const
+    public DW_Graph() {
+        this.Nodes = new HashMap<>();
+        this.Edges = new HashMap<>();
+        this.EdgesCounter = 0;
+        this.NodesCounter = 0;
+        this.MC = 0;
+    }
+    // Deep copy const
+    public DW_Graph(DW_Graph other) {
+        this.Nodes = new HashMap<>(); // TODO: add deep copy method.
+        this.Edges = new HashMap<>(); // TODO: add deep copy method.
+        this.EdgesCounter = other.EdgesCounter;
+        this.NodesCounter = other.NodesCounter;
+        this.MC = other.MC;
+    }
 
     @Override
     public NodeData getNode(int key) { //o(1)
@@ -44,7 +63,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         tmp.put(dest,e);
         this.Edges.put(src,tmp);
     }
-
+//TODO: implement iterators.
     @Override
     public Iterator<NodeData> nodeIter() {
         return null;
