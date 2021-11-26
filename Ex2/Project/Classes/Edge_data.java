@@ -73,9 +73,7 @@ public class Edge_data implements EdgeData {
     } //color
 
     /**
-     * maybe use on nodes ? rn this method will be used on Edges.
-     * This method compares by weight two nodes ->
-     * I assume this one's the most needed because we'll use it mostly to check shortest paths...
+     * This method compares by weight two Edges ->
      *
      * @param other Node_data object
      * @return :
@@ -91,7 +89,7 @@ public class Edge_data implements EdgeData {
     /**
      * Checks if a current edge is equal to another.
      *
-     * @param other Node_data object.
+     * @param other Edge_data object.
      * @return true for equals, false for not equals.
      */
     public boolean is_equals(Edge_data other) {
@@ -102,9 +100,5 @@ public class Edge_data implements EdgeData {
         }
         return false;
     }
-
-    /** implement edge location finder maybe// < we want to find a edge in given space.
-     * public Edge_data get_edge(int src,int dest) {return null;}// returns edge location
-     */
 
 }

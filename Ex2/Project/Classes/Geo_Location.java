@@ -2,6 +2,7 @@
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
+
 import api.GeoLocation;
 
 /**

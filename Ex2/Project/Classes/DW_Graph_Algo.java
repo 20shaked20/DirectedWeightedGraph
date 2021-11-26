@@ -12,9 +12,9 @@ import java.util.List;
 public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     DW_Graph g = null;
 
+
     @Override
     public void init(DirectedWeightedGraph g) {
-
     }
 
     @Override
@@ -61,4 +61,5 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     public boolean load(String file) {
         return false;
     }
+
 }
