@@ -1,4 +1,4 @@
-/**
+package Main; /**
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
@@ -37,12 +37,11 @@ public class Node_data implements NodeData {
     /**
      * deep copy constructor > this one we'd rather to use.
      *
-     * @param other Node_data.
+     * @param other Main.Node_data.
      */
     public Node_data(Node_data other) {
         this.key = other.key;
         this.geo_location = new Geo_Location(other.geo_location);
-        this.weight = other.weight;
         this.info = other.info;
         this.tag = other.tag;
     }
@@ -94,7 +93,7 @@ public class Node_data implements NodeData {
 
     @Override
     public String toString() {
-        return "Node_data{" +
+        return "Main.Node_data{" +
                 "key=" + key +
                 ", geo_location=" + geo_location +
                 ", weight=" + weight +
@@ -106,7 +105,7 @@ public class Node_data implements NodeData {
     /**
      * Checks if a current node is equal to another.
      *
-     * @param other Node_data object.
+     * @param other Main.Node_data object.
      * @return true for equals, false for not equals.
      */
     public boolean is_equals(Node_data other) {
@@ -119,4 +118,6 @@ public class Node_data implements NodeData {
         }
         return false;
     }
+
+
 }

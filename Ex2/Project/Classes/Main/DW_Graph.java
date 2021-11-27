@@ -1,4 +1,4 @@
-/**
+package Main; /**
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
@@ -8,6 +8,7 @@ import api.NodeData;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class DW_Graph implements api.DirectedWeightedGraph {
     /**
@@ -34,42 +35,53 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         this.MC = 0;
     }
 
-    // Deep copy const
+    /**
+     * Deep copy constructor.
+     * @param other - Another Directed Weighted Graph
+     */
     public DW_Graph(DW_Graph other) {
         this.Nodes = new HashMap<>();
         this.Edges = new HashMap<>();
-        deep_copy_nodes(other.Nodes, other);// fix
-        deep_copy_edges(other.Edges, other); // fix
+        deep_copy_nodes(this.Nodes, other);// fix
+        deep_copy_edges(this.Edges, other); // fix
         this.EdgesCounter = other.EdgesCounter;
         this.NodesCounter = other.NodesCounter;
         this.MC = other.MC;
     }
-// TODO: create deep copy method.
 
     /**
      * This method deep copies graph hashmap of nodes to our graph.
      *
      * @param nodes - HashMap of nodes.
-     */
-    public void deep_copy_nodes(HashMap nodes, DW_Graph g) {
+     */ // TODO: consider putAll ( not sure if deep copying r.n)
+    public void deep_copy_nodes(HashMap<Integer, Node_data> nodes, DW_Graph g) {
+        for (Map.Entry<Integer, Node_data> entry : g.Nodes.entrySet()) {
+            nodes.put(entry.getKey(), entry.getValue());
+        }
     }
-
-// TODO: create deep copy method.
 
     /**
      * This method deep copies graph hashmap of edges to our graph.
+     * because of our use in Hashmap<Integer,Hashmap>,
+     * we needed to get inside a second layer of the Map using a second loop in order to make sure the deep copy is happening correctly
      *
      * @param edges - HashMap of nodes.
      */
-    public void deep_copy_edges(HashMap edges, DW_Graph g) {
+    public void deep_copy_edges(HashMap<Integer, HashMap<Integer, Edge_data>> edges, DW_Graph g) {
+        for (Map.Entry<Integer, HashMap<Integer, Edge_data>> entry : g.Edges.entrySet()) {
+            HashMap<Integer, Edge_data> tmp = new HashMap<>();
+            for (Map.Entry<Integer, Edge_data> entry2 : entry.getValue().entrySet()) { // goes deeper to the second layer of the hashmap,
+                tmp.put(entry2.getKey(), entry2.getValue()); // tmp hashmap creation.
+                edges.put(entry.getKey(), tmp);  // put it all together.
+            }
+        }
     }
-
 
     /**
      * returns a Node_Data in o(1)
      *
      * @param key - the node_id
-     * @return - Node_data object
+     * @return - Main.Node_data object
      */
     public NodeData getNode(int key) {
         return this.Nodes.get(key);
@@ -80,20 +92,20 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      *
      * @param src  - Integer representing the start of edge.
      * @param dest - Integer representing the end of edge.
-     * @return - Edge_data object
+     * @return - Main.Edge_data object
      */
     public EdgeData getEdge(int src, int dest) {
         return this.Edges.get(src).get(dest);
-
     }
 
     /**
      * Adds a node(vertex) to the graph.
      *
-     * @param n Node_data.
+     * @param n Main.Node_data.
      */
     public void addNode(NodeData n) {
         this.Nodes.put(n.getKey(), (Node_data) n); // casting to my class.
+        this.NodesCounter++;
         this.MC++;
     }
 
@@ -109,6 +121,8 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         HashMap<Integer, Edge_data> tmp = new HashMap<>(); // creates a temporary edge.
         tmp.put(dest, e);
         this.Edges.put(src, tmp);
+        this.EdgesCounter++;
+        this.MC++;
     }
 
     //TODO: implement iterators.
@@ -132,6 +146,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
     public NodeData removeNode(int key) {
         this.Edges.remove(key); // < that simple? I don't think.
         this.MC++; // increase changes to graph
+        this.NodesCounter--;
         return this.Nodes.remove(key); // simply remove key.
 
     }
@@ -149,6 +164,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         tmp.put(dest, e);
         this.Edges.remove(src, tmp); //remove it.
         this.MC++; // increase changes to graph
+        this.EdgesCounter--;
         return e; // returns the EDGE (null if none)
     }
 
@@ -156,14 +172,14 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @return - how many nodes are in the graph.
      */
     public int nodeSize() {
-        return this.Nodes.size();
+        return this.NodesCounter;
     }
 
     /**
      * @return - how many edges are in the graph.
      */
     public int edgeSize() {
-        return this.Edges.size();
+        return this.EdgesCounter;
     }
 
     /**
@@ -172,5 +188,6 @@ public class DW_Graph implements api.DirectedWeightedGraph {
     public int getMC() {
         return this.MC;
     }
+
 
 }

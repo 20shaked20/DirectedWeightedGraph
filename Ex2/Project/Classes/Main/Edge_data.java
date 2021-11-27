@@ -1,4 +1,4 @@
-/**
+package Main; /**
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
@@ -7,8 +7,8 @@ import api.EdgeData;
 
 public class Edge_data implements EdgeData {
 
-    //    private Node_data src; < maybe create using nodes? because its two nodes that create an EDGE :X?
-    //    private Node_data dest;
+    //    private Main.Node_data src; < maybe create using nodes? because its two nodes that create an EDGE :X?
+    //    private Main.Node_data dest;
     private int src;
     private int dest;
     private double weight;
@@ -72,10 +72,21 @@ public class Edge_data implements EdgeData {
         this.tag = t;
     } //color
 
+    @Override
+    public String toString() {
+        return "Main.Edge_data{" +
+                "src=" + src +
+                ", dest=" + dest +
+                ", weight=" + weight +
+                ", info='" + info + '\'' +
+                ", tag=" + tag +
+                '}';
+    }
+
     /**
      * This method compares by weight two Edges ->
      *
-     * @param other Node_data object
+     * @param other Main.Node_data object
      * @return :
      * return 0 -> equals
      * return -1 -> less than 'n'
@@ -89,7 +100,7 @@ public class Edge_data implements EdgeData {
     /**
      * Checks if a current edge is equal to another.
      *
-     * @param other Edge_data object.
+     * @param other Main.Edge_data object.
      * @return true for equals, false for not equals.
      */
     public boolean is_equals(Edge_data other) {

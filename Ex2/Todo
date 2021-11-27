@@ -1,13 +1,14 @@
 Ideas:
 
+# HASHCODE? # <<< check what it has to do with equals.
 
-Node_data > toString.
+Main.Node_data > create tests, don't forget the use of "EQUALS"
 
-Edge_Data > toString.
+Edge_Data > create tests, don't forget the use of "EQUALS"
 
-Geo_Location > toString.
+Main.Geo_Location > create tests, don't forget the use of "EQUALS"
 
-DW_graph > Iterators, toString, add deep copy method, fix removeNode method,
+DW_graph > Iterators, toString, fix removeNode method,
 
 DW_graph_algo > we will implement the algorithms by research and brainstorm,
 using courses we took and with the help of google.

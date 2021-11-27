@@ -1,3 +1,5 @@
+package Main;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,7 +18,7 @@ public class Json_Deserializer {
      * @param Path - Json file location.
      */
     Json_Deserializer(DW_Graph g, String Path) {
-        File input = new File("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
+        File input = new File("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Main.Ex2/data/G1.json");
         JsonElement fileElement;
         g = new DW_Graph();
 
@@ -67,7 +69,7 @@ public class Json_Deserializer {
 
     //tester ->
     public static void main(String[] args) {
-        //Json_Deserializer();
+        //Main.Json_Deserializer();
     }
 
 }

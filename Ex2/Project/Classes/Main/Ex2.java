@@ -1,4 +1,4 @@
-/**
+package Main; /**
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
@@ -6,7 +6,7 @@ import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 // use > swing, dijkstra
 /**
- * This class is the main class for Ex2 - your implementation will be tested using this class.
+ * This class is the main class for Main.Ex2 - your implementation will be tested using this class.
  */
 public class Ex2 {
     /**

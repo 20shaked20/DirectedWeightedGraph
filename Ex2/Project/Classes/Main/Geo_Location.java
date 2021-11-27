@@ -1,4 +1,4 @@
-/**
+package Main; /**
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
@@ -64,6 +64,15 @@ public class Geo_Location implements GeoLocation {
         distance = Math.sqrt(dist_x + dist_y + dist_z);
 
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "Main.Geo_Location{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 
     /**
