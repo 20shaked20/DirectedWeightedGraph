@@ -7,8 +7,6 @@ import api.EdgeData;
 
 public class Edge_data implements EdgeData {
 
-    //    private Main.Node_data src; < maybe create using nodes? because its two nodes that create an EDGE :X?
-    //    private Main.Node_data dest;
     private int src;
     private int dest;
     private double weight;
@@ -105,9 +103,7 @@ public class Edge_data implements EdgeData {
      */
     public boolean is_equals(Edge_data other) {
         if (this.src == other.src && this.dest == other.dest && this.weight == other.weight && this.tag == other.tag) {
-            if (this.info.equals(other.info)) {
-                return true;
-            }
+            return this.info.equals(other.info);
         }
         return false;
     }

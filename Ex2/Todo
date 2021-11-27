@@ -2,11 +2,11 @@ Ideas:
 
 # HASHCODE? # <<< check what it has to do with equals.
 
-Main.Node_data > create tests, don't forget the use of "EQUALS"
+Main.Node_data > toString test, Equals test
 
-Edge_Data > create tests, don't forget the use of "EQUALS"
+Edge_Data > toString test, Equals test
 
-Main.Geo_Location > create tests, don't forget the use of "EQUALS"
+Main.Geo_Location > toString test, Equals test
 
 DW_graph > Iterators, toString, fix removeNode method,
 

@@ -111,9 +111,7 @@ public class Node_data implements NodeData {
     public boolean is_equals(Node_data other) {
         if (this.key == other.key && this.weight == other.weight && this.tag == other.tag) {
             if (this.info.equals(other.info)) {
-                if (this.geo_location.is_equal(other.geo_location)) {
-                    return true;
-                }
+                return this.geo_location.is_equal(other.geo_location);
             }
         }
         return false;

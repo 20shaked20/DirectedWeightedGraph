@@ -9,19 +9,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-public class Json_Deserializer {
+public class Json_Helper {
 
     /**
      * This method deserializes a json file and loads it to objects in our graph ( Nodes, Edges )
      *
-     * @param g    - a Directed Weighted Graph
-     * @param Path - Json file location.
+     * @param g          - a Directed Weighted Graph
+     * @param input_path - Json file location.
      */
-    Json_Deserializer(DW_Graph g, String Path) {
-        File input = new File("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Main.Ex2/data/G1.json");
+    public void Json_Helper(DW_Graph g, String input_path) {
+        File input = new File(input_path);
         JsonElement fileElement;
-        g = new DW_Graph();
-
         {
             try {
                 fileElement = JsonParser.parseReader(new FileReader(input));
@@ -65,6 +63,12 @@ public class Json_Deserializer {
                 e.printStackTrace();
             }
         }
+    }
+
+// TODO: implement serializer
+
+    public void Json_Serializer(DW_Graph g, String output_path) {
+
     }
 
     //tester ->

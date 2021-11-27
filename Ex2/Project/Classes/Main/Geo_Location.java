@@ -50,7 +50,7 @@ public class Geo_Location implements GeoLocation {
         return this.z;
     }
 
-    @Override
+
     /**
      * calculates the distance between 3 dimensional 2 points.
      * A(x1,y1,z1), B(x2,y2,z2) = Math.sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2)
