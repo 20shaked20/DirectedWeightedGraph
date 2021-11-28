@@ -9,19 +9,17 @@ public class Edge_data implements EdgeData {
 
     private int src;
     private int dest;
-    private double weight;
-    private String info;
-    private int tag;
+    private double weight; // the weight of the code.
+    private String info; // any meta_data we can use later in the code.
+    private int tag; // represent a color -> -1 = Black, 0 = White, 1 = Gray.
 
     /**
      * Constructor
      */
-    public Edge_data(int src, int dest, double weight, String info, int tag) {
+    public Edge_data(int src, int dest, double weight) {
         this.src = src;
         this.dest = dest;
         this.weight = weight;
-        this.info = info;
-        this.tag = tag;
     }
 
     /**
@@ -31,8 +29,6 @@ public class Edge_data implements EdgeData {
         this.src = other.src;
         this.dest = other.dest;
         this.weight = other.weight;
-        this.info = other.info;
-        this.tag = other.tag;
     }
 
     @Override
@@ -72,12 +68,10 @@ public class Edge_data implements EdgeData {
 
     @Override
     public String toString() {
-        return "Main.Edge_data{" +
+        return '{' +
                 "src=" + src +
                 ", dest=" + dest +
                 ", weight=" + weight +
-                ", info='" + info + '\'' +
-                ", tag=" + tag +
                 '}';
     }
 

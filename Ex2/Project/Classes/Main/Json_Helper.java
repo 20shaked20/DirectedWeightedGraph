@@ -13,7 +13,8 @@ public class Json_Helper {
 
     /**
      * This method deserializes a json file and loads it to objects in our graph ( Nodes, Edges )
-     *  @param g          - a Directed Weighted Graph
+     *
+     * @param g          - a Directed Weighted Graph
      * @param input_path - Json file location.
      * @return
      */
@@ -53,10 +54,10 @@ public class Json_Helper {
                     double z = Double.parseDouble(xyz[2]);
                     Geo_Location loc = new Geo_Location(x, y, z);
 
-                   // System.out.println("Pos: " + pos);
+                    // System.out.println("Pos: " + pos);
                     Integer id = NodeObject.get("id").getAsInt();
-                   // System.out.println("id: " + id);
-                    Node_data n = new Node_data(id, loc, "", 0);
+                    // System.out.println("id: " + id);
+                    Node_data n = new Node_data(id, loc);
                     g.addNode(n);
                 }
             } catch (FileNotFoundException e) {
@@ -83,7 +84,7 @@ public class Json_Helper {
     public static void main(String[] args) {
         DW_Graph graph = new DW_Graph();
         String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
-        Json_Deserializer(graph,path);
+        Json_Deserializer(graph, path);
         Json_Serializer(graph.pointerNodes());
     }
 

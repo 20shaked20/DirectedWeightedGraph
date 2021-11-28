@@ -54,12 +54,14 @@ public class Geo_Location implements GeoLocation {
     /**
      * calculates the distance between 3 dimensional 2 points.
      * A(x1,y1,z1), B(x2,y2,z2) = Math.sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2)
+     *
+     * @return -> the distance between those points.
      */
     public double distance(GeoLocation g) {
         double distance;
         double dist_x = Math.pow((g.x() - this.x), 2);
-        double dist_y = Math.pow((g.y() - this.y), 2); //was g.z -> g.y
-        double dist_z = Math.pow((g.z() - this.z), 2); //was g.y -> g.z
+        double dist_y = Math.pow((g.y() - this.y), 2);
+        double dist_z = Math.pow((g.z() - this.z), 2);
 
         distance = Math.sqrt(dist_x + dist_y + dist_z);
 

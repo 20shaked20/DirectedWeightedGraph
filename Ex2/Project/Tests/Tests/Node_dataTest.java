@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class Node_dataTest {
 
     private Geo_Location g1 = new Geo_Location(9, 9, 0);
-    private Node_data n1 = new Node_data(99, g1, "nadav", 1);
+    private Node_data n1 = new Node_data(99, g1);
 
     private Geo_Location g2 = new Geo_Location(6, 6, 0);
-    private Node_data n2 = new Node_data(66, g2, "mutzi", -1);
+    private Node_data n2 = new Node_data(66, g2);
 
 
     @Test
@@ -58,16 +58,8 @@ class Node_dataTest {
 
     @Test
     void testToString() {
-        assertEquals(n1.toString(), "Main.Node_data{" +
-                "key=" + 99 +
-                ", geo_location=" + "{" +
-                "x=" + 9.0 +
-                ", y=" + 9.0 +
-                ", z=" + 0.0 +
-                '}' +
-                ", info=" + "'nadav" + '\'' +
-                ", tag=" + 1 +
-                '}');
+        assertEquals(n1.toString(), "(" + 99 + ")");
+
     }
 
     @Test

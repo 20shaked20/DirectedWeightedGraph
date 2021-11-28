@@ -16,22 +16,18 @@ public class Node_data implements NodeData {
     private int key;
     private Geo_Location geo_location;
     private double weight; // Redundant code: = Integer.MAX_VALUE;
-    private String info; //the node is set to white unless touched. \\ Redundant code: = "White";
-    private int tag;
+    private String info; // any meta_data we can use later in the code.
+    private int tag; // represent a color -> -1 = Black, 0 = White, 1 = Gray.
 
     /**
      * normal constructor, its not DEEP COPYING THE geo_location.
      *
      * @param key          integer
      * @param geo_location (x,y,z) Vector
-     * @param info         data (white,black,gray...)
-     * @param tag          ?
      */
-    public Node_data(int key, Geo_Location geo_location, String info, int tag) {
+    public Node_data(int key, Geo_Location geo_location) {
         this.key = key;
         this.geo_location = geo_location;
-        this.info = info;
-        this.tag = tag;
     }
 
     /**
@@ -42,8 +38,6 @@ public class Node_data implements NodeData {
     public Node_data(Node_data other) {
         this.key = other.key;
         this.geo_location = new Geo_Location(other.geo_location);
-        this.info = other.info;
-        this.tag = other.tag;
     }
 
     @Override
@@ -93,12 +87,8 @@ public class Node_data implements NodeData {
 
     @Override
     public String toString() {
-        return "Main.Node_data{" +
-                "key=" + key +
-                ", geo_location=" + geo_location +
-                ", info='" + info + '\'' +
-                ", tag=" + tag +
-                '}';
+        return "(" + this.key + ")";
+
     }
 
     /**
@@ -115,7 +105,6 @@ public class Node_data implements NodeData {
         }
         return false;
     }
-
 
 
 }
