@@ -68,7 +68,7 @@ public class Geo_Location implements GeoLocation {
 
     @Override
     public String toString() {
-        return "Main.Geo_Location{" +
+        return "{" +
                 "x=" + x +
                 ", y=" + y +
                 ", z=" + z +

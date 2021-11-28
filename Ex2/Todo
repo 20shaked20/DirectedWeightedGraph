@@ -6,9 +6,9 @@ Main.Node_data > toString test, Equals test
 
 Edge_Data > toString test, Equals test
 
-Main.Geo_Location > toString test, Equals test
+Geo_Location > Equals test
 
-DW_graph > Iterators, toString, fix removeNode method,
+DW_graph > Check iterators, toString, fix removeNode method,
 
 DW_graph_algo > we will implement the algorithms by research and brainstorm,
 using courses we took and with the help of google.

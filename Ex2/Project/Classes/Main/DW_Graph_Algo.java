@@ -10,11 +10,11 @@ import api.NodeData;
 import java.util.List;
 
 public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
-    DW_Graph g = null;
-
+    private DW_Graph graph;
 
     @Override
     public void init(DirectedWeightedGraph g) {
+        this.graph = (DW_Graph) g;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean load(String file) {
-        return false;
+        return Json_Helper.Json_Deserializer(this.graph, file);
     }
 
 }

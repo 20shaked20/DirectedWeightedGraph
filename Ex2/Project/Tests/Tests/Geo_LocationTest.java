@@ -12,29 +12,35 @@ class Geo_LocationTest {
 
     @Test
     void x() {
-        assertEquals(g1.x(),9);
-        assertEquals(g2.x(),6);
+        assertEquals(g1.x(), 9);
+        assertEquals(g2.x(), 6);
     }
 
     @Test
     void y() {
-        assertEquals(g1.y(),9);
-        assertEquals(g2.y(),6);
+        assertEquals(g1.y(), 9);
+        assertEquals(g2.y(), 6);
     }
 
     @Test
     void z() {
-        assertEquals(g1.z(),0);
-        assertEquals(g2.z(),0);
+        assertEquals(g1.z(), 0);
+        assertEquals(g2.z(), 0);
     }
 
     @Test
     void testToString() {
+        assertEquals(g1.toString(), "{" +
+                "x=" + 9.0 +
+                ", y=" + 9.0 +
+                ", z=" + 0.0 +
+                '}');
     }
+
 
     @Test
     void distance() {
-        assertEquals(g1.distance(g1),0);
-        assertEquals(g2.distance(g2),0);
+        assertEquals(g1.distance(g1), 0);
+        assertEquals(g2.distance(g2), 0);
     }
 }

@@ -18,8 +18,8 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * We choose to use hashmap for nodes and edges because in this way we can access each node/edge in o(1) time complexity.
      * Moreover, space complexity is dynamically allocated hence efficient.
      */
-    private HashMap<Integer, Node_data> Nodes;
-    private HashMap<Integer, HashMap<Integer, Edge_data>> Edges;
+    private HashMap<Integer, NodeData> Nodes;
+    private HashMap<Integer, HashMap<Integer, EdgeData>> Edges;
     private int MC;
     private int EdgesCounter;
     private int NodesCounter;
@@ -37,13 +37,14 @@ public class DW_Graph implements api.DirectedWeightedGraph {
 
     /**
      * Deep copy constructor.
+     *
      * @param other - Another Directed Weighted Graph
      */
     public DW_Graph(DW_Graph other) {
         this.Nodes = new HashMap<>();
         this.Edges = new HashMap<>();
-        deep_copy_nodes(this.Nodes, other);// fix
-        deep_copy_edges(this.Edges, other); // fix
+        deep_copy_nodes(this.Nodes, other);
+        deep_copy_edges(this.Edges, other);
         this.EdgesCounter = other.EdgesCounter;
         this.NodesCounter = other.NodesCounter;
         this.MC = other.MC;
@@ -53,11 +54,16 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * This method deep copies graph hashmap of nodes to our graph.
      *
      * @param nodes - HashMap of nodes.
-     */ // TODO: consider putAll ( not sure if deep copying r.n)
-    public void deep_copy_nodes(HashMap<Integer, Node_data> nodes, DW_Graph g) {
-        for (Map.Entry<Integer, Node_data> entry : g.Nodes.entrySet()) {
-            nodes.put(entry.getKey(), entry.getValue());
+     */
+    public void deep_copy_nodes(HashMap<Integer, NodeData> nodes, DW_Graph g) {
+        Iterator<NodeData> n = g.nodeIter();
+        while (n.hasNext()) {
+            Node_data tmp = (Node_data) g.getNode(n.next().getKey());
+            nodes.put(n.next().getKey(), tmp);
         }
+//        for (Map.Entry<Integer, Node_data> entry : g.Nodes.entrySet()) {
+//            nodes.put(entry.getKey(), entry.getValue());
+//        }
     }
 
     /**
@@ -66,11 +72,11 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * we needed to get inside a second layer of the Map using a second loop in order to make sure the deep copy is happening correctly
      *
      * @param edges - HashMap of nodes.
-     */
-    public void deep_copy_edges(HashMap<Integer, HashMap<Integer, Edge_data>> edges, DW_Graph g) {
-        for (Map.Entry<Integer, HashMap<Integer, Edge_data>> entry : g.Edges.entrySet()) {
-            HashMap<Integer, Edge_data> tmp = new HashMap<>();
-            for (Map.Entry<Integer, Edge_data> entry2 : entry.getValue().entrySet()) { // goes deeper to the second layer of the hashmap,
+     */ // TODO: implement with iterator
+    public void deep_copy_edges(HashMap<Integer, HashMap<Integer, EdgeData>> edges, DW_Graph g) {
+        for (Map.Entry<Integer, HashMap<Integer, EdgeData>> entry : g.Edges.entrySet()) {
+            HashMap<Integer, EdgeData> tmp = new HashMap<>();
+            for (Map.Entry<Integer, EdgeData> entry2 : entry.getValue().entrySet()) { // goes deeper to the second layer of the hashmap,
                 tmp.put(entry2.getKey(), entry2.getValue()); // tmp hashmap creation.
                 edges.put(entry.getKey(), tmp);  // put it all together.
             }
@@ -118,32 +124,100 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     public void connect(int src, int dest, double w) {
         Edge_data e = new Edge_data(src, dest, w, "", 0);
-        HashMap<Integer, Edge_data> tmp = new HashMap<>(); // creates a temporary edge.
+        HashMap<Integer, EdgeData> tmp = new HashMap<>(); // creates a temporary edge.
         tmp.put(dest, e);
         this.Edges.put(src, tmp);
         this.EdgesCounter++;
         this.MC++;
     }
 
-    //TODO: implement iterators.
     @Override
     public Iterator<NodeData> nodeIter() {
-        return null;
+        return new Iterator<NodeData>() {
+
+            //Private class Fields:
+            private final int starting_MC = MC;
+            private Iterator<NodeData> it = Nodes.values().iterator();
+
+            @Override
+            public boolean hasNext() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                return it.hasNext();
+            }
+
+            @Override
+            public NodeData next() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                return it.next();
+            }
+        };
     }
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return null;
+        return new Iterator<EdgeData>() {
+
+            //Private class Fields:
+            private final int starting_MC = MC;
+            private Iterator<HashMap<Integer, EdgeData>> it1 = Edges.values().iterator();
+            private Iterator<EdgeData> it2 = null;
+
+            @Override
+            public boolean hasNext() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                // check that it1 has the next hashmap iterator, and it2 is not null
+                return it1.hasNext() && (it2 != null || it2.hasNext());
+            }
+
+            @Override
+            public EdgeData next() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                if (it2 == null || !(it2.hasNext())) {
+                    it2 = it1.next().values().iterator();
+                }
+                return it2.next();
+            }
+        };
     }
 
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
-        return null;
+        return new Iterator<EdgeData>() {
+
+            //Private class Fields:
+            private final int starting_MC = MC;
+            private Iterator<EdgeData> it = Edges.get(node_id).values().iterator();
+
+            @Override
+            public boolean hasNext() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                return it.hasNext();
+            }
+
+            @Override
+            public EdgeData next() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                return it.next();
+            }
+        };
     }
 
     //TODO: check this function for Edges.remove
     @Override
     public NodeData removeNode(int key) {
+
         this.Edges.remove(key); // < that simple? I don't think.
         this.MC++; // increase changes to graph
         this.NodesCounter--;
@@ -159,14 +233,20 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @return - The removed edge.
      */
     public EdgeData removeEdge(int src, int dest) {
-        Edge_data e = this.Edges.get(src).get(dest); // gets the EDGE from the hashmap.
-        HashMap<Integer, Edge_data> tmp = new HashMap<>(); // creates a temporary Removable edge.
+        EdgeData e = this.Edges.get(src).get(dest); // gets the EDGE from the hashmap.
+        HashMap<Integer, EdgeData> tmp = new HashMap<>(); // creates a temporary Removable edge.
         tmp.put(dest, e);
         this.Edges.remove(src, tmp); //remove it.
         this.MC++; // increase changes to graph
         this.EdgesCounter--;
         return e; // returns the EDGE (null if none)
     }
+
+    // TMP TEST >>
+    public HashMap<Integer, NodeData> pointerNodes() {
+        return this.Nodes;
+    }
+    /////////////////////////
 
     /**
      * @return - how many nodes are in the graph.

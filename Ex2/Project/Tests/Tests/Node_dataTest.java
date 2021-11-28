@@ -35,33 +35,43 @@ class Node_dataTest {
     @Test
     void getInfo() {
         assertEquals(n1.getInfo(), "nadav");
-        assertEquals(n2.getInfo(),"mutzi");
+        assertEquals(n2.getInfo(), "mutzi");
     }
 
     @Test
     void setInfo() {
         n1.setInfo("ronny");
-        assertEquals(n1.getInfo(),"ronny");
+        assertEquals(n1.getInfo(), "ronny");
     }
 
     @Test
     void getTag() {
-        assertEquals(n1.getTag(),1 );
-        assertEquals(n2.getTag(),-1);
+        assertEquals(n1.getTag(), 1);
+        assertEquals(n2.getTag(), -1);
     }
 
     @Test
     void setTag() {
         n1.setTag(0);
-        assertEquals(n1.getTag(),0 );
+        assertEquals(n1.getTag(), 0);
     }
 
     @Test
     void testToString() {
+        assertEquals(n1.toString(), "Main.Node_data{" +
+                "key=" + 99 +
+                ", geo_location=" + "{" +
+                "x=" + 9.0 +
+                ", y=" + 9.0 +
+                ", z=" + 0.0 +
+                '}' +
+                ", info=" + "'nadav" + '\'' +
+                ", tag=" + 1 +
+                '}');
     }
 
     @Test
-    void is_equals(){
+    void is_equals() {
 
     }
 

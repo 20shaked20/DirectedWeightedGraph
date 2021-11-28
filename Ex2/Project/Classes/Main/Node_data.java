@@ -96,7 +96,6 @@ public class Node_data implements NodeData {
         return "Main.Node_data{" +
                 "key=" + key +
                 ", geo_location=" + geo_location +
-                ", weight=" + weight +
                 ", info='" + info + '\'' +
                 ", tag=" + tag +
                 '}';
@@ -108,7 +107,7 @@ public class Node_data implements NodeData {
      * @param other Main.Node_data object.
      * @return true for equals, false for not equals.
      */
-    public boolean is_equals(Node_data other) {
+    public boolean equals(Node_data other) {
         if (this.key == other.key && this.weight == other.weight && this.tag == other.tag) {
             if (this.info.equals(other.info)) {
                 return this.geo_location.is_equal(other.geo_location);
@@ -116,6 +115,7 @@ public class Node_data implements NodeData {
         }
         return false;
     }
+
 
 
 }

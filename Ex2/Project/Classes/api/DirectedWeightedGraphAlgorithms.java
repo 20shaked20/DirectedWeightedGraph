@@ -37,6 +37,7 @@ public interface DirectedWeightedGraphAlgorithms {
      */
     public DirectedWeightedGraph copy();
     /**
+     * //STRONGLY CONNECTED!!! << use DFS / BFS
      * Returns true if and only if (iff) there is a valid path from each node to each
      * other node. NOTE: assume directional graph (all n*(n-1) ordered pairs).
      * @return
