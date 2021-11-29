@@ -11,7 +11,7 @@ public class Edge_data implements EdgeData {
     private int dest;
     private double weight; // the weight of the code.
     private String info; // any meta_data we can use later in the code.
-    private int tag; // represent a color -> -1 = Black, 0 = White, 1 = Gray.
+    private int tag = 0; // represent a color -> -1 = Black, 0 = White, 1 = Gray. (always starts as 0, unvisited)
 
     /**
      * Constructor
