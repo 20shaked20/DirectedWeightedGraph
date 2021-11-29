@@ -18,7 +18,7 @@ public class Json_Helper {
      * @param input_path - Json file location.
      * @return
      */
-    public static boolean Json_Deserializer(DW_Graph g, String input_path) {
+    public static boolean Json_Deserializer(DirectedWeightedGraph g, String input_path) {
         File input = new File(input_path);
         JsonElement fileElement;
         {
@@ -85,7 +85,7 @@ public class Json_Helper {
         DW_Graph graph = new DW_Graph();
         String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
         Json_Deserializer(graph, path);
-        Json_Serializer(graph.pointerNodes());
+        //Json_Serializer(graph.pointerNodes());
     }
 
 }

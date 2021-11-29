@@ -2,17 +2,9 @@ package Tests;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DW_GraphTest {
 
-    @Test
-    void deep_copy_nodes() {
-    }
 
-    @Test
-    void deep_copy_edges() {
-    }
 
     @Test
     void getNode() {

@@ -3,8 +3,7 @@ package Main; /**
  * Date - 21.11.2021
  */
 
-import api.EdgeData;
-import api.NodeData;
+import api.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,14 +38,14 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      *
      * @param other - Another Directed Weighted Graph
      */
-    public DW_Graph(DW_Graph other) {
+    public DW_Graph(DirectedWeightedGraph other) {
         this.Nodes = new HashMap<>();
         this.Edges = new HashMap<>();
-        deep_copy_nodes(this.Nodes, other);
-        deep_copy_edges(this.Edges, other);
-        this.EdgesCounter = other.EdgesCounter;
-        this.NodesCounter = other.NodesCounter;
-        this.MC = other.MC;
+        DW_Graph.deep_copy_nodes(this.Nodes, other);
+        DW_Graph.deep_copy_edges(this.Edges, other);
+        this.EdgesCounter = other.edgeSize();
+        this.NodesCounter = other.nodeSize();
+        this.MC = other.getMC();
     }
 
     /**
@@ -56,7 +55,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      *
      * @param nodes - HashMap of nodes.
      */
-    public void deep_copy_nodes(HashMap<Integer, NodeData> nodes, DW_Graph g) {
+    private static void deep_copy_nodes(HashMap<Integer, NodeData> nodes, DirectedWeightedGraph g) {
         Iterator<NodeData> n = g.nodeIter();
         while (n.hasNext()) {
             Node_data tmp = (Node_data) g.getNode(n.next().getKey());
@@ -75,7 +74,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      *
      * @param edges - HashMap of edges.
      */
-    public void deep_copy_edges(HashMap<Integer, HashMap<Integer, EdgeData>> edges, DW_Graph g) {
+    private static void deep_copy_edges(HashMap<Integer, HashMap<Integer, EdgeData>> edges, DirectedWeightedGraph g) {
         Iterator<EdgeData> e = g.edgeIter();
         while (e.hasNext()) {
             Edge_data tmp_edge = (Edge_data) g.getEdge(e.next().getSrc(), e.next().getDest());
@@ -198,7 +197,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
                     throw new RuntimeException("graph was changed after iterator creation");
                 }
                 // check that it1 has the next hashmap iterator, and it2 is not null
-                return it1.hasNext() && (it2 != null || it2.hasNext());
+                return it1.hasNext() && it2 != null && it2.hasNext(); // was || now &&
             }
 
             @Override
@@ -249,7 +248,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
 
 
     /**
-     * This method removes a node and all the edges connected to it.o
+     * This method removes a node and all the edges connected to it.
      * Running time -> O(n) while n is the amount of edges to remove.
      *
      * @param key -> Integer representing a node to remove.
@@ -286,12 +285,6 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         this.EdgesCounter--;
         return e; // returns the EDGE (null if none)
     }
-
-    // TMP TEST >>
-    public HashMap<Integer, NodeData> pointerNodes() {
-        return this.Nodes;
-    }
-    /////////////////////////
 
     /**
      * @return - how many nodes are in the graph.
