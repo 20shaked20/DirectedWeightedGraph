@@ -75,11 +75,18 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         boolean[] connected = new boolean[graph.nodeSize()]; //T for possible reach, F for not possible.
         Arrays.fill(connected, false); // init the array.
         while (nodes.hasNext()) {
-            //NodeData curr_node = graph.getNode(nodes.next().getKey()); // keeps the current node we operate on.
-            dfs(nodes.next(), connected);
+            NodeData n = nodes.next();
+            if (!connected[n.getKey()]) {
+                dfs(n, connected); // checks the boolean sol
+            }
+            for (boolean b : connected) {
+                if (!b) { // if even one of the nodes is not reachable return false immediately
+                    return false;
+                }
+            }
             Arrays.fill(connected, false); // after each iteration, fill the array with false for the next iteration.
         }
-        return true;
+        return true; // if flag was not popped then return true. the graph is strongly connected.
     }
 
     /**
@@ -91,27 +98,22 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * @param n NodeData
      * @return true if possible to reach with this node, false if not.
      */
-    private boolean dfs(NodeData n, boolean[] connected) {
-        Iterator<EdgeData> edges_from_node = graph.edgeIter(n.getKey());
+    private void dfs(NodeData n, boolean[] connected) {
+        System.out.println("n: " + n.getKey());
         connected[n.getKey()] = true;
+        Iterator<EdgeData> edges_from_node = graph.edgeIter(n.getKey());
         while (edges_from_node.hasNext()) {
-            NodeData curr_node = graph.getNode(edges_from_node.next().getSrc()); // gets the current node.
-            NodeData next_node = graph.getNode(edges_from_node.next().getDest()); //gets the next node to operate dfs on.
-            if (!connected[curr_node.getKey()]) {
+            EdgeData e = edges_from_node.next();
+            NodeData next_node = graph.getNode(e.getDest()); //gets the next node to operate dfs on.
+            if (!connected[e.getDest()]) { // < indicates the current node we operate on.
                 dfs(next_node, connected);
             }
-
         }
-        for (boolean b : connected) {
-            if (!b) { // if even one of the nodes is not reachable return false immediately
-                return false;
-            }
-        }
-        return true;
     }
 
 
-    /** TODO: First implement the shortest path finder.
+    /**
+     * TODO: First implement the shortest path finder.
      * Computes the length of the shortest path between src to dest
      * Note: if no such path --> returns -1
      *

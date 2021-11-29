@@ -12,15 +12,17 @@ public class Algo_tester {
         NodeData n1 = new Node_data(1, xyz);
         NodeData n2 = new Node_data(2, xyz);
         NodeData n3 = new Node_data(3, xyz);
+        NodeData n4 = new Node_data(4, xyz);
         graph.addNode(n0);
         graph.addNode(n1);
         graph.addNode(n2);
         graph.addNode(n3);
-        graph.connect(n0.getKey(), n1.getKey(), 0);
-        graph.connect(n0.getKey(), n3.getKey(), 0);
-        graph.connect(n1.getKey(), n2.getKey(), 0);
-        graph.connect(n2.getKey(), n0.getKey(), 0);
-        graph.connect(n3.getKey(), n2.getKey(), 0);
+        //graph.addNode(n4);
+        graph.connect(0,1, 0);
+        graph.connect( 0,3,0);
+        graph.connect(1,2,0);
+        graph.connect(2,0,0);
+        graph.connect( 3,2,0);
 
 //        String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
 //        Json_Deserializer(graph, path);

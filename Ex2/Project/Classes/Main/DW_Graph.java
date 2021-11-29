@@ -122,9 +122,12 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @param n Main.Node_data.
      */
     public void addNode(NodeData n) {
-        this.Nodes.put(n.getKey(), (Node_data) n); // casting to my class.
-        this.NodesCounter++;
-        this.MC++;
+        if (!this.Nodes.containsKey(n.getKey())) { //if it doest not exist add it, otherwise don't.
+            this.Edges.put(n.getKey(), new HashMap<>());
+            this.Nodes.put(n.getKey(), (Node_data) n); // casting to my class.
+            this.NodesCounter++;
+            this.MC++;
+        }
     }
 
     /**
@@ -136,10 +139,14 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @param w    - positive weight representing the cost (aka time, price, etc) between src-->dest.
      */
     public void connect(int src, int dest, double w) {
-        Edge_data e = new Edge_data(src, dest, w);
-        HashMap<Integer, EdgeData> tmp = new HashMap<>(); // creates a temporary edge.
-        tmp.put(dest, e);
-        this.Edges.put(src, tmp);
+        if (this.Nodes.containsKey(src) && this.Nodes.containsKey(dest)) {
+            System.out.println("src: " + src + " , " + "dest: " + dest);
+
+            if (this.Edges.containsKey(src)) {
+                Edge_data e = new Edge_data(src, dest, w);
+                this.Edges.get(src).put(dest, e);
+            }
+        }
         this.EdgesCounter++;
         this.MC++;
     }
