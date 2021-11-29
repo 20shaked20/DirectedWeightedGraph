@@ -20,10 +20,7 @@ package Main; /**
  */
 
 
-import api.DirectedWeightedGraph;
-import api.DirectedWeightedGraphAlgorithms;
-import api.EdgeData;
-import api.NodeData;
+import api.*;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -66,6 +63,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * //STRONGLY CONNECTED!!! << use DFS
      * Returns true if and only if (iff) there is a valid path from each node to each
      * other node. NOTE: assume directional graph (all n*(n-1) ordered pairs).
+     * Running time -> O(n^2) while n represents the amount of nodes in the graph.(could implement better, r/n will stick to this)
      *
      * @return true if the graph is Strongly connected, false if not.
      */
@@ -94,6 +92,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * checks all the edges getting out of the node while considering the edges getting out of each edge dest.
      * if from one node it is possible to reach to all other nodes, the graph is strongly connected.
      * I choose to use the help of boolean array to check if each of the nodes has a way to reach to other node.
+     * Running time -> O(n) while n represent the amount of nodes each edge can reach.
      *
      * @param n NodeData
      * @return true if possible to reach with this node, false if not.
