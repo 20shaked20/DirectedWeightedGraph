@@ -19,16 +19,16 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public DirectedWeightedGraph getGraph() {
-        return null;
+        return graph;
     }
 
     @Override
     public DirectedWeightedGraph copy() {
-        return null;
+        return new DW_Graph(graph); //uses copy constructor.
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean isConnected() { //is it O(n^2) ? consider using shortest path ?
         return false;
     }
 

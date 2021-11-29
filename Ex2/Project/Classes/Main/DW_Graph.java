@@ -37,22 +37,22 @@ public class DW_Graph implements api.DirectedWeightedGraph {
     /**
      * Deep copy constructor.
      *
-     * @param other - Another Directed Weighted Graph
+     * @param g - Another Directed Weighted Graph
      */
-    public DW_Graph(DW_Graph other) {
+    public DW_Graph(DW_Graph g) {
         this.Nodes = new HashMap<>();
         this.Edges = new HashMap<>();
-        deep_copy_nodes(this.Nodes, other);
-        deep_copy_edges(this.Edges, other);
-        this.EdgesCounter = other.EdgesCounter;
-        this.NodesCounter = other.NodesCounter;
-        this.MC = other.MC;
+        deep_copy_nodes(this.Nodes, g);
+        deep_copy_edges(this.Edges, g);
+        this.EdgesCounter = g.EdgesCounter;
+        this.NodesCounter = g.NodesCounter;
+        this.MC = g.MC;
     }
 
     /**
-     * his method deep copies the nodes of a given graph.
+     * This method deep copies the nodes of a given graph.
      * It uses the Iterator method. -> nodeIter()
-     * Running time -> O(n) while n represents the amount of nodes in the graph.
+     * Running time -> O(n) where n represents the amount of nodes in the graph.
      *
      * @param nodes - HashMap of nodes.
      */
@@ -71,7 +71,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
     /**
      * This method deep copies the edges of a given graph.
      * It uses the Iterator method. -> edgeIter()
-     * Running time -> O(n) while n represents the amount of edges in the graph.
+     * Running time -> O(n) where n represents the amount of edges in the graph.
      *
      * @param edges - HashMap of edges.
      */
