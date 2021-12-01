@@ -74,24 +74,33 @@ public class Json_Helper {
         Iterator<NodeData> n = graph.nodeIter();
         Iterator<EdgeData> e = graph.edgeIter();
 
+        //TODO: create a json file and use a file-writer to write g.toJson()'s to it.
+        String json = "";
+
         while (e.hasNext()){
-            // Edge_data tmp = (Edge_data) e.next();
-            g.toJson(e.next());
+            Edge_data tmp = (Edge_data) e.next(); //e.next is always empty?
+            System.out.println(tmp);
+            json += g.toJson(tmp);
         }
 
         while (n.hasNext()){
             //Node_data tmp = (Node_data) n.next();
-            g.toJson(n.next());
+            json+=g.toJson(n.next());
         }
 
-        System.out.println(g);
+        System.out.println(json);
+        //System.out.println(g);
     }
 
     //tester ->
     public static void main(String[] args) {
         DW_Graph graph = new DW_Graph();
-        String path = "C:\\Users\\yonar\\IdeaProjects\\DirectedWeightedGraph\\Ex2\\data\\G1.json";
+        String path = "C:/Users/yonar/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
         Json_Deserializer(graph, path);
+        graph = new DW_Graph();
+        graph.addNode(new Node_data(1,new Geo_Location(1,1,1)));
+        graph.addNode(new Node_data(0,new Geo_Location(0,0,0)));
+        graph.connect(0,1,1);
         Json_Serializer(graph);
     }
 

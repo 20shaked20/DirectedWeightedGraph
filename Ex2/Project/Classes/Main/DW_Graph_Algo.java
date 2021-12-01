@@ -1,7 +1,6 @@
 package Main; /**
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
- * TODO:
  * <p>
  * This interface represents a Directed (positive) Weighted Graph Theory Algorithms including:
  * 0. clone(); (copy)
@@ -25,12 +24,12 @@ import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     private DirectedWeightedGraph graph;
+    private double[] floyd_warshall;
+    private boolean calcFW = false;
 
     /**
      * Init the graph which we will operate on, simple assignment method.
@@ -113,17 +112,20 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
 
     /**
-     * TODO: First implement the shortest path finder.
      * Computes the length of the shortest path between src to dest
-     * Note: if no such path --> returns -1
-     *
+     * Note: if no such path --> returns -1.  O(TODO: add this when we know shortestPath time complexity.)
      * @param src  - start node
      * @param dest - end (target) node
-     * @return
+     * @return A double value representing the weight of the shortest path.
      */
     @Override
     public double shortestPathDist(int src, int dest) {
-        return 0;
+        LinkedList<NodeData> list = (LinkedList<NodeData>) shortestPath(src, dest);
+        double totalWeight = 0;
+        for (int i = 0; i < list.size(); i++){
+            totalWeight += list.get(i).getWeight();
+        }
+        return totalWeight;
     }
 
     /**
@@ -134,24 +136,116 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      *
      * @param src  - start node
      * @param dest - end (target) node
-     * @return
+     * @return A list of nodes representing the shortest path such that it contains src--> n1-->n2-->...dest
      */
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
-        return null;
+        //using Dijkstra's algorithm https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+        LinkedList<NodeData> ans = new LinkedList<>();
+
+        // TODO: Understand how to alter Dijkstra's algorithm for this!
+
+        return ans;
+    }
+
+    /**
+     * a helper function for our single source Dijkstra algorithm.
+     * O(E) - worst case is when all the Edges (E-1) are neighboring node U.
+     * @param u int representing the current node for which we calculate the shortest distance to it's neighbours
+     * @param adj an adjacency matrix.
+     * @param settled set of nodes that have been covered.
+     * @param dist an array of the shortest distances from a single source.
+     * @param prq a priority queue that is used in the Dijkstra Algorithm.
+     */
+    private void adjacentHelper(int u, LinkedList<Node>[] adj, HashSet<Integer> settled, double[] dist, PriorityQueue<Node> prq){
+
+        double edgeDist;
+        double newDist;
+        Node temp;
+
+        for (int i = 0; i < adj[u].size(); i++){
+            temp = adj[u].get(i);
+
+            if(!settled.contains(temp.node)){
+                edgeDist = temp.cost;
+                newDist = dist[u] + edgeDist;
+                dist[temp.node] = Math.min(newDist,dist[temp.node]); // instead of an if argument
+
+                prq.add(new Node(temp.node, dist[temp.node]));
+            }
+        }
+
+    }
+
+    /**
+     * Calculates the shortest path from a single source to every other node (Integer.MAXVALUE if unreachable!)
+     * using Dijkstra's algorithm. O(|V|^2) - |V| = amount of vertices.
+     * @param src the source for the calculation
+     * @return an array of distances from src to i ( such that arr[i] = this distance)
+     */
+    private double[] singleSourceDijkstraAlgo(int src){ //used in Center!
+        double[] dist = new double[graph.nodeSize()];
+        for (int i =0; i < dist.length; i++){
+            dist[i] = Integer.MAX_VALUE; //init distances from source to be 'infinity'
+        }
+
+        HashSet<Integer> settled = new HashSet<>();
+        PriorityQueue<Node> prq = new PriorityQueue<>(graph.nodeSize()); //priority queue with initial capacity
+
+        LinkedList<Node>[] adj = new LinkedList[graph.nodeSize()];
+        Iterator<EdgeData> edges = graph.edgeIter();
+        EdgeData edge;
+        while (edges.hasNext()){ //O(|V|)
+            edge = edges.next();
+            adj[edge.getSrc()].add(new Node(edge.getDest(),edge.getWeight())); //initialing an adjacency matrix.
+        }
+        prq.add(new Node(src,0));
+        dist[src] = 0;
+
+        while (settled.size() != graph.nodeSize()){ //O(|V|)
+            int u = prq.remove().node;
+            settled.add(u);
+            adjacentHelper(u, adj, settled, dist, prq); // O(|V|)
+        }
+        return dist;
     }
 
     /**
      * Finds the api.NodeData which minimizes the max distance to all the other nodes.
-     * Assuming the graph isConnected, elese return null. See: https://en.wikipedia.org/wiki/Graph_center
+     * Assuming the graph isConnected, else return null. See: https://en.wikipedia.org/wiki/Graph_center
      *
-     * @return the Node data to which the max shortest path to all the other nodes is minimized.
+     * @return the Node data to which the shortest path to all the other nodes is minimized.
      */
     @Override
     public NodeData center() {
-        return null;
+        if(!isConnected()){
+            return null; //if the graph is not strongly connected, then there is no center!
+        }
+        double[] dist;
+        double bestAverage = Double.MAX_VALUE;
+        int bestNode = 0; // Initialized to 0 just in case.
+        Iterator<NodeData> nodes = graph.nodeIter();
+        while (nodes.hasNext()) { //|V|
+            int node = nodes.next().getKey();
+            dist = singleSourceDijkstraAlgo(node); //|V|^2 + nodes.next advances the Iterator.
+            double avg = average(dist); //|V|
+            if (avg < bestAverage){
+                bestAverage = avg;
+                bestNode = node;
+            }
+        }
+        return graph.getNode(bestNode);
     }
 
+    private double average(double[] dist){
+        if (dist == null || dist.length == 0)
+            return Integer.MAX_VALUE;
+        double sum = 0;
+        for (int i = 0; i < dist.length; i++){
+            sum+=dist[i]; // note that we assume the graph is strongly connected, therefore no dist[i]=Max_Value!!!
+        }
+        return sum/dist.length;
+    }
     /**
      * Computes a list of consecutive nodes which go over all the nodes in cities.
      * the sum of the weights of all the consecutive (pairs) of nodes (directed) is the "cost" of the solution -
@@ -190,4 +284,29 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     public boolean load(String file) {
         return Json_Helper.Json_Deserializer(this.graph, file);
     }
+
+    private class Node implements Comparator<Node> {
+        /**
+         * private class for Dijkstra's algorithm implementation.
+         * (Node_data is inefficient for this, Implementation-Wise)
+         */
+        public int node;
+        public double cost;
+        public Node() { } //empty constructor
+
+        public Node(int node, double cost) {
+            this.node = node;
+            this.cost = cost;
+        }
+        @Override
+        public int compare(Node node1, Node node2)
+        {
+            if (node1.cost < node2.cost)
+                return -1;
+            if (node1.cost > node2.cost)
+                return 1;
+            return 0;
+        }
+    }
 }
+
