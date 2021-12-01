@@ -191,12 +191,12 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return new Iterator<EdgeData>() {
+        return new Iterator<>() {
 
             //Private class Fields:
             private final int starting_MC = MC;
             private Iterator<HashMap<Integer, EdgeData>> it1 = Edges.values().iterator();
-            private Iterator<EdgeData> it2 = null;
+            private Iterator<EdgeData> it2 = it1.next().values().iterator(); //initializing as not null - important!
 
             @Override
             public boolean hasNext() {
@@ -229,7 +229,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
-        return new Iterator<EdgeData>() {
+        return new Iterator<>() {
 
             //Private class Fields:
             private final int starting_MC = MC;
