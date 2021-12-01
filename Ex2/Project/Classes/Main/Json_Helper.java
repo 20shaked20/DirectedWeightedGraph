@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class Json_Helper {
@@ -68,24 +69,30 @@ public class Json_Helper {
         return true;
     }
 
-// TODO: implement serializer, rn basic need to fix to fit my saving method.
+    public static void Json_Serializer(DW_Graph graph) {
+        Gson g = new Gson();
+        Iterator<NodeData> n = graph.nodeIter();
+        Iterator<EdgeData> e = graph.edgeIter();
 
-    public static void Json_Serializer(HashMap<Integer, NodeData> n) {
-//        HashMap<String,String> myMap = new HashMap();
-//        myMap.put("one", "hello");
-//        myMap.put("two", "world");
-        Gson gson = new GsonBuilder().create();
-        String json = gson.toJson(n);
+        while (e.hasNext()){
+            // Edge_data tmp = (Edge_data) e.next();
+            g.toJson(e.next());
+        }
 
-        System.out.println(json);
+        while (n.hasNext()){
+            //Node_data tmp = (Node_data) n.next();
+            g.toJson(n.next());
+        }
+
+        System.out.println(g);
     }
 
     //tester ->
     public static void main(String[] args) {
         DW_Graph graph = new DW_Graph();
-        String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
+        String path = "C:\\Users\\yonar\\IdeaProjects\\DirectedWeightedGraph\\Ex2\\data\\G1.json";
         Json_Deserializer(graph, path);
-        //Json_Serializer(graph.pointerNodes());
+        Json_Serializer(graph);
     }
 
 }
