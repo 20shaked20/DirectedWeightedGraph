@@ -140,7 +140,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     public void connect(int src, int dest, double w) {
         if (this.Nodes.containsKey(src) && this.Nodes.containsKey(dest)) {
-            System.out.println("src: " + src + " , " + "dest: " + dest);
+           // System.out.println("src: " + src + " , " + "dest: " + dest);
 
             if (this.Edges.containsKey(src)) {
                 Edge_data e = new Edge_data(src, dest, w);

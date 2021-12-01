@@ -97,7 +97,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * @return true if possible to reach with this node, false if not.
      */
     private void dfs(NodeData n, boolean[] connected) {
-        System.out.println("n: " + n.getKey());
+        //System.out.println("n: " + n.getKey());
         connected[n.getKey()] = true;
         Iterator<EdgeData> edges_from_node = graph.edgeIter(n.getKey());
         while (edges_from_node.hasNext()) {
@@ -113,19 +113,105 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     /**
      * Computes the length of the shortest path between src to dest
      * Note: if no such path --> returns -1.  O(TODO: add this when we know shortestPath time complexity.)
+     *
      * @param src  - start node
      * @param dest - end (target) node
      * @return A double value representing the weight of the shortest path.
      */
     @Override
     public double shortestPathDist(int src, int dest) {
-        LinkedList<NodeData> list = (LinkedList<NodeData>) shortestPath(src, dest);
-        double totalWeight = 0;
-        for (int i = 0; i < list.size(); i++){
-            totalWeight += list.get(i).getWeight();
+        if (graph.getNode(src) != null && graph.getNode(dest) != null) {
+            NodeData n1 = graph.getNode(src); // converting them to nodes, so it will be easier to use in the Dijkstra method.
+            NodeData n2 = graph.getNode(dest);
+            return dijkstra(n1, n2); // will return -1 if no path exists.
         }
-        return totalWeight;
+        return -1;
     }
+
+    /**
+     * This method is an implementation of dijkstra algorithm using priority Queue.
+     * the method uses the iterator method in help of going over all the possible edges available from each node,
+     * and checks the best path available considering weight of edge and keeps it in the required node.
+     *
+     * @param src  NodeData
+     * @param dest NodeData
+     * @return -1 if there's no path available, OR double representing the shortest path.
+     */
+    public double dijkstra(NodeData src, NodeData dest) { // use info to SET > "True" if visited, "False" if not && size --?
+        if (this.graph.getEdge(src.getKey(), dest.getKey()) != null) {
+            PriorityQueue<NodeData> nodesQ = new PriorityQueue<NodeData>(this.graph.nodeSize(), new Comparator<NodeData>() {
+                //Comparing by weight the nodes, hidden class.
+                public int compare(NodeData n1, NodeData n2) {
+                    return Double.compare(n1.getWeight(), n2.getWeight());
+                }
+            });
+            src.setWeight(0.0); // setting weight to zero, because we will increase it during the whole process until we reach destination.
+            nodesQ.add(src);
+            while (!nodesQ.isEmpty()) {
+                NodeData poll_node = nodesQ.poll();
+                Iterator<EdgeData> curr_edges = this.graph.edgeIter(poll_node.getKey());
+                while (curr_edges.hasNext()) {
+                    EdgeData curr_edge = curr_edges.next(); // if I don't create this, it will 'no such element exception' because of overlapping in iterator.
+                    NodeData n = this.graph.getNode(curr_edge.getDest()); // points on the next destination.
+                    if (n.getInfo().equals("Unvisited")) { // unvisited node, it is "Unvisited" as stated.
+                        if (n.getWeight() > poll_node.getWeight() + curr_edge.getWeight()) {
+                            n.setWeight(Math.min(n.getWeight(), poll_node.getWeight() + curr_edge.getWeight()));
+                            n.setTag(poll_node.getKey());
+                        }
+                        nodesQ.add(n);
+                    }
+                }
+                poll_node.setInfo("Visited"); // visited node, and its black then done.
+                if (poll_node.getKey() == dest.getKey()) { // same key, then we're done checking.
+                    return poll_node.getWeight();
+                }
+            }
+            // TODO: Fix those.
+            // Before exiting the method, because I changed tags I will reset them using iterator:
+//            Iterator<NodeData> it = graph.nodeIter();
+//            this.tag_refresh(it);
+//            this.info_refresh(it);
+            ////////////////////////////////////////////////////////////////////////////////////////////////
+        }
+        return -1; // no such path.
+    }
+//TODO: Implement those both.
+    /**
+     * This is a private method to resets tag of edges or nodes.
+     *
+     * @param it Edge Iterator Or Node Iterator.
+     */
+//    private void tag_refresh(Iterator<?> it) {
+//        if (it.next() instanceof NodeData) {
+//            while (it.hasNext()) {
+//                ((NodeData) it.next()).setTag(0);
+//            }
+//        }
+//        if (it.next() instanceof EdgeData) {
+//            while (it.hasNext()) {
+//                ((EdgeData) it.next()).setTag(0);
+//            }
+//        }
+//    }
+
+    /**
+     * This is a private method to resets tag of edges or nodes.
+     *
+     * @param it Edge Iterator Or Node Iterator.
+     */
+//    private void info_refresh(Iterator<?> it) {
+//        if (it.next() instanceof NodeData) {
+//            while (it.hasNext()) {
+//                ((NodeData) it.next()).setInfo("Unvisited");
+//            }
+//        }
+//        if (it.next() instanceof EdgeData) {
+//            while (it.hasNext()) {
+//                ((EdgeData) it.next()).setInfo("Unvisited");
+//            }
+//        }
+//    }
+
 
     /**
      * Computes the the shortest path between src to dest - as an ordered List of nodes:
@@ -139,74 +225,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
-        //using Dijkstra's algorithm https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-        LinkedList<NodeData> ans = new LinkedList<>();
-
-        // TODO: Understand how to alter Dijkstra's algorithm for this!
-
-        return ans;
-    }
-
-    /**
-     * a helper function for our single source Dijkstra algorithm.
-     * O(E) - worst case is when all the Edges (E-1) are neighboring node U.
-     * @param u int representing the current node for which we calculate the shortest distance to it's neighbours
-     * @param adj an adjacency matrix.
-     * @param settled set of nodes that have been covered.
-     * @param dist an array of the shortest distances from a single source.
-     * @param prq a priority queue that is used in the Dijkstra Algorithm.
-     */
-    private void adjacentHelper(int u, LinkedList<Node>[] adj, HashSet<Integer> settled, double[] dist, PriorityQueue<Node> prq){
-
-        double edgeDist;
-        double newDist;
-        Node temp;
-
-        for (int i = 0; i < adj[u].size(); i++){
-            temp = adj[u].get(i);
-
-            if(!settled.contains(temp.node)){
-                edgeDist = temp.cost;
-                newDist = dist[u] + edgeDist;
-                dist[temp.node] = Math.min(newDist,dist[temp.node]); // instead of an if argument
-
-                prq.add(new Node(temp.node, dist[temp.node]));
-            }
-        }
-
-    }
-
-    /**
-     * Calculates the shortest path from a single source to every other node (Integer.MAXVALUE if unreachable!)
-     * using Dijkstra's algorithm. O(|V|^2) - |V| = amount of vertices.
-     * @param src the source for the calculation
-     * @return an array of distances from src to i ( such that arr[i] = this distance)
-     */
-    private double[] singleSourceDijkstraAlgo(int src){ //used in Center!
-        double[] dist = new double[graph.nodeSize()];
-        for (int i =0; i < dist.length; i++){
-            dist[i] = Integer.MAX_VALUE; //init distances from source to be 'infinity'
-        }
-
-        HashSet<Integer> settled = new HashSet<>();
-        PriorityQueue<Node> prq = new PriorityQueue<>(graph.nodeSize()); //priority queue with initial capacity
-
-        LinkedList<Node>[] adj = new LinkedList[graph.nodeSize()];
-        Iterator<EdgeData> edges = graph.edgeIter();
-        EdgeData edge;
-        while (edges.hasNext()){ //O(|V|)
-            edge = edges.next();
-            adj[edge.getSrc()].add(new Node(edge.getDest(),edge.getWeight())); //initialing an adjacency matrix.
-        }
-        prq.add(new Node(src,0));
-        dist[src] = 0;
-
-        while (settled.size() != graph.nodeSize()){ //O(|V|)
-            int u = prq.remove().node;
-            settled.add(u);
-            adjacentHelper(u, adj, settled, dist, prq); // O(|V|)
-        }
-        return dist;
+        return null;
     }
 
     /**
@@ -217,34 +236,9 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public NodeData center() {
-        if(!isConnected()){
-            return null; //if the graph is not strongly connected, then there is no center!
-        }
-        double[] dist;
-        double bestAverage = Double.MAX_VALUE;
-        int bestNode = 0; // Initialized to 0 just in case.
-        Iterator<NodeData> nodes = graph.nodeIter();
-        while (nodes.hasNext()) { //|V|
-            int node = nodes.next().getKey();
-            dist = singleSourceDijkstraAlgo(node); //|V|^2 + nodes.next advances the Iterator.
-            double avg = average(dist); //|V|
-            if (avg < bestAverage){
-                bestAverage = avg;
-                bestNode = node;
-            }
-        }
-        return graph.getNode(bestNode);
+        return null;
     }
 
-    private double average(double[] dist){
-        if (dist == null || dist.length == 0)
-            return Integer.MAX_VALUE;
-        double sum = 0;
-        for (int i = 0; i < dist.length; i++){
-            sum+=dist[i]; // note that we assume the graph is strongly connected, therefore no dist[i]=Max_Value!!!
-        }
-        return sum/dist.length;
-    }
     /**
      * Computes a list of consecutive nodes which go over all the nodes in cities.
      * the sum of the weights of all the consecutive (pairs) of nodes (directed) is the "cost" of the solution -
@@ -282,30 +276,6 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     @Override
     public boolean load(String file) {
         return Json_Helper.Json_Deserializer(this.graph, file);
-    }
-
-    private class Node implements Comparator<Node> {
-        /**
-         * private class for Dijkstra's algorithm implementation.
-         * (Node_data is inefficient for this, Implementation-Wise)
-         */
-        public int node;
-        public double cost;
-        public Node() { } //empty constructor
-
-        public Node(int node, double cost) {
-            this.node = node;
-            this.cost = cost;
-        }
-        @Override
-        public int compare(Node node1, Node node2)
-        {
-            if (node1.cost < node2.cost)
-                return -1;
-            if (node1.cost > node2.cost)
-                return 1;
-            return 0;
-        }
     }
 }
 

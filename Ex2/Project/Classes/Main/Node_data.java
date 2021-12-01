@@ -15,8 +15,8 @@ public class Node_data implements NodeData {
 
     private int key;
     private Geo_Location geo_location;
-    private double weight; // Redundant code: = Integer.MAX_VALUE;
-    private String info; // any meta_data we can use later in the code.
+    private double weight = Double.MAX_VALUE; // USED in dijkstra algo as helper.
+    private String info = "Unvisited"; // any meta_data we can use later in the code.
     private int tag = 0; // represent a color -> -1 = Black, 0 = White, 1 = Gray. ( always start as white, unvisited )
 
     /**
