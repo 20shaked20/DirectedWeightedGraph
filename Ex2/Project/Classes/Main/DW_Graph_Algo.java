@@ -25,8 +25,6 @@ import java.util.*;
 
 public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     private DirectedWeightedGraph graph;
-    private double[] floyd_warshall;
-    private boolean calcFW = false;
 
     /**
      * Init the graph which we will operate on, simple assignment method.
@@ -87,6 +85,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     }
 
     /**
+     * TODO: fix to iterative mode.
      * This method gets a NodeData and in the use concept of dfs algorithm,
      * checks all the edges getting out of the node while considering the edges getting out of each edge dest.
      * if from one node it is possible to reach to all other nodes, the graph is strongly connected.
@@ -112,7 +111,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
     /**
      * Computes the length of the shortest path between src to dest
-     * Note: if no such path --> returns -1.  O(TODO: add this when we know shortestPath time complexity.)
+     * Note: if no such path --> returns -1.
      *
      * @param src  - start node
      * @param dest - end (target) node
@@ -137,7 +136,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * @param dest NodeData
      * @return -1 if there's no path available, OR double representing the shortest path.
      */
-    public double dijkstra(NodeData src, NodeData dest) { // use info to SET > "True" if visited, "False" if not && size --?
+    private double dijkstra(NodeData src, NodeData dest) { // use info to SET > "True" if visited, "False" if not && size --?
         if (this.graph.getEdge(src.getKey(), dest.getKey()) != null) {
             PriorityQueue<NodeData> nodesQ = new PriorityQueue<NodeData>(this.graph.nodeSize(), new Comparator<NodeData>() {
                 //Comparing by weight the nodes, hidden class.
@@ -155,7 +154,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
                     NodeData n = this.graph.getNode(curr_edge.getDest()); // points on the next destination.
                     if (n.getInfo().equals("Unvisited")) { // unvisited node, it is "Unvisited" as stated.
                         if (n.getWeight() > poll_node.getWeight() + curr_edge.getWeight()) {
-                            n.setWeight(Math.min(n.getWeight(), poll_node.getWeight() + curr_edge.getWeight()));
+                            n.setWeight(poll_node.getWeight() + curr_edge.getWeight());
                             n.setTag(poll_node.getKey());
                         }
                         nodesQ.add(n);
@@ -163,54 +162,120 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
                 }
                 poll_node.setInfo("Visited"); // visited node, and its black then done.
                 if (poll_node.getKey() == dest.getKey()) { // same key, then we're done checking.
+                    //Before exiting the method, because I changed tags,weights and info I will reset them using iterator:
+                    Iterator<NodeData> it = graph.nodeIter();
+                    this.tag_refresh(it);
+                    this.info_refresh(it);
+                    this.weight_refresh(it);
+                    ////////////////////////////////////////////////////////////////////////////////////////////////
                     return poll_node.getWeight();
                 }
             }
-            // TODO: Fix those.
-            // Before exiting the method, because I changed tags I will reset them using iterator:
-//            Iterator<NodeData> it = graph.nodeIter();
-//            this.tag_refresh(it);
-//            this.info_refresh(it);
-            ////////////////////////////////////////////////////////////////////////////////////////////////
         }
         return -1; // no such path.
     }
-//TODO: Implement those both.
-    /**
-     * This is a private method to resets tag of edges or nodes.
-     *
-     * @param it Edge Iterator Or Node Iterator.
-     */
-//    private void tag_refresh(Iterator<?> it) {
-//        if (it.next() instanceof NodeData) {
-//            while (it.hasNext()) {
-//                ((NodeData) it.next()).setTag(0);
-//            }
-//        }
-//        if (it.next() instanceof EdgeData) {
-//            while (it.hasNext()) {
-//                ((EdgeData) it.next()).setTag(0);
-//            }
-//        }
-//    }
 
     /**
      * This is a private method to resets tag of edges or nodes.
      *
      * @param it Edge Iterator Or Node Iterator.
      */
-//    private void info_refresh(Iterator<?> it) {
-//        if (it.next() instanceof NodeData) {
-//            while (it.hasNext()) {
-//                ((NodeData) it.next()).setInfo("Unvisited");
-//            }
-//        }
-//        if (it.next() instanceof EdgeData) {
-//            while (it.hasNext()) {
-//                ((EdgeData) it.next()).setInfo("Unvisited");
-//            }
-//        }
-//    }
+    private void tag_refresh(Iterator<?> it) {
+        if (it.hasNext()) {
+            if (it.next() instanceof NodeData) {
+                while (it.hasNext()) {
+                    ((NodeData) it.next()).setTag(0);
+                }
+            }
+            if (it.next() instanceof EdgeData) {
+                while (it.hasNext()) {
+                    ((EdgeData) it.next()).setTag(0);
+                }
+            }
+        }
+    }
+
+    /**
+     * This is a private method to resets tag of edges or nodes.
+     *
+     * @param it Edge Iterator Or Node Iterator.
+     */
+    private void info_refresh(Iterator<?> it) {
+        if (it.hasNext()) {
+            if (it.next() instanceof NodeData) {
+                while (it.hasNext()) {
+                    ((NodeData) it.next()).setInfo("Unvisited");
+                }
+            }
+            if (it.next() instanceof EdgeData) {
+                while (it.hasNext()) {
+                    ((EdgeData) it.next()).setInfo("Unvisited");
+                }
+            }
+        }
+    }
+
+    /**
+     * This is a private method to resets weight of nodes.
+     *
+     * @param it Edge Iterator Or Node Iterator.
+     */
+    private void weight_refresh(Iterator<NodeData> it) {
+        while (it.hasNext()) {
+            ((NodeData) it.next()).setWeight(Double.MAX_VALUE);
+        }
+    }
+
+
+    //TODO: its a temporary dijkstra for shortestPath, try to implement it inside the real dijkstra
+    public List<NodeData> dijkstra2(NodeData src, NodeData dest) { // use info to SET > "True" if visited, "False" if not && size --?
+        if (this.graph.getEdge(src.getKey(), dest.getKey()) != null) {
+            int[] parentVertex = new int[this.graph.nodeSize()]; // parents to indicate the route.
+            PriorityQueue<NodeData> nodesQ = new PriorityQueue<NodeData>(this.graph.nodeSize(), new Comparator<NodeData>() {
+                //Comparing by weight the nodes, hidden class.
+                public int compare(NodeData n1, NodeData n2) {
+                    return Double.compare(n1.getWeight(), n2.getWeight());
+                }
+            });
+            src.setWeight(0.0); // setting weight to zero, because we will increase it during the whole process until we reach destination.
+            nodesQ.add(src);
+            parentVertex[0] = src.getKey(); // init as starting point -1.
+            while (!nodesQ.isEmpty()) {
+                NodeData poll_node = nodesQ.poll();
+                Iterator<EdgeData> curr_edges = this.graph.edgeIter(poll_node.getKey());
+                while (curr_edges.hasNext()) {
+                    EdgeData curr_edge = curr_edges.next(); // if I don't create this, it will 'no such element exception' because of overlapping in iterator.
+                    NodeData n = this.graph.getNode(curr_edge.getDest()); // points on the next destination.
+                    if (n.getInfo().equals("Unvisited")) { // unvisited node, it is "Unvisited" as stated.
+                        if (n.getWeight() > poll_node.getWeight() + curr_edge.getWeight()) {
+                            n.setWeight(poll_node.getWeight() + curr_edge.getWeight());
+                            n.setTag(poll_node.getKey());
+                            parentVertex[poll_node.getKey()] = n.getKey(); // saves the path.
+                        }
+                        nodesQ.add(n);
+                    }
+                }
+                poll_node.setInfo("Visited"); // visited node, and its black then done.
+                if (poll_node.getKey() == dest.getKey()) { // same key, then we're done checking.
+                    //Converting to node_data array.
+                    List<NodeData> parentVertex2 = new ArrayList<NodeData>();
+                    for (int i = 0; i < parentVertex.length; i++) {
+                        if (parentVertex[i] != 0) {
+                            parentVertex2.add(graph.getNode(parentVertex[i]));
+                        }
+                    }
+                    return parentVertex2;
+                }
+            }
+            // TODO: Fix those.
+            // Before exiting the method, because I changed tags I will reset them using iterator:
+            Iterator<NodeData> it = graph.nodeIter();
+            this.tag_refresh(it);
+            this.info_refresh(it);
+            ////////////////////////////////////////////////////////////////////////////////////////////////
+        }
+        return null; // no such path.
+    }
 
 
     /**
@@ -225,6 +290,13 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
+        if (graph.getNode(src) != null && graph.getNode(dest) != null) {
+            NodeData n1 = graph.getNode(src); // converting them to nodes, so it will be easier to use in the Dijkstra method.
+            NodeData n2 = graph.getNode(dest);
+            List<NodeData> n_path = new ArrayList<>(graph.nodeSize());
+            n_path = dijkstra2(n1, n2); // will return -1 if no path exists.
+            return n_path;
+        }
         return null;
     }
 

@@ -1,7 +1,12 @@
 package Tests;
 
-import api.*;
-import Main.*;
+import Main.DW_Graph;
+import Main.DW_Graph_Algo;
+import Main.Geo_Location;
+import Main.Node_data;
+import api.DirectedWeightedGraph;
+import api.DirectedWeightedGraphAlgorithms;
+import api.NodeData;
 
 public class Algo_tester {
 
@@ -18,23 +23,29 @@ public class Algo_tester {
         graph.addNode(n2);
         graph.addNode(n3);
         graph.addNode(n4);
-        graph.connect(0,1, 1.0);
-        graph.connect( 0,3,10.0);
-        graph.connect(1,2,10.0);
-        graph.connect(2,0,10.0);
-        graph.connect( 3,2,10.0);
+//        graph.connect(0,1, 1.0);
+//        graph.connect( 0,3,5.0);
+//        graph.connect(1,2,10.0);
+//        graph.connect(2,0,10.0);
+//        graph.connect( 3,2,10.0);
+        graph.connect(1,3,1.0);
+        graph.connect(3,2,5.0);
+        graph.connect(1,2,15.0);
 
         DirectedWeightedGraphAlgorithms algo = new DW_Graph_Algo();
         algo.init(graph);
-        System.out.println(algo.shortestPathDist(0,3));
+        System.out.println(algo.shortestPath(1,2).toString());
+        //System.out.println(algo.shortestPathDist(1,2));
         //System.out.println(algo.isConnected());
 
 
 //        for (int i = 0; i < 1000; i++)
-//            g1.addNode(new Node_data(i, new Geo_Location(0, 0, 0)));
+//            graph.addNode(new Node_data(i, new Geo_Location(0, 0, 0)));
 //
 //        for (int i = 1; i < 1000; i++)
-//            g1.connect(i - 1, i, 3);
+//            graph.connect(i - 2, i, 3);
+//        algo.init(graph);
+//        System.out.println(algo.shortestPath(1,2).toString());
 //
 //        g1.connect(999,0,0.5);
 //        g1.addNode(new Node_data(1000, new Geo_Location(0, 0, 0)));
