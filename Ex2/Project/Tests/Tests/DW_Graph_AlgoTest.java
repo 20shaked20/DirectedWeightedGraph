@@ -86,6 +86,9 @@ class DW_Graph_AlgoTest {
         a1.init(g1);
         a2.init(g2);
         a3.init(g3);
+
+        //change initialization flag to true
+        this.initialized = true;
     }
 
 
@@ -174,16 +177,20 @@ class DW_Graph_AlgoTest {
         expPath.add(new Node_data(4,new Geo_Location(1,1,0)));
         expPath.add(new Node_data(5,new Geo_Location(0,1,0)));
 
+        System.out.println("expected "+ expPath);
+        System.out.println("actual "+ path);
+        System.out.println();
+
         Assertions.assertEquals(expPath.size(),path.size());
         for(int i = 0; i < path.size(); i++){
-             Assertions.assertEquals(path.get(i).getKey(),expPath.get(i).getKey());
-             Assertions.assertEquals(path.get(i).getLocation().x(), expPath.get(i).getLocation().x());
-             Assertions.assertEquals(path.get(i).getLocation().y(), expPath.get(i).getLocation().y());
-             Assertions.assertEquals(path.get(i).getLocation().z(), expPath.get(i).getLocation().z());
+             Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
+             Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
+             Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
+             Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
         }
 
         //block 2
-        path = a2.shortestPath(1,2); //this case is more complex.
+        path = a2.shortestPath(0,1); //this case is more complex.
         tmp = (DW_Graph) a2.getGraph();
         expPath = new LinkedList<>();
         expPath.add(new Node_data(0,new Geo_Location(0,0,0)));
@@ -191,12 +198,16 @@ class DW_Graph_AlgoTest {
         expPath.add(new Node_data(2,new Geo_Location(1,1,0)));
         expPath.add(new Node_data(1,new Geo_Location(1,0,0)));
 
+        System.out.println("expected "+ expPath);
+        System.out.println("actual "+ path);
+        System.out.println();
+
         Assertions.assertEquals(expPath.size(),path.size());
         for(int i = 0; i < path.size(); i++){
-            Assertions.assertEquals(path.get(i).getKey(),expPath.get(i).getKey());
-            Assertions.assertEquals(path.get(i).getLocation().x(), expPath.get(i).getLocation().x());
-            Assertions.assertEquals(path.get(i).getLocation().y(), expPath.get(i).getLocation().y());
-            Assertions.assertEquals(path.get(i).getLocation().z(), expPath.get(i).getLocation().z());
+            Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
+            Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
+            Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
+            Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
         }
 
         for(int i = 0; i < path.size()-1; i++){
@@ -243,10 +254,10 @@ class DW_Graph_AlgoTest {
         List<NodeData> path = a3.tsp(expPath); //technically contains all my "cities".
 
         for(int i = 0; i < path.size(); i++){
-            Assertions.assertEquals(path.get(i).getKey(),expPath.get(i).getKey());
-            Assertions.assertEquals(path.get(i).getLocation().x(), expPath.get(i).getLocation().x());
-            Assertions.assertEquals(path.get(i).getLocation().y(), expPath.get(i).getLocation().y());
-            Assertions.assertEquals(path.get(i).getLocation().z(), expPath.get(i).getLocation().z());
+            Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
+            Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
+            Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
+            Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
         }
     }
 
@@ -254,12 +265,14 @@ class DW_Graph_AlgoTest {
     public void save() { //the function itself returns a boolean value
         if (!initialized)
             initTests();
+        Assertions.fail();
     }
 
     @Test
     public void load() { //the function itself returns a boolean value
         if (!initialized)
             initTests();
+        Assertions.fail();
     }
 
 }

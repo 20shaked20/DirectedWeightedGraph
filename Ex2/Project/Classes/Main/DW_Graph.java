@@ -59,7 +59,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         Iterator<NodeData> n = g.nodeIter();
         while (n.hasNext()) {
             Node_data tmp = (Node_data) g.getNode(n.next().getKey());
-            nodes.put(n.next().getKey(), tmp);
+            nodes.put(tmp.getKey(), tmp);
         }
         // FOR implementation:
 //        for (Map.Entry<Integer, Node_data> entry : g.Nodes.entrySet()) {
@@ -76,11 +76,14 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     private static void deep_copy_edges(HashMap<Integer, HashMap<Integer, EdgeData>> edges, DirectedWeightedGraph g) {
         Iterator<EdgeData> e = g.edgeIter();
+        EdgeData tmp_edge;
+        HashMap<Integer, EdgeData> tmp_map;
         while (e.hasNext()) {
-            Edge_data tmp_edge = (Edge_data) g.getEdge(e.next().getSrc(), e.next().getDest());
-            HashMap<Integer, EdgeData> tmp_map = new HashMap<>();
-            tmp_map.put(e.next().getDest(), tmp_edge);
-            edges.put(e.next().getSrc(), tmp_map);
+            // tmp_edge = g.getEdge(e.next().getSrc(), e.next().getDest());
+            tmp_edge = e.next();
+            tmp_map = new HashMap<>();
+            tmp_map.put(tmp_edge.getDest(), tmp_edge);
+            edges.put(tmp_edge.getSrc(), tmp_map);
         }
         // FOR implementation:
 //        for (Map.Entry<Integer, HashMap<Integer, EdgeData>> entry : g.Edges.entrySet()) {
@@ -90,6 +93,11 @@ public class DW_Graph implements api.DirectedWeightedGraph {
 //                edges.put(entry.getKey(), tmp);  // put it all together.
 //            }
 //        }
+    }
+
+    //TODO: test this
+    public boolean containsNode(int key){
+        return this.Nodes.containsKey(key);
     }
 
     /**
@@ -204,7 +212,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
                     throw new RuntimeException("graph was changed after iterator creation");
                 }
                 // check that it1 has the next hashmap iterator, and it2 is not null
-                return it1.hasNext() && it2 != null && it2.hasNext(); // was || now &&
+                return it1.hasNext() || ( it2 != null && it2.hasNext()); // was || now &&
             }
 
             @Override

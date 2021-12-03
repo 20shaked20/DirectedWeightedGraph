@@ -117,6 +117,8 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public double shortestPathDist(int src, int dest) {//|V|^2 worst case
+        if (graph.getNode(src) == null || graph.getNode(dest) == null)
+            return -1;
         double dist = DijkstraAlgo(src, dest);
         if (dist == Integer.MAX_VALUE)
             return -1;
@@ -137,24 +139,28 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     public List<NodeData> shortestPath(int src, int dest) {
         //using Dijkstra's algorithm https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
         //Also, this is technically a pathfinding algorithm
+        if (graph.getNode(src) == null || graph.getNode(dest) == null)
+            return null;
         double dist = DijkstraAlgo(src, dest); //calculate the shortest path from source to dest
-        if (dist ==Integer.MAX_VALUE){
+        if (dist == Integer.MAX_VALUE){
             return null;
         }
         LinkedList<NodeData> ans = new LinkedList<>();
-        ans.add(graph.getNode(src));
-        HashSet<Integer> settled = new HashSet<>();
-        settled.add(src);
-        double currDist = 0;
-        int curr = src;
+        double[] n_path = DijkstraAlgoPath(src, dest);
 
-        Iterator<EdgeData> neighbours;
-        while (!(currDist == dist && ans.get(ans.size()-1).getKey() == dest)){
-            neighbours = graph.edgeIter(curr);
-
+        int pointer = src;
+        while (pointer != dest){
+            ans.add(graph.getNode(pointer));
+            pointer = (int)n_path[pointer];
         }
-
-
+        ans.add(graph.getNode(dest));
+        /*
+        for (int i = 0; i < n_path.length; i++) { // iterates until last position which is saved for the weight of the path.
+            if (n_path[i] != -1) {
+                ans.add(graph.getNode((int) n_path[i]));
+            }
+        }
+        */
 
         return ans;
     }
@@ -168,26 +174,31 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * @param dist an array of the shortest distances from a single source.
      * @param prq a priority queue that is used in the Dijkstra Algorithm.
      */
-    private void adjacentHelper(int u, LinkedList<Node>[] adj, HashSet<Integer> settled, double[] dist, PriorityQueue<Node> prq){
+    private void adjacentHelper(int u, LinkedList<Node>[] adj, HashSet<Integer> settled, double[] dist, PriorityQueue<Node> prq, double[] parents){
 
         double edgeDist;
         double newDist;
+        Iterator<EdgeData> neighbours = graph.edgeIter(u);
         Node temp;
+        EdgeData edge = null;
 
-        if (adj[u]!=null){
-            for (int i = 0; i < adj[u].size(); i++){
-                temp = adj[u].get(i);
+        while (neighbours.hasNext()){
+                edge = neighbours.next();
+                temp = new Node(edge.getDest(),edge.getWeight());
 
                 if(!settled.contains(temp.node)){
                     edgeDist = temp.cost;
                     newDist = dist[u] + edgeDist;
-                    dist[temp.node] = Math.min(newDist,dist[temp.node]); // instead of an if argument
+                    if (dist[temp.node] > newDist){
+                        dist[temp.node] = newDist;
+                        if (parents != null)
+                            parents[u] = temp.node;// TODO: Check correctness?
+                    }
+                    //dist[temp.node] = Math.min(newDist,dist[temp.node]); // instead of an if argument
 
                     prq.add(new Node(temp.node, dist[temp.node]));
                 }
             }
-        }
-
     }
 
     /**
@@ -198,9 +209,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     private double DijkstraAlgo(int src, int dest) { //used in Center!
         double[] dist = new double[graph.nodeSize()];
-        for (int i = 0; i < dist.length; i++) {
-            dist[i] = Integer.MAX_VALUE; //init distances from source to be 'infinity'
-        }
+        Arrays.fill(dist, Integer.MAX_VALUE);
         dist[src] = 0;
 
         HashSet<Integer> settled = new HashSet<>();
@@ -209,15 +218,6 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         LinkedList<Node>[] adj = new LinkedList[graph.nodeSize()];
         for (int i = 0; i < adj.length; i++) {
             adj[i] = new LinkedList<>();
-        }
-        Iterator<EdgeData> edges;
-        EdgeData edge;
-        for (int i = 0; i < graph.nodeSize(); i++) { // |V|^2
-            edges = graph.edgeIter(i);
-            while (edges.hasNext()) {
-                edge = edges.next();
-                adj[i].add(new Node(edge.getDest(), edge.getWeight()));
-            }
         }
         prq.add(new Node(src,0));
         dist[src] = 0;
@@ -233,9 +233,49 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
             if (u == dest)
                 return dist[dest];
             settled.add(u);
-            adjacentHelper(u, adj, settled, dist, prq); // O(|V|)
+            adjacentHelper(u, adj, settled, dist, prq, null); // O(|V|)
         }
         return dist[dest];
+    }
+
+    /**
+     * Solves for the shortest path from src to dest using Dijkstra's algorithm for a single pair
+     * @param src an integer representing the source
+     * @param dest an integer representing the destination
+     * @return a double value representing the shortest distance
+     */
+    private double[] DijkstraAlgoPath(int src, int dest) {
+        double[] dist = new double[graph.nodeSize()];
+        double[] parents = new double[graph.nodeSize()];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(parents, -1);
+        dist[src] = 0;
+        parents[0] = src;
+
+        HashSet<Integer> settled = new HashSet<>();
+        PriorityQueue<Node> prq = new PriorityQueue<>(graph.nodeSize()); //priority queue with initial capacity
+
+        LinkedList<Node>[] adj = new LinkedList[graph.nodeSize()];
+        for (int i = 0; i < adj.length; i++) {
+            adj[i] = new LinkedList<>();
+        }
+        prq.add(new Node(src,0));
+        dist[src] = 0;
+        int unreachable = -1;
+
+        while (settled.size() != graph.nodeSize()){ //O(|V|)
+            if(prq.isEmpty()){
+                settled.add(unreachable--); //ignores unreachable nodes and increases settled size to achieve stop cond.
+                //also advances unreachable towards the negative for Hashing purposes
+                continue;
+            }
+            int u = prq.remove().node;
+            if (u == dest)
+                return parents;
+            settled.add(u);
+            adjacentHelper(u, adj, settled, dist, prq, parents); // O(|V|)
+        }
+        return parents;
     }
 
     /**
@@ -246,9 +286,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     private double[] singleSourceDijkstraAlgo(int src){ //used in Center!
         double[] dist = new double[graph.nodeSize()];
-        for (int i =0; i < dist.length; i++){
-            dist[i] = Integer.MAX_VALUE; //init distances from source to be 'infinity'
-        }
+        Arrays.fill(dist, Integer.MAX_VALUE);
         dist[src] = 0;
 
         HashSet<Integer> settled = new HashSet<>();
@@ -257,15 +295,6 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         LinkedList<Node>[] adj = new LinkedList[graph.nodeSize()];
         for (int i = 0; i < adj.length; i++){
             adj[i] = new LinkedList<>();
-        }
-        Iterator<EdgeData> edges;
-        EdgeData edge;
-        for (int i = 0 ; i < graph.nodeSize(); i++){ // |V|^2
-            edges = graph.edgeIter(i);
-            while(edges.hasNext()){
-                edge = edges.next();
-                adj[i].add(new Node(edge.getDest(),edge.getWeight()));
-            }
         }
         prq.add(new Node(src,0));
         dist[src] = 0;
@@ -279,7 +308,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
             }
             int u = prq.remove().node;
             settled.add(u);
-            adjacentHelper(u, adj, settled, dist, prq); // O(|V|)
+            adjacentHelper(u, adj, settled, dist, prq, null); // O(|V|)
         }
         return dist;
     }
@@ -330,6 +359,35 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
+        //step 1 : create a subgraph representing the cities
+        DW_Graph subgraph;
+        if (graph.nodeSize() == cities.size()){
+            subgraph = (DW_Graph) graph; //if the list contain all nodes
+        }
+        else { // otherwise, create a subgraph
+            subgraph = new DW_Graph();
+            Iterator<NodeData> nodes = cities.iterator();
+            while (nodes.hasNext()){
+                subgraph.addNode(nodes.next());
+            }
+            Iterator<EdgeData> edges = graph.edgeIter();
+            EdgeData temp;
+            while (edges.hasNext()){
+                temp = edges.next();
+                if (subgraph.containsNode(temp.getSrc()) && subgraph.containsNode(temp.getDest())){
+                    subgraph.connect(temp.getSrc(),temp.getDest(),temp.getWeight());
+                    //adds edge only if both nodes are part of the subgraph
+                }
+            }
+        }
+        //end of step 1
+        //step 2 : sanity check
+        DW_Graph_Algo subgraphalgo = new DW_Graph_Algo();
+        subgraphalgo.init(subgraph);
+        if (!subgraphalgo.isConnected())
+            return null; // tsp is not valid if at least one node is unreachable.
+        //end of step 2
+        //step 3 : greedy algorithm
         return null;
     }
 

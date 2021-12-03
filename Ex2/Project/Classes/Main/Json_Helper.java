@@ -17,7 +17,7 @@ public class Json_Helper {
      *
      * @param g          - a Directed Weighted Graph
      * @param input_path - Json file location.
-     * @return
+     * @return true iff Deserialized
      */
     public static boolean Json_Deserializer(DirectedWeightedGraph g, String input_path) {
         File input = new File(input_path);
