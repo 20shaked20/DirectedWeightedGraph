@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ class DW_Graph_AlgoTest {
     private DW_Graph_Algo a2 = new DW_Graph_Algo();
     private DW_Graph_Algo a3 = new DW_Graph_Algo();
     private boolean initialized = false;
+    private DW_Graph_Algo g4 = new DW_Graph_Algo();
 
     public void initTests(){
         //inits g1 as a 0 -1-> 1 -1-> 2 -1-> 3 -1-> 4 -1-> 5 -1-> 1 dwg with all weights = 1 and a one directional circle
@@ -81,6 +83,8 @@ class DW_Graph_AlgoTest {
         g3.connect(3,4,4);
         g3.connect(4,1,2);
         g3.connect(4,3,5);
+
+        g4.load("C:\\Users\\yonar\\IdeaProjects\\DirectedWeightedGraph\\Ex2\\data\\G1.json");
 
         //initializes the algorithm object
         a1.init(g1);
@@ -249,15 +253,25 @@ class DW_Graph_AlgoTest {
         expPath.add(new Node_data(4, new Geo_Location(1,0,0)));
         expPath.add(new Node_data(3, new Geo_Location(-1,0,0)));
         expPath.add(new Node_data(2, new Geo_Location(0,-1,0)));
-        expPath.add(new Node_data(0, new Geo_Location(0,0,0)));
+        HashMap<Integer, NodeData> expPathHashMap= new HashMap<>();
+        for (int i = 0 ; i< expPath.size() ; i++){
+            expPathHashMap.put(expPath.get(i).getKey(), expPath.get(i));
+        }
 
         List<NodeData> path = a3.tsp(expPath); //technically contains all my "cities".
 
-        for(int i = 0; i < path.size(); i++){
-            Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
-            Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
-            Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
-            Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
+        double sum = 0;
+        for (int i = 0; i < path.size() -1 ; i++){
+            sum += a3.getGraph().getEdge(path.get(i).getKey(),path.get(i+1).getKey()).getWeight();
+        }
+
+        System.out.println(path);
+
+        Assertions.assertEquals(4.0, sum, 2);
+
+        Iterator<NodeData> it = path.iterator();
+        while (it.hasNext()){
+            Assertions.assertTrue(expPathHashMap.containsKey(it.next().getKey()));
         }
     }
 
@@ -272,7 +286,7 @@ class DW_Graph_AlgoTest {
     public void load() { //the function itself returns a boolean value
         if (!initialized)
             initTests();
-        Assertions.fail();
+        Assertions.assertTrue(g4.getGraph().getNode(16) != null);
     }
 
 }

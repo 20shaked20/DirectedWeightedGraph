@@ -95,11 +95,6 @@ public class DW_Graph implements api.DirectedWeightedGraph {
 //        }
     }
 
-    //TODO: test this
-    public boolean containsNode(int key){
-        return this.Nodes.containsKey(key);
-    }
-
     /**
      * returns a Node_Data
      * Running time -> O(1).

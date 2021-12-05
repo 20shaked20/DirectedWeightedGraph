@@ -15,7 +15,7 @@ public class Node_data implements NodeData {
 
     private int key;
     private Geo_Location geo_location;
-    private double weight = Double.MAX_VALUE; // USED in dijkstra algo as helper.
+    private double weight;
     private String info = "Unvisited"; // any meta_data we can use later in the code.
     private int tag = 0; // usable in the code.
 
