@@ -24,7 +24,7 @@ import java.util.*;
 public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     private DirectedWeightedGraph graph;
 
-    public DW_Graph_Algo(){
+    public DW_Graph_Algo() {
         graph = new DW_Graph();
     }
 
@@ -113,6 +113,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     /**
      * Computes the length of the shortest path between src to dest
      * Note: if no such path --> returns -1.  O(n^2) - Dijkstra's Algorithm cost
+     *
      * @param src  - start node
      * @param dest - end (target) node
      * @return A double value representing the weight of the shortest path.
@@ -143,16 +144,16 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         if (graph.getNode(src) == null || graph.getNode(dest) == null)
             return null;
         double dist = DijkstraAlgo(src, dest); //calculate the shortest path from source to dest
-        if (dist == Integer.MAX_VALUE){
+        if (dist == Integer.MAX_VALUE) {
             return null;
         }
         LinkedList<NodeData> ans = new LinkedList<>();
         double[] n_path = DijkstraAlgoPath(src, dest);
 
         int pointer = src;
-        while (pointer != dest){
+        while (pointer != dest) {
             ans.add(graph.getNode(pointer));
-            pointer = (int)n_path[pointer];
+            pointer = (int) n_path[pointer];
         }
         ans.add(graph.getNode(dest));
 
@@ -162,12 +163,13 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     /**
      * a helper function for our single source Dijkstra algorithm.
      * O(E) - worst case is when all the Edges (E-1) are neighboring node U.
-     * @param u int representing the current node for which we calculate the shortest distance to it's neighbours
+     *
+     * @param u       int representing the current node for which we calculate the shortest distance to it's neighbours
      * @param settled set of nodes that have been covered.
-     * @param dist an array of the shortest distances from a single source.
-     * @param prq a priority queue that is used in the Dijkstra Algorithm.
+     * @param dist    an array of the shortest distances from a single source.
+     * @param prq     a priority queue that is used in the Dijkstra Algorithm.
      */
-    private void adjacentHelper(int u, HashSet<Integer> settled, double[] dist, PriorityQueue<Node> prq, double[] parents){
+    private void adjacentHelper(int u, HashSet<Integer> settled, double[] dist, PriorityQueue<Node> prq, double[] parents) {
 
         double edgeDist;
         double newDist;
@@ -175,28 +177,29 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         Node temp;
         EdgeData edge;
 
-        while (neighbours.hasNext()){
-                edge = neighbours.next();
-                temp = new Node(edge.getDest(), edge.getWeight());
+        while (neighbours.hasNext()) {
+            edge = neighbours.next();
+            temp = new Node(edge.getDest(), edge.getWeight());
 
-                if(!settled.contains(temp.node)){
-                    edgeDist = temp.cost;
-                    newDist = dist[u] + edgeDist;
-                    if (dist[temp.node] > newDist){
-                        dist[temp.node] = newDist;
-                        if (parents != null)
-                            parents[u] = temp.node;
-                    }
-                    //dist[temp.node] = Math.min(newDist,dist[temp.node]); // instead of an if argument
-
-                    prq.add(new Node(temp.node, dist[temp.node]));
+            if (!settled.contains(temp.node)) {
+                edgeDist = temp.cost;
+                newDist = dist[u] + edgeDist;
+                if (dist[temp.node] > newDist) {
+                    dist[temp.node] = newDist;
+                    if (parents != null)
+                        parents[u] = temp.node;
                 }
+                //dist[temp.node] = Math.min(newDist,dist[temp.node]); // instead of an if argument
+
+                prq.add(new Node(temp.node, dist[temp.node]));
             }
+        }
     }
 
     /**
      * Solves for the shortest path from src to dest using Dijkstra's algorithm for a single pair
-     * @param src an integer representing the source
+     *
+     * @param src  an integer representing the source
      * @param dest an integer representing the destination
      * @return a double value representing the shortest distance
      */
@@ -212,8 +215,8 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         dist[src] = 0;
         int unreachable = -1;
 
-        while (settled.size() != graph.nodeSize()){ //O(|V|)
-            if(prq.isEmpty()){
+        while (settled.size() != graph.nodeSize()) { //O(|V|)
+            if (prq.isEmpty()) {
                 settled.add(unreachable--); //ignores unreachable nodes and increases settled size to achieve stop cond.
                 //also advances unreachable towards the negative for Hashing purposes
                 continue;
@@ -229,7 +232,8 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
     /**
      * Solves for the shortest path from src to dest using Dijkstra's algorithm for a single pair
-     * @param src an integer representing the source
+     *
+     * @param src  an integer representing the source
      * @param dest an integer representing the destination
      * @return a double value representing the shortest distance
      */
@@ -248,8 +252,8 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         dist[src] = 0;
         int unreachable = -1;
 
-        while (settled.size() != graph.nodeSize()){ //O(|V|)
-            if(prq.isEmpty()){
+        while (settled.size() != graph.nodeSize()) { //O(|V|)
+            if (prq.isEmpty()) {
                 settled.add(unreachable--); //ignores unreachable nodes and increases settled size to achieve stop cond.
                 //also advances unreachable towards the negative for Hashing purposes
                 continue;
@@ -266,10 +270,11 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     /**
      * Calculates the shortest path from a single source to every other node (Integer.MAXVALUE if unreachable!)
      * using Dijkstra's algorithm. O(|V|^2) - |V| = amount of vertices.
+     *
      * @param src the source for the calculation
      * @return an array of distances from src to i ( such that arr[i] = this distance)
      */
-    private double[] singleSourceDijkstraAlgo(int src){ //used in Center!
+    private double[] singleSourceDijkstraAlgo(int src) { //used in Center!
         double[] dist = new double[graph.nodeSize()];
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[src] = 0;
@@ -281,8 +286,8 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         dist[src] = 0;
         int unreachable = -1;
 
-        while (settled.size() != graph.nodeSize()){ //O(|V|)
-            if(prq.isEmpty()){
+        while (settled.size() != graph.nodeSize()) { //O(|V|)
+            if (prq.isEmpty()) {
                 settled.add(unreachable--); //ignores unreachable nodes and increases settled size to achieve stop cond.
                 //also advances unreachable towards the negative for Hashing purposes
                 continue;
@@ -302,7 +307,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public NodeData center() {
-        if(!isConnected()){
+        if (!isConnected()) {
             return null; //if the graph is not strongly connected, then there is no center!
         }
         double[] dist;
@@ -313,7 +318,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
             int node = nodes.next().getKey();
             dist = singleSourceDijkstraAlgo(node); //|V|^2 + nodes.next advances the Iterator.
             double avg = average(dist); //|V|
-            if (avg < bestAverage){
+            if (avg < bestAverage) {
                 bestAverage = avg;
                 bestNode = node;
             }
@@ -321,15 +326,16 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         return graph.getNode(bestNode);
     }
 
-    private double average(double[] dist){
+    private double average(double[] dist) {
         if (dist == null || dist.length == 0)
             return Integer.MAX_VALUE;
         double sum = 0;
         for (double v : dist) {
             sum += v; // note that we assume the graph is strongly connected, therefore no dist[i]=Max_Value!!!
         }
-        return sum/dist.length;
+        return sum / dist.length;
     }
+
     /**
      * Computes a list of consecutive nodes which go over all the nodes in cities.
      * the sum of the weights of all the consecutive (pairs) of nodes (directed) is the "cost" of the solution -
@@ -343,7 +349,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         //step 1 : create hashset of cities to visit
 
         HashSet<Integer> ctv = new HashSet<>();
-        for (NodeData n : cities){
+        for (NodeData n : cities) {
             ctv.add(n.getKey());
         }
         //step 2 : create an array of possible routes
@@ -361,7 +367,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         HashSet<Integer> visited;
 
         Iterator<NodeData> iterator = graph.nodeIter();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             //re-initialize values:
             visited = new HashSet<>();
             hasAllCities = false;
@@ -371,17 +377,17 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
             routes[currentStart.getKey()].add(current); //adds the start of the route immediately.
             counter = 0;
             //step 3.5 - compute solution from node i :
-            while (!hasAllCities){ //O(n)
+            while (!hasAllCities) { //O(n)
                 visited.add(current.getKey());
-                if (ctv.contains(current.getKey())){
+                if (ctv.contains(current.getKey())) {
                     counter += 1; //only adds to the counter if current is part of the cities to visit.
                 }
-                if (counter == cities.size()){
+                if (counter == cities.size()) {
                     hasAllCities = true;
                     continue; //prettier way to stop the loop for this iteration!
                 }
-                tempEdge = getCheapestNeighbour(current,visited);
-                if (tempEdge == null){
+                tempEdge = getCheapestNeighbour(current, visited);
+                if (tempEdge == null) {
                     hasAllCities = true; //to 'break' this segment if current has no neighbours
                     continue;
                 }
@@ -395,11 +401,11 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
         double bestWeight = routeWeights[0];
         int bestRoute = 0;
-        for (int i = 1 ; i < routeWeights.length ; i++){ //O(n)
-            if (routeWeights[i] <= bestWeight ){
+        for (int i = 1; i < routeWeights.length; i++) { //O(n)
+            if (routeWeights[i] <= bestWeight) {
                 counter = 0;
-                for (int j = 0; j < routes[i].size(); j++){ //O(n)
-                    if (ctv.contains(routes[i].get(j).getKey())){
+                for (int j = 0; j < routes[i].size(); j++) { //O(n)
+                    if (ctv.contains(routes[i].get(j).getKey())) {
                         counter++;
                     }
                 }
@@ -414,44 +420,45 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
     /**
      * The method returns the cheapest cost neighbour of a node
-     * @param node node for which we calculate the cheapest neighbour
+     *
+     * @param node    node for which we calculate the cheapest neighbour
      * @param visited a Hashset containing all nodes already traversed
      * @return returns the node that is the cheapest neighbour of 'node', or null if no no neighbours!
      */
     private EdgeData getCheapestNeighbour(NodeData node, HashSet<Integer> visited) {
         HashSet<Integer> lookedAt = new HashSet<>();
         Iterator<EdgeData> iterator = graph.edgeIter(node.getKey());
-        if (!iterator.hasNext()){
+        if (!iterator.hasNext()) {
             return null;  //return null when node has no neighbours
         }
         EdgeData best = iterator.next();
         EdgeData temp;
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             temp = iterator.next();
-            if (best.getWeight() < temp.getWeight()){
+            if (best.getWeight() < temp.getWeight()) {
                 best = temp;
             }
         }
         iterator = graph.edgeIter(node.getKey());
         lookedAt.add(best.getDest());
         boolean flag = !visited.contains(best.getDest());
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             temp = iterator.next();
-            if (temp.getWeight() <= best.getWeight()){
-                if (!visited.contains(temp.getDest()) && !lookedAt.contains(temp.getDest())){
+            if (temp.getWeight() <= best.getWeight()) {
+                if (!visited.contains(temp.getDest()) && !lookedAt.contains(temp.getDest())) {
                     flag = true;
                     best = temp;
                 }
                 lookedAt.add(temp.getDest());
             }
         }
-        if (!flag){ //this code block activates only if there are no unvisited neighbours
+        if (!flag) { //this code block activates only if there are no unvisited neighbours
             lookedAt = new HashSet<>();
             iterator = graph.edgeIter(node.getKey());
             best = iterator.next();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 temp = iterator.next();
-                if (temp.getWeight() <= best.getWeight()){
+                if (temp.getWeight() <= best.getWeight()) {
                     if (!lookedAt.contains(temp.getDest()))
                         best = temp;
                 }
@@ -470,7 +477,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public boolean save(String file) {
-        return false;
+        return Json_Helper.Json_Serializer(this.graph);
     }
 
     /**

@@ -3,6 +3,7 @@ package Main;
 import api.*;
 import com.google.gson.*;
 import java.io.*;
+import java.util.Iterator;
 
 /**
  * Authors - Yonatan Ratner & Shaked Levi
@@ -69,7 +70,7 @@ public class Json_Helper {
         return true;
     }
 
-    public static void Json_Serializer(DW_Graph graph) {
+    public static boolean Json_Serializer(DirectedWeightedGraph graph) {
         // https://stackoverflow.com/questions/29319434/how-to-save-data-with-gson-in-a-json-file
         // https://stackoverflow.com/questions/46210867/json-file-i-o-with-pretty-print-format-using-gson-in-java
 
@@ -83,7 +84,9 @@ public class Json_Helper {
         }
         catch (IOException e){
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     //tester ->
@@ -91,14 +94,10 @@ public class Json_Helper {
         DW_Graph graph = new DW_Graph();
         String path = "C:/Users/yonar/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
         Json_Deserializer(graph, path);
-        /*
-        graph = new DW_Graph();
-        graph.addNode(new Node_data(1,new Geo_Location(1,1,1)));
-        graph.addNode(new Node_data(0,new Geo_Location(0,0,0)));
-        graph.connect(0,1,1);
-
-         */
-
+        Iterator<EdgeData> it = graph.edgeIter();
+        while (it.hasNext()){
+            System.out.println(it.next());
+        }
         Json_Serializer(graph);
     }
 
