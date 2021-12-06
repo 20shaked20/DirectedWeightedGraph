@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
-class DW_GraphTest {
-    private DW_Graph g1 = new DW_Graph(); // simple one way circled graph
-    private DW_Graph g2 = new DW_Graph(); // 2 forested graph.
-    private DW_Graph g3 = new DW_Graph(); // strongly connected, but intricate graph for center and tsp testing.
-    private DW_Graph_Algo a1 = new DW_Graph_Algo();
-    private DW_Graph_Algo a2 = new DW_Graph_Algo();
-    private DW_Graph_Algo a3 = new DW_Graph_Algo();
+class DWGraphTest {
+    private final DW_Graph g1 = new DW_Graph(); // simple one way circled graph
+    private final DW_Graph g2 = new DW_Graph(); // 2 forested graph.
+    private final DW_Graph g3 = new DW_Graph(); // strongly connected, but intricate graph for center and tsp testing.
+    private final DW_Graph_Algo a1 = new DW_Graph_Algo();
+    private final DW_Graph_Algo a2 = new DW_Graph_Algo();
+    private final DW_Graph_Algo a3 = new DW_Graph_Algo();
     private boolean initialized = false;
 
     public void initTests(){

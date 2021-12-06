@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class Node_dataTest {
 
-    private Geo_Location g1 = new Geo_Location(9, 9, 0);
-    private Node_data n1 = new Node_data(99, g1);
+    private final Geo_Location g1 = new Geo_Location(9, 9, 0);
+    private final Node_data n1 = new Node_data(99, g1);
 
-    private Geo_Location g2 = new Geo_Location(6, 6, 0);
-    private Node_data n2 = new Node_data(66, g2);
+    private final Geo_Location g2 = new Geo_Location(6, 6, 0);
+    private final Node_data n2 = new Node_data(66, g2);
 
 
     @Test
