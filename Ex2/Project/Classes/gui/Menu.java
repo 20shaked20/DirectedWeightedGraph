@@ -4,10 +4,7 @@ import Main.DW_Graph;
 import Main.DW_Graph_Algo;
 import Main.Geo_Location;
 import Main.Node_data;
-import api.DirectedWeightedGraph;
-import api.DirectedWeightedGraphAlgorithms;
-import api.GeoLocation;
-import api.NodeData;
+import api.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,8 +29,6 @@ public class Menu extends JFrame implements ActionListener {
 
 
     public Menu() {
-//        NodeData tmpN = new Node_data(4, new Geo_Location(30, 30, 0));
-//        this.graph.addNode(tmpN);
         this.graph_algo.init(this.graph);
         this.graph_algo.load("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
         this.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER)); // center the buttons.
@@ -138,24 +133,25 @@ public class Menu extends JFrame implements ActionListener {
  * This class is responsible for the second frame layout, it will pop up the new graphs using the algorithms.
  */
 class SecondFrame extends JFrame {
-    private JPanel Screen = new JPanel();
     private DirectedWeightedGraphAlgorithms graph;
     private int[] nodeXpos;
     private int[] nodeYpos;
+    private int Width = 850;
+    private int Height = 850;
 
     public SecondFrame(DirectedWeightedGraphAlgorithms graph) {
         this.graph = graph;
-        this.Screen.setSize(500, 500);
-        this.Screen.setVisible(true);
-        this.add(Screen);
+        this.nodeXpos = new int[this.graph.getGraph().nodeSize()];
+        this.nodeYpos = new int[this.graph.getGraph().nodeSize()];
+        this.update_x_y_pos();
         DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos);
         this.add(m);
-        this.setSize(500, 500);
+        this.setSize(this.Width, this.Height);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
-    private void updateArr() {
+    private void update_x_y_pos() {
         Iterator nodes = this.graph.getGraph().nodeIter();
         NodeData curr_node;
         GeoLocation curr_geo;
@@ -171,8 +167,8 @@ class SecondFrame extends JFrame {
             maxX = Math.max(maxX, x);
             maxY = Math.max(maxY, y);
         }
-        double uintX = this.Screen.getWidth() / (maxX - minX) * 0.9;
-        double unitY = this.Screen.getHeight() / (maxY - minY) * 0.8;
+        double uintX = this.Width / (maxX - minX) * 0.9;
+        double unitY = this.Height / (maxY - minY) * 0.8;
 
         nodes = this.graph.getGraph().nodeIter();
 
@@ -202,11 +198,27 @@ class DisplayGraphics extends Canvas {
 
     public void paint(Graphics g) {
         int i, j;
-        i = j = 15;
+        i = j = 10;
         for (int z = 0; z < this.graph.getGraph().nodeSize(); ++z) {
-            g.drawOval(nodeXpos[z], nodeYpos[z], i, j);
-            setForeground(Color.BLACK);
-            //g.drawString(String.valueOf(curr_node.getKey()), (int) curr_geo.x() + 3, (int) curr_geo.y() + 12);
+            g.setColor(Color.RED);
+            g.fillOval(nodeXpos[z] - 5, nodeYpos[z] - 5, i, j);
+//            if (z < 10) {
+//                g.drawString(String.valueOf(z), nodeXpos[z] + 3, nodeYpos[z] + 12);
+//            } else {
+//                g.drawString(String.valueOf(z), nodeXpos[z], nodeYpos[z] + 12);
+//            }
+        }
+        int x1, y1;
+        int x2, y2;
+        Iterator<EdgeData> edges = this.graph.getGraph().edgeIter();
+        while (edges.hasNext()) {
+            EdgeData edge = edges.next();
+            x1 = nodeXpos[edge.getSrc()];
+            y1 = nodeYpos[edge.getSrc()];
+            x2 = nodeXpos[edge.getDest()];
+            y2 = nodeYpos[edge.getDest()];
+            g.setColor(Color.BLACK);
+            g.drawLine(x1, y1, x2, y2);
         }
     }
 }
