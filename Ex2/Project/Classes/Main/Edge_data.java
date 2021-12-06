@@ -1,17 +1,19 @@
-package Main; /**
+package Main;
+
+import api.EdgeData;
+import java.io.Serializable;
+
+/**
  * Authors - Yonatan Ratner & Shaked Levi
  * Date - 21.11.2021
  */
+public class Edge_data implements EdgeData, Serializable {
 
-import api.EdgeData;
-
-public class Edge_data implements EdgeData {
-
-    private int src;
-    private int dest;
-    private double weight; // the weight of the code.
-    private String info; // any meta_data we can use later in the code.
-    private int tag = 0; // represent a color -> -1 = Black, 0 = White, 1 = Gray. (always starts as 0, unvisited)
+    private final int src;
+    private final double w; // the weight of the code.
+    private final int dest;
+    private transient String info; // any meta_data we can use later in the code.
+    private transient int tag = 0; // represent a color -> -1 = Black, 0 = White, 1 = Gray. (always starts as 0, unvisited)
 
     /**
      * Constructor
@@ -19,7 +21,7 @@ public class Edge_data implements EdgeData {
     public Edge_data(int src, int dest, double weight) {
         this.src = src;
         this.dest = dest;
-        this.weight = weight;
+        this.w = weight;
     }
 
     /**
@@ -28,7 +30,7 @@ public class Edge_data implements EdgeData {
     public Edge_data(Edge_data other) {
         this.src = other.src;
         this.dest = other.dest;
-        this.weight = other.weight;
+        this.w = other.w;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class Edge_data implements EdgeData {
 
     @Override
     public double getWeight() {
-        return this.weight;
+        return this.w;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class Edge_data implements EdgeData {
         return '{' +
                 "src=" + src +
                 ", dest=" + dest +
-                ", weight=" + weight +
+                ", weight=" + w +
                 '}';
     }
 
@@ -85,8 +87,7 @@ public class Edge_data implements EdgeData {
      * return 1 -> more than 'n;
      */
     public int compare_by_weight(Edge_data other) {
-        double compare_weight = other.weight;
-        return Double.compare(this.weight, compare_weight);
+        return Double.compare(this.w, other.w);
     }
 
     /**
@@ -96,7 +97,7 @@ public class Edge_data implements EdgeData {
      * @return true for equals, false for not equals.
      */
     public boolean is_equals(Edge_data other) {
-        if (this.src == other.src && this.dest == other.dest && this.weight == other.weight && this.tag == other.tag) {
+        if (this.src == other.src && this.dest == other.dest && this.w == other.w && this.tag == other.tag) {
             return this.info.equals(other.info);
         }
         return false;

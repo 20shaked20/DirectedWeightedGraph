@@ -1,15 +1,14 @@
-package Main; /**
- * Authors - Yonatan Ratner & Shaked Levi
- * Date - 21.11.2021
- */
+package Main;
 
 import api.GeoLocation;
 
 /**
+ * Authors - Yonatan Ratner & Shaked Levi
+ * Date - 21.11.2021,
  * This class represent a location x,y,z for a certain vertices (aka node)
  */
 public class Geo_Location implements GeoLocation {
-    private double x, y, z;
+    private final double x, y, z;
 
     /**
      * Constructor
@@ -70,11 +69,7 @@ public class Geo_Location implements GeoLocation {
 
     @Override
     public String toString() {
-        return "{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                '}';
+        return  x + "," + y + "," + z;
     }
 
     /**
@@ -84,9 +79,6 @@ public class Geo_Location implements GeoLocation {
      * @return true if equal, false if not.
      */
     public boolean is_equal(GeoLocation g) {
-        if (this.x == g.x() && this.y == g.y() && this.z == g.z()) {
-            return true;
-        }
-        return false;
+        return this.x == g.x() && this.y == g.y() && this.z == g.z();
     }
 }

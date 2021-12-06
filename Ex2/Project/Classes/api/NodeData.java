@@ -12,7 +12,7 @@ public interface NodeData {
 	 * Returns the key (id) associated with this node.
 	 * @return
 	 */
-	public int getKey();
+	public int getId();
 	/** Returns the location of this node, if none return null.
 	 * @return
 	 */

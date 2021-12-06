@@ -187,7 +187,7 @@ class DW_Graph_AlgoTest {
 
         Assertions.assertEquals(expPath.size(),path.size());
         for(int i = 0; i < path.size(); i++){
-             Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
+             Assertions.assertEquals(expPath.get(i).getId(),path.get(i).getId());
              Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
              Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
              Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
@@ -208,15 +208,10 @@ class DW_Graph_AlgoTest {
 
         Assertions.assertEquals(expPath.size(),path.size());
         for(int i = 0; i < path.size(); i++){
-            Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
+            Assertions.assertEquals(expPath.get(i).getId(),path.get(i).getId());
             Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
             Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
             Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
-        }
-
-        for(int i = 0; i < path.size()-1; i++){
-             tmp.getEdge(path.get(i).getKey(),path.get(i+1).getKey()).getWeight();
-             //TODO: what even is this for?
         }
 
         //block 3
@@ -236,7 +231,7 @@ class DW_Graph_AlgoTest {
         Assertions.assertNull(node);
 
         node = a3.center();
-        Assertions.assertEquals(0 ,node.getKey());
+        Assertions.assertEquals(0 ,node.getId());
         Assertions.assertEquals(node.getLocation().x(),0);
         Assertions.assertEquals(node.getLocation().y(),0);
         Assertions.assertEquals(node.getLocation().z(),0);
@@ -255,14 +250,14 @@ class DW_Graph_AlgoTest {
         expPath.add(new Node_data(2, new Geo_Location(0,-1,0)));
         HashMap<Integer, NodeData> expPathHashMap= new HashMap<>();
         for (int i = 0 ; i< expPath.size() ; i++){
-            expPathHashMap.put(expPath.get(i).getKey(), expPath.get(i));
+            expPathHashMap.put(expPath.get(i).getId(), expPath.get(i));
         }
 
         List<NodeData> path = a3.tsp(expPath); //technically contains all my "cities".
 
         double sum = 0;
         for (int i = 0; i < path.size() -1 ; i++){
-            sum += a3.getGraph().getEdge(path.get(i).getKey(),path.get(i+1).getKey()).getWeight();
+            sum += a3.getGraph().getEdge(path.get(i).getId(),path.get(i+1).getId()).getWeight();
         }
 
         System.out.println(path);
@@ -271,7 +266,7 @@ class DW_Graph_AlgoTest {
 
         Iterator<NodeData> it = path.iterator();
         while (it.hasNext()){
-            Assertions.assertTrue(expPathHashMap.containsKey(it.next().getKey()));
+            Assertions.assertTrue(expPathHashMap.containsKey(it.next().getId()));
         }
     }
 
@@ -279,7 +274,7 @@ class DW_Graph_AlgoTest {
     public void save() { //the function itself returns a boolean value
         if (!initialized)
             initTests();
-        Assertions.fail();
+        Assertions.assertTrue(a1.save("OutputTest.json"));
     }
 
     @Test
