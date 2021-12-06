@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Geo_LocationTest {
 
-    private Geo_Location g1 = new Geo_Location(9, 9, 0);
-    private Geo_Location g2 = new Geo_Location(6, 6, 0);
+    private final Geo_Location g1 = new Geo_Location(9, 9, 0);
+    private final Geo_Location g2 = new Geo_Location(6, 6, 0);
 
     @Test
     void x() {

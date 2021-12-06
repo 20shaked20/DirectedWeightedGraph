@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Edge_dataTest {
 
-    private Edge_data e1 = new Edge_data(5,9,40.5);
-    private Edge_data e2 = new Edge_data(9,14,35.5);
+    private final Edge_data e1 = new Edge_data(5,9,40.5);
+    private final Edge_data e2 = new Edge_data(9,14,35.5);
 
 
     @Test

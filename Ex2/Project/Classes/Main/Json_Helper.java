@@ -2,14 +2,12 @@ package Main;
 
 import api.*;
 import com.google.gson.*;
+import java.io.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Iterator;
-
-
+/**
+ * Authors - Yonatan Ratner & Shaked Levi
+ * Date - 21.11.2021
+ */
 public class Json_Helper {
 
     /**
@@ -70,26 +68,20 @@ public class Json_Helper {
     }
 
     public static void Json_Serializer(DW_Graph graph) {
-        Gson g = new Gson();
-        Iterator<NodeData> n = graph.nodeIter();
-        Iterator<EdgeData> e = graph.edgeIter();
+        // https://stackoverflow.com/questions/29319434/how-to-save-data-with-gson-in-a-json-file
+        // https://stackoverflow.com/questions/46210867/json-file-i-o-with-pretty-print-format-using-gson-in-java
 
-        //TODO: create a json file and use a file-writer to write g.toJson()'s to it.
-        String json = "";
+        DWG_Serialization dwg = new DWG_Serialization(graph);
 
-        while (e.hasNext()){
-            Edge_data tmp = (Edge_data) e.next(); //e.next is always empty?
-            System.out.println(tmp);
-            json += g.toJson(tmp);
+        try (Writer writer = new FileWriter("Output.json")){
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create();
+            gson.toJson(dwg , writer);
         }
-
-        while (n.hasNext()){
-            //Node_data tmp = (Node_data) n.next();
-            json+=g.toJson(n.next());
+        catch (IOException e){
+            e.printStackTrace();
         }
-
-        System.out.println(json);
-        //System.out.println(g);
     }
 
     //tester ->
@@ -101,6 +93,7 @@ public class Json_Helper {
         graph.addNode(new Node_data(1,new Geo_Location(1,1,1)));
         graph.addNode(new Node_data(0,new Geo_Location(0,0,0)));
         graph.connect(0,1,1);
+
         Json_Serializer(graph);
     }
 
