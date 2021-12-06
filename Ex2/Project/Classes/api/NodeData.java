@@ -1,7 +1,5 @@
 package api;
 
-import api.GeoLocation;
-
 /**
  * This interface represents the set of operations applicable on a 
  * node (vertex) in a (directional) weighted graph.
@@ -12,7 +10,7 @@ public interface NodeData {
 	 * Returns the key (id) associated with this node.
 	 * @return
 	 */
-	public int getId();
+	public int getKey();
 	/** Returns the location of this node, if none return null.
 	 * @return
 	 */

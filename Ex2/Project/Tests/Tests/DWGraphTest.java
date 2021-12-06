@@ -94,12 +94,12 @@ class DWGraphTest {
         if (!initialized)
             initTests();
 
-        Assertions.assertEquals(3,g3.getNode(3).getId());
-        Assertions.assertEquals(1,g1.getNode(1).getId());
-        Assertions.assertEquals(2,g2.getNode(2).getId());
-        Assertions.assertEquals(5,g2.getNode(5).getId());
-        Assertions.assertEquals(4,g3.getNode(4).getId());
-        Assertions.assertEquals(3,g3.getNode(3).getId());
+        Assertions.assertEquals(3,g3.getNode(3).getKey());
+        Assertions.assertEquals(1,g1.getNode(1).getKey());
+        Assertions.assertEquals(2,g2.getNode(2).getKey());
+        Assertions.assertEquals(5,g2.getNode(5).getKey());
+        Assertions.assertEquals(4,g3.getNode(4).getKey());
+        Assertions.assertEquals(3,g3.getNode(3).getKey());
     }
 
     @Test
@@ -126,7 +126,7 @@ class DWGraphTest {
             initTests();
         g1.addNode(new Node_data(7,new Geo_Location(1,1,1)));
         NodeData newNode = g1.getNode(7);
-        Assertions.assertEquals(7,newNode.getId());
+        Assertions.assertEquals(7,newNode.getKey());
         Assertions.assertEquals(0, newNode.getLocation().distance(new Geo_Location(1,1,1)));
 
     }
@@ -147,7 +147,7 @@ class DWGraphTest {
         Iterator<NodeData> iterator = g1.nodeIter();
         int key;
         while (iterator.hasNext()){
-            key = iterator.next().getId();
+            key = iterator.next().getKey();
             Assertions.assertNotNull(g1.getNode(key));
         }
     }
@@ -174,7 +174,7 @@ class DWGraphTest {
             EdgeData temp;
             int key;
             while (nodeIterator.hasNext()) {
-                key = nodeIterator.next().getId();
+                key = nodeIterator.next().getKey();
                 iterator = g1.edgeIter(key);
                 while (iterator.hasNext()) {
                     temp = iterator.next();

@@ -31,7 +31,7 @@ public class DWG_Serialization implements Serializable {
         NodeData tempNode;
         while (n.hasNext()){
             tempNode = n.next();
-            this.Nodes.add(new Node_Serialization(tempNode.getId(),tempNode.getLocation()));
+            this.Nodes.add(new Node_Serialization(tempNode.getKey(),tempNode.getLocation()));
         }
 
         while (e.hasNext()){

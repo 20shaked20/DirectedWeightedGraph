@@ -18,8 +18,8 @@ class Node_dataTest {
 
     @Test
     void getKey() {
-        assertEquals(n1.getId(), 99);
-        assertEquals(n2.getId(), 66);
+        assertEquals(n1.getKey(), 99);
+        assertEquals(n2.getKey(), 66);
     }
 
     @Test

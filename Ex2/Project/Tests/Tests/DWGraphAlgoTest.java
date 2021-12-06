@@ -185,7 +185,7 @@ class DWGraphAlgoTest {
 
         Assertions.assertEquals(expPath.size(),path.size());
         for(int i = 0; i < path.size(); i++){
-             Assertions.assertEquals(expPath.get(i).getId(),path.get(i).getId());
+             Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
              Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
              Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
              Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
@@ -205,7 +205,7 @@ class DWGraphAlgoTest {
 
         Assertions.assertEquals(expPath.size(),path.size());
         for(int i = 0; i < path.size(); i++){
-            Assertions.assertEquals(expPath.get(i).getId(),path.get(i).getId());
+            Assertions.assertEquals(expPath.get(i).getKey(),path.get(i).getKey());
             Assertions.assertEquals(expPath.get(i).getLocation().x(), path.get(i).getLocation().x());
             Assertions.assertEquals(expPath.get(i).getLocation().y(), path.get(i).getLocation().y());
             Assertions.assertEquals(expPath.get(i).getLocation().z(), path.get(i).getLocation().z());
@@ -228,7 +228,7 @@ class DWGraphAlgoTest {
         Assertions.assertNull(node);
 
         node = a3.center();
-        Assertions.assertEquals(0 ,node.getId());
+        Assertions.assertEquals(0 ,node.getKey());
         Assertions.assertEquals(node.getLocation().x(),0);
         Assertions.assertEquals(node.getLocation().y(),0);
         Assertions.assertEquals(node.getLocation().z(),0);
@@ -247,14 +247,14 @@ class DWGraphAlgoTest {
         expPath.add(new Node_data(2, new Geo_Location(0,-1,0)));
         HashMap<Integer, NodeData> expPathHashMap= new HashMap<>();
         for (NodeData nodeData : expPath) {
-            expPathHashMap.put(nodeData.getId(), nodeData);
+            expPathHashMap.put(nodeData.getKey(), nodeData);
         }
 
         List<NodeData> path = a3.tsp(expPath); //technically contains all my "cities".
 
         double sum = 0;
         for (int i = 0; i < path.size() -1 ; i++){
-            sum += a3.getGraph().getEdge(path.get(i).getId(),path.get(i+1).getId()).getWeight();
+            sum += a3.getGraph().getEdge(path.get(i).getKey(),path.get(i+1).getKey()).getWeight();
         }
 
         System.out.println(path);
@@ -262,7 +262,7 @@ class DWGraphAlgoTest {
         Assertions.assertEquals(4.0, sum, 2);
 
         for (NodeData nodeData : path) {
-            Assertions.assertTrue(expPathHashMap.containsKey(nodeData.getId()));
+            Assertions.assertTrue(expPathHashMap.containsKey(nodeData.getKey()));
         }
     }
 

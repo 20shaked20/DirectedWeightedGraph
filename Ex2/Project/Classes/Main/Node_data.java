@@ -42,7 +42,7 @@ public class Node_data implements NodeData {
     }
 
     @Override
-    public int getId() {
+    public int getKey() {
         return this.id;
     }
 

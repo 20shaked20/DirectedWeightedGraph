@@ -25,20 +25,6 @@ public class Json_Helper {
                 fileElement = JsonParser.parseReader(new FileReader(input));
                 JsonObject fileObject = fileElement.getAsJsonObject();
 
-                //System.out.println("Prints EDGES:");
-                JsonArray Edges = fileObject.get("Edges").getAsJsonArray();
-                for (JsonElement edgeElement : Edges) {
-                    JsonObject EdgeObject = edgeElement.getAsJsonObject();
-
-                    //Extract data from object:
-                    Integer src = EdgeObject.get("src").getAsInt();
-                    //System.out.println("src: " + src);
-                    Double w = EdgeObject.get("w").getAsDouble();
-                    //System.out.println("w: " + w);
-                    Integer dest = EdgeObject.get("dest").getAsInt();
-                    //System.out.println("dest: " + dest);
-                    g.connect(src, dest, w);
-                }
                 //System.out.println("Prints Nodes:");
                 JsonArray Nodes = fileObject.get("Nodes").getAsJsonArray();
                 for (JsonElement nodeElement : Nodes) {
@@ -54,11 +40,27 @@ public class Json_Helper {
                     Geo_Location loc = new Geo_Location(x, y, z);
 
                     // System.out.println("Pos: " + pos);
-                    Integer id = NodeObject.get("id").getAsInt();
+                    int id = NodeObject.get("id").getAsInt();
                     // System.out.println("id: " + id);
                     Node_data n = new Node_data(id, loc);
                     g.addNode(n);
                 }
+
+                //System.out.println("Prints EDGES:");
+                JsonArray Edges = fileObject.get("Edges").getAsJsonArray();
+                for (JsonElement edgeElement : Edges) {
+                    JsonObject EdgeObject = edgeElement.getAsJsonObject();
+
+                    //Extract data from object:
+                    int src = EdgeObject.get("src").getAsInt();
+                    //System.out.println("src: " + src);
+                    double w = EdgeObject.get("w").getAsDouble();
+                    //System.out.println("w: " + w);
+                    int dest = EdgeObject.get("dest").getAsInt();
+                    //System.out.println("dest: " + dest);
+                    g.connect(src, dest, w);
+                }
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return false;
@@ -89,10 +91,13 @@ public class Json_Helper {
         DW_Graph graph = new DW_Graph();
         String path = "C:/Users/yonar/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
         Json_Deserializer(graph, path);
+        /*
         graph = new DW_Graph();
         graph.addNode(new Node_data(1,new Geo_Location(1,1,1)));
         graph.addNode(new Node_data(0,new Geo_Location(0,0,0)));
         graph.connect(0,1,1);
+
+         */
 
         Json_Serializer(graph);
     }

@@ -59,8 +59,8 @@ public class DW_Graph implements api.DirectedWeightedGraph {
     private static void deep_copy_nodes(HashMap<Integer, NodeData> nodes, DirectedWeightedGraph g) {
         Iterator<NodeData> n = g.nodeIter();
         while (n.hasNext()) {
-            Node_data tmp = (Node_data) g.getNode(n.next().getId());
-            nodes.put(tmp.getId(), tmp);
+            Node_data tmp = (Node_data) g.getNode(n.next().getKey());
+            nodes.put(tmp.getKey(), tmp);
         }
     }
 
@@ -114,8 +114,8 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @param n Main.Node_data.
      */
     public void addNode(NodeData n) {
-        if (!this.Nodes.containsKey(n.getId())) { //if it doest not exist add it, otherwise don't.
-            this.Nodes.put(n.getId(), n); // casting to my class.
+        if (!this.Nodes.containsKey(n.getKey())) { //if it doest not exist add it, otherwise don't.
+            this.Nodes.put(n.getKey(), n); // casting to my class.
             this.NodesCounter++;
             this.MC++;
         }

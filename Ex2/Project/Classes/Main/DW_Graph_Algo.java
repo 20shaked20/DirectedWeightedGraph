@@ -73,7 +73,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         Arrays.fill(connected, false); // init the array.
         while (nodes.hasNext()) {
             NodeData n = nodes.next();
-            if (!connected[n.getId()]) {
+            if (!connected[n.getKey()]) {
                 dfs(n, connected); // checks the boolean sol
             }
             for (boolean b : connected) {
@@ -97,9 +97,9 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     private void dfs(NodeData n, boolean[] connected) {
         //TODO: MAKE THIS ITERATIVE!
-        System.out.println("n: " + n.getId());
-        connected[n.getId()] = true;
-        Iterator<EdgeData> edges_from_node = graph.edgeIter(n.getId());
+        System.out.println("n: " + n.getKey());
+        connected[n.getKey()] = true;
+        Iterator<EdgeData> edges_from_node = graph.edgeIter(n.getKey());
         while (edges_from_node.hasNext()) {
             EdgeData e = edges_from_node.next();
             NodeData next_node = graph.getNode(e.getDest()); //gets the next node to operate dfs on.
@@ -310,7 +310,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         int bestNode = 0; // Initialized to 0 just in case.
         Iterator<NodeData> nodes = graph.nodeIter();
         while (nodes.hasNext()) { //|V|
-            int node = nodes.next().getId();
+            int node = nodes.next().getKey();
             dist = singleSourceDijkstraAlgo(node); //|V|^2 + nodes.next advances the Iterator.
             double avg = average(dist); //|V|
             if (avg < bestAverage){
@@ -344,7 +344,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
 
         HashSet<Integer> ctv = new HashSet<>();
         for (NodeData n : cities){
-            ctv.add(n.getId());
+            ctv.add(n.getKey());
         }
         //step 2 : create an array of possible routes
 
@@ -367,13 +367,13 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
             hasAllCities = false;
             currentStart = iterator.next();
             current = currentStart;
-            routes[currentStart.getId()] = new LinkedList<>(); //this inits the linked list - very important.
-            routes[currentStart.getId()].add(current); //adds the start of the route immediately.
+            routes[currentStart.getKey()] = new LinkedList<>(); //this inits the linked list - very important.
+            routes[currentStart.getKey()].add(current); //adds the start of the route immediately.
             counter = 0;
             //step 3.5 - compute solution from node i :
             while (!hasAllCities){ //O(n)
-                visited.add(current.getId());
-                if (ctv.contains(current.getId())){
+                visited.add(current.getKey());
+                if (ctv.contains(current.getKey())){
                     counter += 1; //only adds to the counter if current is part of the cities to visit.
                 }
                 if (counter == cities.size()){
@@ -386,8 +386,8 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
                     continue;
                 }
                 current = graph.getNode(tempEdge.getDest()); //O(n)
-                routes[currentStart.getId()].add(current);
-                routeWeights[currentStart.getId()] += tempEdge.getWeight();
+                routes[currentStart.getKey()].add(current);
+                routeWeights[currentStart.getKey()] += tempEdge.getWeight();
             }
         }
 
@@ -399,7 +399,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
             if (routeWeights[i] <= bestWeight ){
                 counter = 0;
                 for (int j = 0; j < routes[i].size(); j++){ //O(n)
-                    if (ctv.contains(routes[i].get(j).getId())){
+                    if (ctv.contains(routes[i].get(j).getKey())){
                         counter++;
                     }
                 }
@@ -420,7 +420,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     private EdgeData getCheapestNeighbour(NodeData node, HashSet<Integer> visited) {
         HashSet<Integer> lookedAt = new HashSet<>();
-        Iterator<EdgeData> iterator = graph.edgeIter(node.getId());
+        Iterator<EdgeData> iterator = graph.edgeIter(node.getKey());
         if (!iterator.hasNext()){
             return null;  //return null when node has no neighbours
         }
@@ -432,7 +432,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
                 best = temp;
             }
         }
-        iterator = graph.edgeIter(node.getId());
+        iterator = graph.edgeIter(node.getKey());
         lookedAt.add(best.getDest());
         boolean flag = !visited.contains(best.getDest());
         while (iterator.hasNext()){
@@ -447,7 +447,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         }
         if (!flag){ //this code block activates only if there are no unvisited neighbours
             lookedAt = new HashSet<>();
-            iterator = graph.edgeIter(node.getId());
+            iterator = graph.edgeIter(node.getKey());
             best = iterator.next();
             while (iterator.hasNext()){
                 temp = iterator.next();
