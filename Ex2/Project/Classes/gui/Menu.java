@@ -1,6 +1,12 @@
 package gui;
 
+import Main.DW_Graph;
+import Main.DW_Graph_Algo;
+import Main.Geo_Location;
+import Main.Node_data;
+import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
+import api.GeoLocation;
 import api.NodeData;
 
 import javax.swing.*;
@@ -21,16 +27,22 @@ public class Menu extends JFrame implements ActionListener {
     private JButton Center = new JButton("Run Center");
     private JButton Tsp = new JButton("Run Tsp");
 
-    private DirectedWeightedGraphAlgorithms graph;
+    private DirectedWeightedGraph graph = new DW_Graph();
+    private DirectedWeightedGraphAlgorithms graph_algo = new DW_Graph_Algo();
+
 
     public Menu() {
+//        NodeData tmpN = new Node_data(4, new Geo_Location(30, 30, 0));
+//        this.graph.addNode(tmpN);
+        this.graph_algo.init(this.graph);
+        this.graph_algo.load("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
         this.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER)); // center the buttons.
         this.ActionListener();
         this.setColor();
         this.Addons();
         this.setSize();
-        Screen.setSize(500, 500);
-        Screen.setVisible(true);
+        this.Screen.setSize(500, 500);
+        this.Screen.setVisible(true);
         this.add(Screen);
         this.setSize(500, 500);
         this.setVisible(true);
@@ -64,22 +76,22 @@ public class Menu extends JFrame implements ActionListener {
 
         ShortestPathDist.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph);
+                new SecondFrame(graph_algo);
             }
         });
         ShortestPath.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph);
+                new SecondFrame(graph_algo);
             }
         });
         Center.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph);
+                new SecondFrame(graph_algo);
             }
         });
         Tsp.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph);
+                new SecondFrame(graph_algo);
             }
         });
     }
@@ -125,31 +137,76 @@ public class Menu extends JFrame implements ActionListener {
 /**
  * This class is responsible for the second frame layout, it will pop up the new graphs using the algorithms.
  */
-class SecondFrame {
-    private JFrame Frame = new JFrame("Graph");
+class SecondFrame extends JFrame {
+    private JPanel Screen = new JPanel();
     private DirectedWeightedGraphAlgorithms graph;
+    private int[] nodeXpos;
+    private int[] nodeYpos;
 
-    public SecondFrame(DirectedWeightedGraphAlgorithms g) {
-        this.Frame.setSize(500, 500);
-        this.Frame.setVisible(true);
-        this.graph = g;
-        DisplayGraphics m = new DisplayGraphics();
-        Frame.add(m);
-        this.Frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public SecondFrame(DirectedWeightedGraphAlgorithms graph) {
+        this.graph = graph;
+        this.Screen.setSize(500, 500);
+        this.Screen.setVisible(true);
+        this.add(Screen);
+        DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos);
+        this.add(m);
+        this.setSize(500, 500);
+        this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    }
+
+    private void updateArr() {
+        Iterator nodes = this.graph.getGraph().nodeIter();
+        NodeData curr_node;
+        GeoLocation curr_geo;
+        double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE, maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
+        double x, y;
+        while (nodes.hasNext()) {
+            curr_node = (NodeData) nodes.next();
+            curr_geo = curr_node.getLocation();
+            x = curr_geo.x();
+            y = curr_geo.y();
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+        }
+        double uintX = this.Screen.getWidth() / (maxX - minX) * 0.9;
+        double unitY = this.Screen.getHeight() / (maxY - minY) * 0.8;
+
+        nodes = this.graph.getGraph().nodeIter();
+
+        while (nodes.hasNext()) {
+            curr_node = (NodeData) nodes.next();
+            curr_geo = curr_node.getLocation();
+            x = (curr_geo.x() - minX) * uintX;
+            y = (curr_geo.y() - minY) * unitY;
+
+            this.nodeXpos[curr_node.getKey()] = (int) x;
+            this.nodeYpos[curr_node.getKey()] = (int) y;
+
+        }
     }
 }
 
 class DisplayGraphics extends Canvas {
+    private DirectedWeightedGraphAlgorithms graph;
+    private int[] nodeXpos;
+    private int[] nodeYpos;
+
+    public DisplayGraphics(DirectedWeightedGraphAlgorithms graph, int[] nodeXpos, int[] nodeYpos) {
+        this.graph = graph;
+        this.nodeXpos = nodeXpos;
+        this.nodeYpos = nodeYpos;
+    }
 
     public void paint(Graphics g) {
-        g.drawString("Hello", 40, 40);
-        setBackground(Color.WHITE);
-        g.fillRect(130, 30, 100, 80);
-        g.drawOval(30, 130, 50, 60);
-        setForeground(Color.RED);
-        g.fillOval(130, 130, 50, 60);
-        g.drawArc(30, 200, 40, 50, 90, 60);
-        g.fillArc(30, 130, 40, 50, 180, 40);
-
+        int i, j;
+        i = j = 15;
+        for (int z = 0; z < this.graph.getGraph().nodeSize(); ++z) {
+            g.drawOval(nodeXpos[z], nodeYpos[z], i, j);
+            setForeground(Color.BLACK);
+            //g.drawString(String.valueOf(curr_node.getKey()), (int) curr_geo.x() + 3, (int) curr_geo.y() + 12);
+        }
     }
 }
