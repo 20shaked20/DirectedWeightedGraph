@@ -2,8 +2,10 @@ package Main;
 
 import api.*;
 import com.google.gson.*;
+
 import java.io.*;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * Authors - Yonatan Ratner & Shaked Levi
@@ -76,13 +78,12 @@ public class Json_Helper {
 
         DWG_Serialization dwg = new DWG_Serialization(graph);
 
-        try (Writer writer = new FileWriter("Output.json")){
+        try (Writer writer = new FileWriter("Output.json")) {
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
                     .create();
-            gson.toJson(dwg , writer);
-        }
-        catch (IOException e){
+            gson.toJson(dwg, writer);
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -92,13 +93,17 @@ public class Json_Helper {
     //tester ->
     public static void main(String[] args) {
         DW_Graph graph = new DW_Graph();
-        String path = "C:/Users/yonar/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
+        // 8,0,40 ? ><
+        String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
         Json_Deserializer(graph, path);
-        Iterator<EdgeData> it = graph.edgeIter();
-        while (it.hasNext()){
-            System.out.println(it.next());
-        }
-        Json_Serializer(graph);
+        DirectedWeightedGraphAlgorithms algo = new DW_Graph_Algo();
+        algo.init(graph);
+//        LinkedList<NodeData> expPath = new LinkedList<>();
+//        Iterator<NodeData> nodes = algo.getGraph().nodeIter();
+//        while (nodes.hasNext()) {
+//            expPath.add(nodes.next());
+//        }
+        System.out.println(algo.shortestPath(0, 12).toString());
     }
 
 }

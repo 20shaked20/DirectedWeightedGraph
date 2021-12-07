@@ -1,9 +1,6 @@
 package gui;
 
-import Main.DW_Graph;
-import Main.DW_Graph_Algo;
-import Main.Geo_Location;
-import Main.Node_data;
+import Main.*;
 import api.*;
 
 import javax.swing.*;
@@ -242,8 +239,6 @@ class SecondFrame extends JFrame {
             comp.setBounds(30, 125, 110, 30);
             comp.addActionListener(new ActionListener() {
                 private DirectedWeightedGraphAlgorithms tmpG = graph;
-                private int[] nodesXs = nodeXpos;
-                private int[] nodesYs = nodeYpos;
 
                 public void actionPerformed(ActionEvent event) {
                     int a1 = Integer.parseInt(txt1.getText());
@@ -333,8 +328,9 @@ class DisplayGraphics extends Canvas {
             g.setColor(Color.BLACK);
             g.drawLine(x1, y1, x2, y2);
         }
-        if (!path.isEmpty()) {
-            for (int x = 0; x < this.path.size(); ++x) {
+        if (this.path!=null) {
+            int size = this.path.size();
+            for (int x = 0; x < size; ++x) {
                 g.setColor(Color.RED);
                 NodeData curr_node1 = this.path.pop();
                 x1 = nodeXpos[curr_node1.getKey()];

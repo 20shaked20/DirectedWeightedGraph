@@ -16,9 +16,9 @@ public class Node_data implements NodeData {
 
     private Geo_Location pos;
     private final int id;
-    private transient double weight;
+    private transient double weight = Double.MAX_VALUE;
     private transient String info = "Unvisited"; // any meta_data we can use later in the code.
-    private transient int tag = 0; // usable in the code.
+    private transient int tag = -1; // usable in the code.
 
     /**
      * normal constructor, its not DEEP COPYING THE geo_location.
