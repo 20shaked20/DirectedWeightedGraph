@@ -83,7 +83,8 @@ class DWGraphAlgoTest {
         g3.connect(4, 1, 2);
         g3.connect(4, 3, 5);
 
-        g4.load("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
+        //g4.load("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
+        g4.load("C:\\Users\\yonar\\IdeaProjects\\DirectedWeightedGraph\\Ex2\\data\\G1.json");
 
         //initializes the algorithm object
         a1.init(g1);

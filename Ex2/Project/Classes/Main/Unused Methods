@@ -1,3 +1,9 @@
+/*************************************************************************************************\
+
+This file contains 'legacy' methods that were used but are no longer a part of the overall solution
+
+\*************************************************************************************************/
+
     /**
      * Solves for the shortest path from src to dest using Dijkstra's algorithm for a single pair
      *
@@ -31,3 +37,91 @@
         }
         return dist[dest];
     }
+
+    /**
+     * a helper function for our single source Dijkstra algorithm.
+     * O(E) - worst case is when all the Edges (E-1) are neighboring node U.
+     *
+     * @param u       int representing the current node for which we calculate the shortest distance to it's neighbours
+     * @param settled set of nodes that have been covered.
+     * @param dist    an array of the shortest distances from a single source.
+     * @param prq     a priority queue that is used in the Dijkstra Algorithm.
+     */
+    private void adjacentHelper(int u, HashSet<Integer> settled, double[] dist, PriorityQueue<Node> prq, double[] parents) {
+
+        double edgeDist;
+        double newDist;
+        Iterator<EdgeData> neighbours = graph.edgeIter(u);
+        Node temp;
+        EdgeData edge;
+
+        while (neighbours.hasNext()) {
+            edge = neighbours.next();
+            temp = new Node(edge.getDest(), edge.getWeight());
+
+            if (!settled.contains(temp.node)) {
+                edgeDist = temp.cost;
+                newDist = dist[u] + edgeDist;
+                if (dist[temp.node] > newDist) {
+                    dist[temp.node] = newDist;
+                    if (parents != null)
+                        parents[u] = temp.node;
+                }
+                //dist[temp.node] = Math.min(newDist,dist[temp.node]); // instead of an if argument
+
+                prq.add(new Node(temp.node, dist[temp.node]));
+            }
+        }
+    }
+
+    /**
+     * Calculates the shortest path from a single source to every other node (Integer.MAXVALUE if unreachable!)
+     * using Dijkstra's algorithm. O(|V|^2) - |V| = amount of vertices.
+     *
+     * @param src the source for the calculation
+     * @return an array of distances from src to i ( such that arr[i] = this distance)
+     */
+    private double[] singleSourceDijkstraAlgo(int src) { //used in Center!
+        double[] dist = new double[graph.nodeSize()];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+
+        HashSet<Integer> settled = new HashSet<>();
+        PriorityQueue<Node> prq = new PriorityQueue<>(graph.nodeSize()); //priority queue with initial capacity
+
+        prq.add(new Node(src, 0));
+        dist[src] = 0;
+        int unreachable = -1;
+
+        while (settled.size() != graph.nodeSize()) { //O(|V|)
+            if (prq.isEmpty()) {
+                settled.add(unreachable--); //ignores unreachable nodes and increases settled size to achieve stop cond.
+                //also advances unreachable towards the negative for Hashing purposes
+                continue;
+            }
+            int u = prq.remove().node;
+            settled.add(u);
+            adjacentHelper(u, settled, dist, prq, null); // O(|V|)
+        }
+        return dist;
+    }
+
+
+    private static class Node implements Comparable<Node> {
+            /**
+             * private class for Dijkstra's algorithm implementation.
+             * (Node_data is inefficient for this, Implementation-Wise)
+             */
+            public int node;
+            public double cost;
+
+            public Node(int node, double cost) {
+                this.node = node;
+                this.cost = cost;
+            }
+
+            @Override
+            public int compareTo(Node o) {
+                return Double.compare(this.cost, o.cost);
+            }
+        }
