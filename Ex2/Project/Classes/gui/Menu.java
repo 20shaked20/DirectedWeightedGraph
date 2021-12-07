@@ -13,12 +13,15 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class Menu extends JFrame implements ActionListener {
 
-    private JPanel Screen = new JPanel(new GridLayout(5, 1, 0, 0));
+    private JPanel Screen = new JPanel(new GridLayout(8, 1, 0, 0));
     private JButton Json = new JButton("Load Json File");
+    private JButton ShowGraph = new JButton("Show Graph");
     private JButton ShortestPathDist = new JButton("Run ShortestPathDist");
     private JButton ShortestPath = new JButton("Run ShortestPath");
     private JButton Center = new JButton("Run Center");
@@ -44,7 +47,6 @@ public class Menu extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
-
     private void ActionListener() {
         Json.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -69,30 +71,36 @@ public class Menu extends JFrame implements ActionListener {
             }
         });
 
+        ShowGraph.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                new SecondFrame(graph_algo, "ShowGraph", null);
+            }
+        });
         ShortestPathDist.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph_algo);
+                new SecondFrame(graph_algo, "ShortestPathDist", null);
             }
         });
         ShortestPath.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph_algo);
+                new SecondFrame(graph_algo, "ShortestPath", null);
             }
         });
         Center.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph_algo);
+                new SecondFrame(graph_algo, "Center", null);
             }
         });
         Tsp.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph_algo);
+                new SecondFrame(graph_algo, "Tsp", null);
             }
         });
     }
 
     private void setColor() {
         Json.setForeground(Color.BLACK);
+        ShowGraph.setForeground(Color.RED);
         ShortestPathDist.setForeground(Color.RED);
         ShortestPath.setForeground(Color.RED);
         Center.setForeground(Color.RED);
@@ -101,6 +109,7 @@ public class Menu extends JFrame implements ActionListener {
 
     private void setSize() {
         Json.setSize(220, 30);
+        ShowGraph.setSize(220, 30);
         ShortestPathDist.setSize(220, 30);
         ShortestPath.setSize(220, 30);
         Center.setSize(220, 30);
@@ -109,10 +118,15 @@ public class Menu extends JFrame implements ActionListener {
 
     private void Addons() {
         Screen.add(Json);
+        Screen.add(ShowGraph);
         Screen.add(ShortestPathDist);
         Screen.add(ShortestPath);
         Screen.add(Center);
         Screen.add(Tsp);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
     }
 
 
@@ -121,10 +135,6 @@ public class Menu extends JFrame implements ActionListener {
         //new Menu("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
 }
 
 // SecondFrame.java
@@ -136,19 +146,119 @@ class SecondFrame extends JFrame {
     private DirectedWeightedGraphAlgorithms graph;
     private int[] nodeXpos;
     private int[] nodeYpos;
-    private int Width = 850;
-    private int Height = 850;
+    private int Width = 1500;
+    private int Height = 1080;
+    private Toolkit toolkit;
+    private LinkedList<NodeData> path;
+    private String operation; // what to activate.
 
-    public SecondFrame(DirectedWeightedGraphAlgorithms graph) {
+    public SecondFrame(DirectedWeightedGraphAlgorithms graph, String operation, LinkedList<NodeData> path) {
         this.graph = graph;
+        this.operation = operation;
+        this.path = path;
         this.nodeXpos = new int[this.graph.getGraph().nodeSize()];
         this.nodeYpos = new int[this.graph.getGraph().nodeSize()];
         this.update_x_y_pos();
-        DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos);
-        this.add(m);
+        this.operations();
+
         this.setSize(this.Width, this.Height);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    }
+
+    private void operations() {
+        if (this.operation.equals("ShowGraph")) {
+            DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+            this.add(m);
+        }
+        if (this.operation.equals("ShortestPathDist")) {
+            setTitle("ShortestPathDist");
+            setSize(300, 200);
+            toolkit = getToolkit();
+            Dimension size = toolkit.getScreenSize();
+            setLocation((size.width - getWidth()) / 2, (size.height - getHeight()) / 2);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            JPanel panel = new JPanel();
+            getContentPane().add(panel);
+            panel.setLayout(null);
+            JLabel Node1 = new JLabel("First Node");
+            Node1.setBounds(30, 20, 80, 30);
+            JLabel Node2 = new JLabel("Second Node");
+            Node2.setBounds(30, 55, 110, 30);
+            JLabel ans = new JLabel("Distance: ");
+            ans.setBounds(30, 90, 80, 30);
+            final JTextField txt1 = new JTextField(5);
+            txt1.setBounds(145, 20, 50, 30);
+            txt1.setText("0");
+            final JTextField txt2 = new JTextField(5);
+            txt2.setBounds(145, 55, 50, 30);
+            txt2.setText("0");
+            final JTextField txt3 = new JTextField(5);
+            txt3.setBounds(145, 90, 200, 30);
+
+            JButton comp = new JButton("Calculate");
+            comp.setBounds(30, 125, 110, 30);
+            comp.addActionListener(new ActionListener() {
+                DirectedWeightedGraphAlgorithms tmp = graph;
+
+                public void actionPerformed(ActionEvent event) {
+                    int a1 = Integer.parseInt(txt1.getText());
+                    int a2 = Integer.parseInt(txt2.getText());
+                    double a3 = tmp.shortestPathDist(a1, a2);
+                    txt3.setText(String.valueOf(a3));
+                }
+            });
+
+            panel.add(Node1);
+            panel.add(Node2);
+            panel.add(ans);
+            panel.add(txt1);
+            panel.add(txt2);
+            panel.add(txt3);
+            panel.add(comp);
+        }
+
+        if (this.operation.equals("ShortestPath")) {
+            setTitle("ShortestPath");
+            setSize(300, 200);
+            toolkit = getToolkit();
+            Dimension size = toolkit.getScreenSize();
+            setLocation((size.width - getWidth()) / 2, (size.height - getHeight()) / 2);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            JPanel panel = new JPanel();
+            getContentPane().add(panel);
+            panel.setLayout(null);
+            JLabel Node1 = new JLabel("First Node");
+            Node1.setBounds(30, 20, 80, 30);
+            JLabel Node2 = new JLabel("Second Node");
+            Node2.setBounds(30, 55, 110, 30);
+            final JTextField txt1 = new JTextField(5);
+            txt1.setBounds(145, 20, 50, 30);
+            txt1.setText("0");
+            final JTextField txt2 = new JTextField(5);
+            txt2.setBounds(145, 55, 50, 30);
+            txt2.setText("0");
+            JButton comp = new JButton("Calculate");
+            comp.setBounds(30, 125, 110, 30);
+            comp.addActionListener(new ActionListener() {
+                private DirectedWeightedGraphAlgorithms tmpG = graph;
+                private int[] nodesXs = nodeXpos;
+                private int[] nodesYs = nodeYpos;
+
+                public void actionPerformed(ActionEvent event) {
+                    int a1 = Integer.parseInt(txt1.getText());
+                    int a2 = Integer.parseInt(txt2.getText());
+                    LinkedList<NodeData> path = (LinkedList<NodeData>) tmpG.shortestPath(a1, a2);
+                    new SecondFrame(tmpG, "ShowGraph", path);
+                }
+            });
+
+            panel.add(Node1);
+            panel.add(Node2);
+            panel.add(txt1);
+            panel.add(txt2);
+            panel.add(comp);
+        }
     }
 
     private void update_x_y_pos() {
@@ -189,24 +299,27 @@ class DisplayGraphics extends Canvas {
     private DirectedWeightedGraphAlgorithms graph;
     private int[] nodeXpos;
     private int[] nodeYpos;
+    private LinkedList<NodeData> path;
 
-    public DisplayGraphics(DirectedWeightedGraphAlgorithms graph, int[] nodeXpos, int[] nodeYpos) {
+    public DisplayGraphics(DirectedWeightedGraphAlgorithms graph, int[] nodeXpos, int[] nodeYpos, LinkedList<NodeData> path) {
         this.graph = graph;
         this.nodeXpos = nodeXpos;
         this.nodeYpos = nodeYpos;
+        this.path = path;
     }
 
     public void paint(Graphics g) {
         int i, j;
-        i = j = 10;
+        i = j = 20;
         for (int z = 0; z < this.graph.getGraph().nodeSize(); ++z) {
-            g.setColor(Color.RED);
-            g.fillOval(nodeXpos[z] - 5, nodeYpos[z] - 5, i, j);
-//            if (z < 10) {
-//                g.drawString(String.valueOf(z), nodeXpos[z] + 3, nodeYpos[z] + 12);
-//            } else {
-//                g.drawString(String.valueOf(z), nodeXpos[z], nodeYpos[z] + 12);
-//            }
+            g.setColor(Color.BLACK);
+            g.fillOval(nodeXpos[z] - 8, nodeYpos[z] - 8, i, j);
+            g.setColor(Color.MAGENTA);
+            if (z < 10) {
+                g.drawString(String.valueOf(z), nodeXpos[z], nodeYpos[z] + 8);
+            } else {
+                g.drawString(String.valueOf(z), nodeXpos[z] - 4, nodeYpos[z] + 8);
+            }
         }
         int x1, y1;
         int x2, y2;
@@ -219,6 +332,18 @@ class DisplayGraphics extends Canvas {
             y2 = nodeYpos[edge.getDest()];
             g.setColor(Color.BLACK);
             g.drawLine(x1, y1, x2, y2);
+        }
+        if (!path.isEmpty()) {
+            for (int x = 0; x < this.path.size(); ++x) {
+                g.setColor(Color.RED);
+                NodeData curr_node1 = this.path.pop();
+                x1 = nodeXpos[curr_node1.getKey()];
+                y1 = nodeYpos[curr_node1.getKey()];
+                NodeData curr_node2 = this.path.peek();
+                x2 = nodeXpos[curr_node2.getKey()];
+                y2 = nodeYpos[curr_node2.getKey()];
+                g.drawLine(x1, y1, x2, y2);
+            }
         }
     }
 }
