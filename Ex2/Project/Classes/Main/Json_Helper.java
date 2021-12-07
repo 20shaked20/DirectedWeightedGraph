@@ -4,8 +4,10 @@ import api.*;
 import com.google.gson.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Authors - Yonatan Ratner & Shaked Levi
@@ -89,24 +91,53 @@ public class Json_Helper {
         }
         return true;
     }
-
-    //tester ->
-    public static void main(String[] args) {
-        DW_Graph graph = new DW_Graph();
-        // 8,0,40 ? ><
-        //String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
-        String path = "C:\\Users\\yonar\\IdeaProjects\\DirectedWeightedGraph\\Ex2\\data\\1000Nodes.json";
-        Json_Deserializer(graph, path);
-        DirectedWeightedGraphAlgorithms algo = new DW_Graph_Algo();
-        algo.init(graph);
-//        LinkedList<NodeData> expPath = new LinkedList<>();
-//        Iterator<NodeData> nodes = algo.getGraph().nodeIter();
-//        while (nodes.hasNext()) {
-//            expPath.add(nodes.next());
-//        }
-        System.out.println(algo.center());
-    }
-
 }
 
+class DWG_Serialization implements Serializable {
+    List<EdgeData> Edges;
+    List<Node_Serialization> Nodes;
+
+    /**
+     * This is a constructor method, it used the edges and nodes Iterators implemented in DW_Graph to initialize
+     * this class
+     *
+     * @param graph The DirectedWeightedGraph - (DW_Graph) - object this class serializes
+     */
+    public DWG_Serialization(DirectedWeightedGraph graph) {
+        Iterator<NodeData> n = graph.nodeIter();
+        Iterator<EdgeData> e = graph.edgeIter();
+
+        Nodes = new ArrayList<>();
+        Edges = new ArrayList<>();
+
+        NodeData tempNode;
+        while (n.hasNext()) {
+            tempNode = n.next();
+            this.Nodes.add(new Node_Serialization(tempNode.getKey(), tempNode.getLocation()));
+        }
+
+        while (e.hasNext()) {
+            this.Edges.add(e.next());
+        }
+    }
+}
+
+/**
+ * This is a class for serialization only, and is here to easily and smoothly transfer data to the desired .json format.
+ */
+class Node_Serialization implements Serializable {
+    String pos;
+    int id;
+
+    /**
+     * This is a constructor method, unmentioned parameters are not required for serialization
+     *
+     * @param id  The id of the node for serialization
+     * @param pos a Geo_Location object, the same one that's in the Node_data object
+     */
+    public Node_Serialization(int id, GeoLocation pos) {
+        this.id = id;
+        this.pos = pos.toString();
+    }
+}
 

@@ -24,9 +24,9 @@ public class Menu extends JFrame implements ActionListener {
     private DirectedWeightedGraphAlgorithms graph_algo = new DW_Graph_Algo();
 
 
-    public Menu() {
+    public Menu(String file_location) {
         this.graph_algo.init(graph);
-        this.graph_algo.load("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
+        this.graph_algo.load(file_location);
         this.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER)); // center the buttons.
         this.ActionListener();
         this.setColor();
@@ -108,7 +108,8 @@ public class Menu extends JFrame implements ActionListener {
 
 
     public static void main(String[] args) {
-        new Menu();
+        String file_loc = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
+        new Menu(file_loc);
     }
 
 }
