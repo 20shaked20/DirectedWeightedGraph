@@ -150,12 +150,11 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
         double[] n_path = DijkstraAlgoPath(src, dest);
 
         int pointer = src;
-        while (pointer != dest) {
-            ans.add(graph.getNode(pointer));
-            pointer = (int) n_path[pointer];
-        }
-        ans.add(graph.getNode(dest));
-
+            while (pointer != dest) {
+                ans.add(graph.getNode(pointer));
+                pointer = (int) n_path[pointer];
+            }
+            ans.add(graph.getNode(dest));
         return ans;
     }
 
