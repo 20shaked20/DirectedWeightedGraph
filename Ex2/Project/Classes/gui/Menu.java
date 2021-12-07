@@ -7,39 +7,35 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Menu extends JFrame implements ActionListener {
 
-    private JPanel Screen = new JPanel(new GridLayout(8, 1, 0, 0));
+    private JPanel Screen = new JPanel(new GridLayout(5, 1, 0, 0));
     private JButton Json = new JButton("Load Json File");
     private JButton ShowGraph = new JButton("Show Graph");
     private JButton ShortestPathDist = new JButton("Run ShortestPathDist");
     private JButton ShortestPath = new JButton("Run ShortestPath");
     private JButton Center = new JButton("Run Center");
-    private JButton Tsp = new JButton("Run Tsp");
 
     private DirectedWeightedGraph graph = new DW_Graph();
     private DirectedWeightedGraphAlgorithms graph_algo = new DW_Graph_Algo();
 
 
     public Menu() {
-        this.graph_algo.init(this.graph);
+        this.graph_algo.init(graph);
         this.graph_algo.load("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
         this.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER)); // center the buttons.
         this.ActionListener();
         this.setColor();
         this.Addons();
         this.setSize();
-        this.Screen.setSize(500, 500);
+        this.Screen.setSize(300, 300);
         this.Screen.setVisible(true);
         this.add(Screen);
-        this.setSize(500, 500);
+        this.setSize(300, 300);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
@@ -53,16 +49,8 @@ public class Menu extends JFrame implements ActionListener {
                     if (i == JFileChooser.APPROVE_OPTION) {
                         File f = fc.getSelectedFile();
                         String filepath = f.getPath();
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader(filepath));
-                            String s1 = "", s2 = "";
-                            while ((s1 = br.readLine()) != null) {
-                                s2 += s1 + "\n";
-                            }
-                            br.close();
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        graph_algo.init(graph);
+                        graph_algo.load(filepath);
                     }
                 }
             }
@@ -88,11 +76,6 @@ public class Menu extends JFrame implements ActionListener {
                 new SecondFrame(graph_algo, "Center", null);
             }
         });
-        Tsp.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                new SecondFrame(graph_algo, "Tsp", null);
-            }
-        });
     }
 
     private void setColor() {
@@ -101,7 +84,6 @@ public class Menu extends JFrame implements ActionListener {
         ShortestPathDist.setForeground(Color.RED);
         ShortestPath.setForeground(Color.RED);
         Center.setForeground(Color.RED);
-        Tsp.setForeground(Color.RED);
     }
 
     private void setSize() {
@@ -110,7 +92,6 @@ public class Menu extends JFrame implements ActionListener {
         ShortestPathDist.setSize(220, 30);
         ShortestPath.setSize(220, 30);
         Center.setSize(220, 30);
-        Tsp.setSize(220, 30);
     }
 
     private void Addons() {
@@ -119,7 +100,6 @@ public class Menu extends JFrame implements ActionListener {
         Screen.add(ShortestPathDist);
         Screen.add(ShortestPath);
         Screen.add(Center);
-        Screen.add(Tsp);
     }
 
     @Override
@@ -129,7 +109,6 @@ public class Menu extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         new Menu();
-        //new Menu("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
     }
 
 }
@@ -143,7 +122,7 @@ class SecondFrame extends JFrame {
     private DirectedWeightedGraphAlgorithms graph;
     private int[] nodeXpos;
     private int[] nodeYpos;
-    private int Width = 1500;
+    private int Width = 1080;
     private int Height = 1080;
     private Toolkit toolkit;
     private LinkedList<NodeData> path;
@@ -157,8 +136,6 @@ class SecondFrame extends JFrame {
         this.nodeYpos = new int[this.graph.getGraph().nodeSize()];
         this.update_x_y_pos();
         this.operations();
-
-        this.setSize(this.Width, this.Height);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
@@ -166,11 +143,12 @@ class SecondFrame extends JFrame {
     private void operations() {
         if (this.operation.equals("ShowGraph")) {
             DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+            this.setSize(this.Width, this.Height);
             this.add(m);
         }
         if (this.operation.equals("ShortestPathDist")) {
-            setTitle("ShortestPathDist");
-            setSize(300, 200);
+            this.setTitle("ShortestPathDist");
+            this.setSize(400, 400);
             toolkit = getToolkit();
             Dimension size = toolkit.getScreenSize();
             setLocation((size.width - getWidth()) / 2, (size.height - getHeight()) / 2);
@@ -191,33 +169,45 @@ class SecondFrame extends JFrame {
             txt2.setBounds(145, 55, 50, 30);
             txt2.setText("0");
             final JTextField txt3 = new JTextField(5);
-            txt3.setBounds(145, 90, 200, 30);
+            txt3.setBounds(145, 90, 180, 30);
 
             JButton comp = new JButton("Calculate");
             comp.setBounds(30, 125, 110, 30);
             comp.addActionListener(new ActionListener() {
-                DirectedWeightedGraphAlgorithms tmp = graph;
+                DirectedWeightedGraphAlgorithms tmpG = graph;
 
                 public void actionPerformed(ActionEvent event) {
                     int a1 = Integer.parseInt(txt1.getText());
                     int a2 = Integer.parseInt(txt2.getText());
-                    double a3 = tmp.shortestPathDist(a1, a2);
-                    txt3.setText(String.valueOf(a3));
+                    double a3 = tmpG.shortestPathDist(a1, a2);
+                    JLabel error = new JLabel("Error -> No Path is available between both nodes ");
+                    if (a3 == 0 || a3 == -1.0) {
+                        error.setBounds(30, 90, 400, 30);
+                        panel.removeAll();
+                        ;
+                        panel.add(error);
+                        panel.updateUI();
+                    } else {
+                        txt3.setText(String.valueOf(a3));
+                        panel.remove(error);
+                        panel.add(txt3);
+                        panel.add(ans);
+                        panel.updateUI();
+                    }
+
                 }
             });
 
             panel.add(Node1);
             panel.add(Node2);
-            panel.add(ans);
             panel.add(txt1);
             panel.add(txt2);
-            panel.add(txt3);
             panel.add(comp);
         }
 
         if (this.operation.equals("ShortestPath")) {
-            setTitle("ShortestPath");
-            setSize(300, 200);
+            this.setTitle("ShortestPath");
+            this.setSize(400, 400);
             toolkit = getToolkit();
             Dimension size = toolkit.getScreenSize();
             setLocation((size.width - getWidth()) / 2, (size.height - getHeight()) / 2);
@@ -244,7 +234,14 @@ class SecondFrame extends JFrame {
                     int a1 = Integer.parseInt(txt1.getText());
                     int a2 = Integer.parseInt(txt2.getText());
                     LinkedList<NodeData> path = (LinkedList<NodeData>) tmpG.shortestPath(a1, a2);
-                    new SecondFrame(tmpG, "ShowGraph", path);
+                    if (path != null) {
+                        new SecondFrame(tmpG, "ShowGraph", path);
+                    } else {
+                        JLabel error = new JLabel("Error -> No Path is available between both nodes ");
+                        error.setBounds(30, 90, 400, 30);
+                        panel.add(error);
+                        panel.updateUI();
+                    }
                 }
             });
 
@@ -254,6 +251,7 @@ class SecondFrame extends JFrame {
             panel.add(txt2);
             panel.add(comp);
         }
+
     }
 
     private void update_x_y_pos() {
@@ -272,7 +270,7 @@ class SecondFrame extends JFrame {
             maxX = Math.max(maxX, x);
             maxY = Math.max(maxY, y);
         }
-        double uintX = this.Width / (maxX - minX) * 0.9;
+        double uintX = this.Width / (maxX - minX) * 0.8;
         double unitY = this.Height / (maxY - minY) * 0.8;
 
         nodes = this.graph.getGraph().nodeIter();
@@ -304,6 +302,39 @@ class DisplayGraphics extends Canvas {
     }
 
     public void paint(Graphics g) {
+        int x1, y1;
+        int x2, y2;
+        Iterator<EdgeData> edges = this.graph.getGraph().edgeIter();
+        while (edges.hasNext()) {
+            EdgeData edge = edges.next();
+            x1 = nodeXpos[edge.getSrc()];
+            y1 = nodeYpos[edge.getSrc()];
+            x2 = nodeXpos[edge.getDest()];
+            y2 = nodeYpos[edge.getDest()];
+            g.setColor(Color.BLACK);
+            this.drawArrowLine(g, x1, y1, x2, y2, 20, 10);
+
+        }
+        if (this.path != null) {
+            int size = this.path.size();
+            LinkedList<NodeData> tmp = new LinkedList<>();
+            for (int t = 0; t < size; ++t) {
+                tmp.add(this.path.get(t));
+            }
+            for (int x = 0; x < size; ++x) {
+                g.setColor(Color.RED);
+                NodeData curr_node1 = tmp.pop();
+                x1 = nodeXpos[curr_node1.getKey()];
+                y1 = nodeYpos[curr_node1.getKey()];
+                if (tmp.isEmpty()) {
+                    break;
+                }
+                NodeData curr_node2 = tmp.peek();
+                x2 = nodeXpos[curr_node2.getKey()];
+                y2 = nodeYpos[curr_node2.getKey()];
+                g.drawLine(x1, y1, x2, y2);
+            }
+        }
         int i, j;
         i = j = 20;
         for (int z = 0; z < this.graph.getGraph().nodeSize(); ++z) {
@@ -316,30 +347,57 @@ class DisplayGraphics extends Canvas {
                 g.drawString(String.valueOf(z), nodeXpos[z] - 4, nodeYpos[z] + 8);
             }
         }
-        int x1, y1;
-        int x2, y2;
-        Iterator<EdgeData> edges = this.graph.getGraph().edgeIter();
-        while (edges.hasNext()) {
-            EdgeData edge = edges.next();
-            x1 = nodeXpos[edge.getSrc()];
-            y1 = nodeYpos[edge.getSrc()];
-            x2 = nodeXpos[edge.getDest()];
-            y2 = nodeYpos[edge.getDest()];
-            g.setColor(Color.BLACK);
-            g.drawLine(x1, y1, x2, y2);
-        }
-        if (this.path!=null) {
-            int size = this.path.size();
-            for (int x = 0; x < size; ++x) {
-                g.setColor(Color.RED);
-                NodeData curr_node1 = this.path.pop();
-                x1 = nodeXpos[curr_node1.getKey()];
-                y1 = nodeYpos[curr_node1.getKey()];
-                NodeData curr_node2 = this.path.peek();
-                x2 = nodeXpos[curr_node2.getKey()];
-                y2 = nodeYpos[curr_node2.getKey()];
-                g.drawLine(x1, y1, x2, y2);
-            }
-        }
+
+
+    }
+
+    private void drawArrowLine(Graphics g1, int x1, int y1, int x2, int y2, int d, int h) {
+        Graphics2D g2 = (Graphics2D) g1;
+
+//        /* */
+//        double m = (y_1 - y_2) / (x_1 - x_2); // F(x) = mx + c
+//        double c = y_1 - m * x_1; // F(x) = y iff y - mx = c
+        /*todo: try to change before calling this function*/
+//        /*
+//        x1 += 0.01; // note that is addition
+//        x2 -= 0.01; // and this is subtraction
+//        y1 =(int)Math.round(m*x1+c);
+//        y2 =(int)Math.round(m*x2+c);
+//
+//         */
+//
+//
+//        // now we know F(x) and can alter x1,x2,y1,y2:
+//        int x1 = x_1 + 1; // note that is addition
+//        int x2 = x_2 - 1; // and this is subtraction
+//        int y1 =(int)(m*x1+c);
+//        int y2 =(int)(m*x2+c);
+
+
+        int dx = x2 - x1, dy = y2 - y1;
+        double D = Math.sqrt(dx * dx + dy * dy);
+        double xm = D - d, xn = xm, ym = h, yn = -h, x;
+        double sin = dy / D, cos = dx / D;
+
+        x = xm * cos - ym * sin + x1;
+        ym = xm * sin + ym * cos + y1;
+        xm = x;
+
+        x = xn * cos - yn * sin + x1;
+        yn = xn * sin + yn * cos + y1;
+        xn = x;
+
+
+        int[] x_points = {x2 + 2, (int) xm, (int) xn};
+        int[] y_points = {y2 + 2, (int) ym, (int) yn};
+        g2.setStroke(new BasicStroke(2));
+        g2.setColor(Color.BLACK);
+        g2.drawLine(x1, y1, x2, y2);
+        g2.setColor(Color.cyan);
+        g2.fillPolygon(x_points, y_points, 3);
+        g2.setColor(Color.black);
+        g2.drawPolygon(x_points, y_points, 3);
+
+
     }
 }
