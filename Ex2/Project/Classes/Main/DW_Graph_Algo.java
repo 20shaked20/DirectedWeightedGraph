@@ -67,46 +67,45 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * @return true if the graph is Strongly connected, false if not.
      */
     @Override
-    public boolean isConnected() {
+    public boolean isConnected() { //O(|V|*(|V| + |E|))
         Iterator<NodeData> nodes = graph.nodeIter();
-        boolean[] connected = new boolean[graph.nodeSize()]; //T for possible reach, F for not possible.
-        Arrays.fill(connected, false); // init the array.
+        NodeData n;
         while (nodes.hasNext()) {
-            NodeData n = nodes.next();
-            if (!connected[n.getKey()]) {
-                dfs(n, connected); // checks the boolean sol
+            n = nodes.next();
+            if (!BFS_Helper(n)) {
+                return false;
             }
-            for (boolean b : connected) {
-                if (!b) { // if even one of the nodes is not reachable return false immediately
-                    return false;
-                }
-            }
-            Arrays.fill(connected, false); // after each iteration, fill the array with false for the next iteration.
         }
-        return true; // if flag was not popped then return true. the graph is strongly connected.
+        return true;
     }
 
     /**
-     * This method gets a NodeData and in the use concept of dfs algorithm,
-     * checks all the edges getting out of the node while considering the edges getting out of each edge dest.
-     * if from one node it is possible to reach to all other nodes, the graph is strongly connected.
-     * I choose to use the help of boolean array to check if each of the nodes has a way to reach to other node.
-     * Running time -> O(n) while n represent the amount of nodes each edge can reach.
+     * This method gets a NodeData object and using a BFS search, attempts to reach every other node in the graph
+     * Running time -> O(n) where n represents the amount of neighbouring nodes.
      *
-     * @param n NodeData
+     * @param n A NodeData object from which the BFS starts.
+     * @return true if all nodes are reachable from n, otherwise false.
      */
-    private void dfs(NodeData n, boolean[] connected) {
-        //TODO: MAKE THIS ITERATIVE!
-        System.out.println("n: " + n.getKey());
-        connected[n.getKey()] = true;
-        Iterator<EdgeData> edges_from_node = graph.edgeIter(n.getKey());
-        while (edges_from_node.hasNext()) {
-            EdgeData e = edges_from_node.next();
-            NodeData next_node = graph.getNode(e.getDest()); //gets the next node to operate dfs on.
-            if (!connected[e.getDest()]) { // < indicates the current node we operate on.
-                dfs(next_node, connected);
+    private boolean BFS_Helper(NodeData n) { //O(|V| + |E|)
+        HashSet<Integer> visited = new HashSet<>();
+        visited.add(n.getKey());
+        Queue<NodeData> q = new LinkedList<>();
+        q.add(n);
+        NodeData temp;
+        NodeData dest;
+        Iterator<EdgeData> edges;
+        while (!q.isEmpty()){
+            temp = q.poll();
+            edges = this.graph.edgeIter(temp.getKey());
+            while (edges.hasNext()){
+                dest = this.graph.getNode(edges.next().getDest());
+                if (!visited.contains(dest.getKey())) {
+                    visited.add(dest.getKey());
+                    q.add(dest);
+                }
             }
         }
+        return visited.size() == this.graph.nodeSize();
     }
 
 
@@ -307,6 +306,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public NodeData center() {
+        //TODO: check how to make this O(n^2)
         if (!isConnected()) {
             return null; //if the graph is not strongly connected, then there is no center!
         }
