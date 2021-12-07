@@ -94,7 +94,8 @@ public class Json_Helper {
     public static void main(String[] args) {
         DW_Graph graph = new DW_Graph();
         // 8,0,40 ? ><
-        String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
+        //String path = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
+        String path = "C:\\Users\\yonar\\IdeaProjects\\DirectedWeightedGraph\\Ex2\\data\\1000Nodes.json";
         Json_Deserializer(graph, path);
         DirectedWeightedGraphAlgorithms algo = new DW_Graph_Algo();
         algo.init(graph);
@@ -103,7 +104,7 @@ public class Json_Helper {
 //        while (nodes.hasNext()) {
 //            expPath.add(nodes.next());
 //        }
-        System.out.println(algo.shortestPath(0, 12).toString());
+        System.out.println(algo.center());
     }
 
 }
