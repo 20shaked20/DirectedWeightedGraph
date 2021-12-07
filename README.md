@@ -18,12 +18,12 @@ And then we polish until were satisfied. </br>
 ## The Algorithms
 We will not go into the heavy depths of each algorithm, but rather describe what solution we used. </br>
 
-- ``` shortestPath(int src, int dest) ``` and ``` shortestPathDist(int src, int dest) ``` :
+- ``` shortestPath(int src, int dest) ``` and ``` shortestPathDist(int src, int dest) ``` : </br>
 Using the dijkstra algorithm we managed to get accurate results in ``` O(|V| * (|E| + |V|)) ```, using the pseudo-code located in the wiki page as a guideline for implementation and private properties of nodes such as tag, info, and weight.
-- ``` center() ``` : 
+- ``` center() ``` : </br>
 Using the dijkstra algorithm to calculate the sum of distances from each node the every other one, and then dividing by the amount of nodes to get an average. </br>
 after that we simply iterate to find the node with the best average distance to every other node.
-- ``` tsp(List<NodeData> cities) ``` :
+- ``` tsp(List<NodeData> cities) ``` : </br>
 Firstly, TSP is an np-hard problem and thus difficult to find an accurate solution for, and in this exercise we were allowed to visit a city (node) more than once </br>
 Therefore we used a heuristic and greedy algorithm that does not guarantee a solution but runs in ``` O(|V|^3) ```, and when it does provide a solution it's good, but probably not the truly optimal one ( around 90% match ). </br>
 This algorithm attempts to travel from a node to every other node while taking the cheapest neighbour to travel to, with a heavy bias towards unvisited nodes, this is calculated for every node, and then the best path is evaluated and returned, However this algorithm is flawed for specific graphs where it has trouble 'escaping' circles and can be optimized with a topographical sort and other methods, in short - this is a good, but improvable attempt.
