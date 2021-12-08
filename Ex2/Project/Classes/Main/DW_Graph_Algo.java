@@ -457,7 +457,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      */
     @Override
     public boolean save(String file) {
-        return Json_Helper.Json_Serializer(this.graph);
+        return Json_Helper.Json_Serializer(this.graph,file);
     }
 
     /**

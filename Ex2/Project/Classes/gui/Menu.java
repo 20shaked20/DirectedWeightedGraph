@@ -102,8 +102,8 @@ public class Menu extends JFrame {
  */
 class SecondFrame extends JFrame implements ActionListener {
     private DirectedWeightedGraphAlgorithms graph;
-    private HashMap<Integer, Integer> nodeXpos; // key loc, x value
-    private HashMap<Integer, Integer> nodeYpos; // key loc, y value
+    private HashMap<Integer, Integer> nodeX_Scale; // key loc, x value
+    private HashMap<Integer, Integer> nodeY_Scale; // key loc, y value
     private Dimension screenSize;
     private Toolkit toolkit;
     private LinkedList<NodeData> path;
@@ -121,8 +121,8 @@ class SecondFrame extends JFrame implements ActionListener {
         this.graph = graph;
         this.operation = operation;
         this.path = path;
-        this.nodeXpos = new HashMap<>();
-        this.nodeYpos = new HashMap<>();
+        this.nodeX_Scale = new HashMap<>();
+        this.nodeY_Scale = new HashMap<>();
         this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.operations();
         this.update_x_y_pos();
@@ -142,7 +142,7 @@ class SecondFrame extends JFrame implements ActionListener {
 
     private void operations() {
         if (this.operation.equals("ShowGraph")) {
-            DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+            DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
             this.setSize(this.screenSize.width, this.screenSize.height);
             if (this.path == null) { // only add menu when showing graph.
                 this.MenuBar();
@@ -332,11 +332,11 @@ class SecondFrame extends JFrame implements ActionListener {
 
     //TODO: Update varibales
     private void update_x_y_pos() {
-        Iterator nodes = this.graph.getGraph().nodeIter();
         NodeData curr_node;
         GeoLocation curr_geo;
         double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE, maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
         double x, y;
+        Iterator nodes = this.graph.getGraph().nodeIter();
         while (nodes.hasNext()) {
             curr_node = (NodeData) nodes.next();
             curr_geo = curr_node.getLocation();
@@ -348,19 +348,18 @@ class SecondFrame extends JFrame implements ActionListener {
             maxY = Math.max(maxY, y);
         }
 
-        double uintX = this.screenSize.width / (maxX - minX) * 0.8;
-        double unitY = this.screenSize.height / (maxY - minY) * 0.8;
+        double X_Scaling = this.screenSize.width / (maxX - minX) * 0.8;
+        double Y_Scaling = this.screenSize.height / (maxY - minY) * 0.8;
 
         nodes = this.graph.getGraph().nodeIter();
-
         while (nodes.hasNext()) {
             curr_node = (NodeData) nodes.next();
             curr_geo = curr_node.getLocation();
-            x = (curr_geo.x() - minX) * uintX;
-            y = (curr_geo.y() - minY) * unitY;
+            x = (curr_geo.x() - minX) * X_Scaling;
+            y = (curr_geo.y() - minY) * Y_Scaling;
 
-            this.nodeXpos.put(curr_node.getKey(), (int) x);
-            this.nodeYpos.put(curr_node.getKey(), (int) y);
+            this.nodeX_Scale.put(curr_node.getKey(), (int) x);
+            this.nodeY_Scale.put(curr_node.getKey(), (int) y);
 
         }
     }
@@ -373,10 +372,10 @@ class SecondFrame extends JFrame implements ActionListener {
                 int id_int = Integer.parseInt(id);
                 this.graph.getGraph().removeNode(id_int);
                 this.getContentPane().removeAll();
-                this.nodeXpos.remove(id_int);
-                this.nodeYpos.remove(id_int);
+                this.nodeX_Scale.remove(id_int);
+                this.nodeY_Scale.remove(id_int);
                 this.update_x_y_pos();
-                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
                 this.add(m);
                 this.repaint();
                 this.revalidate();
@@ -393,7 +392,7 @@ class SecondFrame extends JFrame implements ActionListener {
                 int dest = Integer.parseInt(items[1]);
                 this.graph.getGraph().removeEdge(src, dest);
                 this.getContentPane().removeAll();
-                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
                 this.add(m);
                 this.repaint();
                 this.revalidate();
@@ -411,11 +410,11 @@ class SecondFrame extends JFrame implements ActionListener {
                 GeoLocation geo_loc = new Geo_Location(x, y, 0);
                 NodeData new_node = new Node_data(ID, (Geo_Location) geo_loc);
                 this.graph.getGraph().addNode(new_node);
-                this.nodeXpos.put(ID, (int) x);
-                this.nodeYpos.put(ID, (int) y);
+                this.nodeX_Scale.put(ID, (int) x);
+                this.nodeY_Scale.put(ID, (int) y);
                 this.update_x_y_pos();
                 this.getContentPane().removeAll();
-                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
                 this.add(m);
                 this.repaint();
                 this.revalidate();
@@ -433,7 +432,7 @@ class SecondFrame extends JFrame implements ActionListener {
                 this.graph.getGraph().connect(ID1, ID2, weight);
                 this.update_x_y_pos();
                 this.getContentPane().removeAll();
-                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
                 this.add(m);
                 this.repaint();
                 this.revalidate();
@@ -448,10 +447,12 @@ class SecondFrame extends JFrame implements ActionListener {
             } catch (Exception E) {
             }
             fc.setDialogTitle("Saving File");
-            int selection= fc.showSaveDialog(null);
+            int selection = fc.showSaveDialog(null);
             if (selection == JFileChooser.APPROVE_OPTION) {
                 String filepath = fc.getSelectedFile().getAbsolutePath();
-                System.out.println("Save as file: " + filepath);
+                if (!this.graph.save(filepath)) {
+                    JOptionPane.showMessageDialog(null, "Did not saved successfully try again");
+                }
             }
         }
         if (e.getSource() == this.Load) {
@@ -468,7 +469,7 @@ class SecondFrame extends JFrame implements ActionListener {
                 this.graph.load(filepath);
                 this.getContentPane().removeAll();
                 this.update_x_y_pos();
-                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
                 this.add(m);
                 this.repaint();
                 this.revalidate();
@@ -544,14 +545,6 @@ class DisplayGraphics extends Canvas {
 
     /**
      * I took this method from stackoverflow.
-     *
-     * @param g1
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @param d
-     * @param h
      */
     private void drawArrowLine(Graphics g1, int x1, int y1, int x2, int y2, int d, int h) {
         Graphics2D g2 = (Graphics2D) g1;

@@ -73,13 +73,13 @@ public class Json_Helper {
         return true;
     }
 
-    public static boolean Json_Serializer(DirectedWeightedGraph graph) {
+    public static boolean Json_Serializer(DirectedWeightedGraph graph, String path_name) {
         // https://stackoverflow.com/questions/29319434/how-to-save-data-with-gson-in-a-json-file
         // https://stackoverflow.com/questions/46210867/json-file-i-o-with-pretty-print-format-using-gson-in-java
 
         DWG_Serialization dwg = new DWG_Serialization(graph);
 
-        try (Writer writer = new FileWriter("Output.json")) {
+        try (Writer writer = new FileWriter(path_name)) {
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
                     .create();
