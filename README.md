@@ -1,6 +1,7 @@
 # DirectedWeightedGraph
 
 This is a repository of DirectedWeightedGraph as part of an assignment in Ariel University 
+</br>
 
 ## Introduction
 
@@ -44,7 +45,7 @@ For nearly every class there is an interface object in the api folder, which goe
 This class Serialized and Deserializes .json files to the format given to us during the exercise, please see Ex2/data for 3 examples of such jsons, and it uses the Gson library to accomplish this
 - ``` Ex2 ```: </br>
 This class has 3 methods - ``` getGrapq(String json_file) ```, ``` getGrapgAlgo ```, and ``` runGUI(String json_file) ``` </br>
-which, given the location string of a .json file (which describes a graph) returns the appropriate object or runs the gui
+which, given the location string of a .json file (which describes a graph) returns the appropriate object or runs the gui.
 
 ## How To use
 
@@ -61,7 +62,18 @@ Important: G1.json is just an example, you can use any json located in the data 
 like ``` java -jar Ex2 G2.json``` or ``` java -jar Ex2 G3.json ``` </br>
 Very Important: running 1000Nodes.json and 10000Nodes.json is NOT RECOMMENDED AT ALL on nearly all home machines
 </br>
-Also worth noting that you will receive a FileNotFoundException if the file doesn't exist or if there is a typo
+Also worth noting that you will receive a FileNotFoundException if the file doesn't exist or if there is a typo.
+
+## Lessons Learned
+### things to improve
+- Better groundwork preparation
+- If we choose to use TDD than prepare tests before code 
+- More accurate tests
+
+### things to keep
+- Good source control
+- Proper divide of work
+- Keeping track of exercise additions and changes
 
 ## File Hierarchy
 
