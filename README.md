@@ -4,6 +4,7 @@ This is a repository of DirectedWeightedGraph as part of an assignment in Ariel 
 </br>
 
 ## Introduction
+- If you just want to know how to use this code please skip to the ``` How To Use ``` segment below.
 
 In this assignment we are expected to construct and implement solutions to known problems in the subject of Graphs, specifically Directed and Weighted graphs (see links at the end of the readme), and also represent the graph with a gui of our own making, in this exercise we were given free reign on things like which libraries to use and the worst case runtime complexity of algorithms (naturally we are expected to do our best and not concoct O(n!) solutions).
 
