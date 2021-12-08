@@ -49,21 +49,21 @@ public class Ex2 {
 
 
     public static void main(String[] args) {
-//        try {
-//            try {
-//                File fileLocation = new File("");
-//                runGUI(fileLocation.getAbsolutePath() + "/Ex2/data/"+args[0]);
-//            }
-//            catch (Exception e){
-//                e.printStackTrace();
-//                System.out.println("No such file or typo in name");
-//            }
-//
-//        }
-//        catch (IndexOutOfBoundsException e){
-//            System.out.println("Please enter a file name and try again!");
-//        }
-        runGUI("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
+        try {
+            try {
+                File fileLocation = new File("");
+                runGUI(fileLocation.getAbsolutePath() + "/Ex2/data/"+args[0]);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                System.out.println("No such file or typo in name");
+            }
+
+        }
+        catch (IndexOutOfBoundsException e){
+            System.out.println("Please enter a file name and try again!");
+        }
+//        runGUI("/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json");
         //System.out.println(getGrapgAlgo(file_loc).center());
         //System.out.println(getGrapgAlgo(file_loc).shortestPath(3,9));
     }
