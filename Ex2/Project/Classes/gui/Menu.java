@@ -8,14 +8,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Menu extends JFrame {
 
     private JPanel Screen = new JPanel(new GridLayout(6, 1, 0, 0));
-    private JButton Json = new JButton("Load Json File");
     private JButton ShowGraph = new JButton("Show Graph");
     private JButton ShortestPathDist = new JButton("Run ShortestPathDist");
     private JButton ShortestPath = new JButton("Run ShortestPath");
@@ -43,42 +42,27 @@ public class Menu extends JFrame {
     }
 
     private void ActionListener() {
-        Json.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                if (ae.getSource() == Json) {
-                    JFileChooser fc = new JFileChooser();
-                    int i = fc.showOpenDialog(Json);
-                    if (i == JFileChooser.APPROVE_OPTION) {
-                        File f = fc.getSelectedFile();
-                        String filepath = f.getPath();
-                        graph_algo.init(graph);
-                        graph_algo.load(filepath);
-                    }
-                }
-            }
-        });
-
-        ShowGraph.addActionListener(new ActionListener() {
+        this.ShowGraph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new SecondFrame(graph_algo, "ShowGraph", null);
             }
         });
-        ShortestPathDist.addActionListener(new ActionListener() {
+        this.ShortestPathDist.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new SecondFrame(graph_algo, "ShortestPathDist", null);
             }
         });
-        ShortestPath.addActionListener(new ActionListener() {
+        this.ShortestPath.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new SecondFrame(graph_algo, "ShortestPath", null);
             }
         });
-        Center.addActionListener(new ActionListener() {
+        this.Center.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new SecondFrame(graph_algo, "Center", null);
             }
         });
-        TSP.addActionListener(new ActionListener() {
+        this.TSP.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new SecondFrame(graph_algo, "TSP", null);
             }
@@ -86,7 +70,6 @@ public class Menu extends JFrame {
     }
 
     private void setColor() {
-        Json.setForeground(Color.BLACK);
         ShowGraph.setForeground(Color.RED);
         ShortestPathDist.setForeground(Color.RED);
         ShortestPath.setForeground(Color.RED);
@@ -95,7 +78,6 @@ public class Menu extends JFrame {
     }
 
     private void setSize() {
-        Json.setSize(220, 30);
         ShowGraph.setSize(220, 30);
         ShortestPathDist.setSize(220, 30);
         ShortestPath.setSize(220, 30);
@@ -104,18 +86,11 @@ public class Menu extends JFrame {
     }
 
     private void Addons() {
-        Screen.add(Json);
         Screen.add(ShowGraph);
         Screen.add(ShortestPathDist);
         Screen.add(ShortestPath);
         Screen.add(Center);
         Screen.add(TSP);
-    }
-
-
-    public static void main(String[] args) {
-        String file_loc = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
-        new Menu(file_loc);
     }
 
 }
@@ -127,29 +102,30 @@ public class Menu extends JFrame {
  */
 class SecondFrame extends JFrame implements ActionListener {
     private DirectedWeightedGraphAlgorithms graph;
-    private int[] nodeXpos;
-    private int[] nodeYpos;
+    private HashMap<Integer, Integer> nodeXpos; // key loc, x value
+    private HashMap<Integer, Integer> nodeYpos; // key loc, y value
     private Dimension screenSize;
     private Toolkit toolkit;
     private LinkedList<NodeData> path;
     private String operation; // what to activate.
 
     private JMenuBar Menu_Bar = new JMenuBar();
-    private JMenuItem Add_Node = new JMenuItem("Add Node"); // create
-    private JMenuItem Remove_Node = new JMenuItem("Remove Node"); // working > Fix to make it
-    private JMenuItem Save = new JMenuItem("Save Graph"); // create
-    private JMenuItem Remove_Edge = new JMenuItem("Remove Edge"); // create
-    private JMenuItem Add_Edge = new JMenuItem("Connect Edge"); // create
+    private JButton Add_Node = new JButton("Add Node"); // create
+    private JButton Remove_Node = new JButton("Remove Node"); // working > Fix to make it
+    private JButton Save = new JButton("Save Graph"); // create
+    private JButton Load = new JButton("Load Graph");
+    private JButton Remove_Edge = new JButton("Remove Edge"); // create
+    private JButton Add_Edge = new JButton("Connect Edge"); // create
 
     public SecondFrame(DirectedWeightedGraphAlgorithms graph, String operation, LinkedList<NodeData> path) {
         this.graph = graph;
         this.operation = operation;
         this.path = path;
-        this.nodeXpos = new int[this.graph.getGraph().nodeSize()];
-        this.nodeYpos = new int[this.graph.getGraph().nodeSize()];
+        this.nodeXpos = new HashMap<>();
+        this.nodeYpos = new HashMap<>();
         this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.update_x_y_pos();
         this.operations();
+        this.update_x_y_pos();
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
@@ -159,6 +135,7 @@ class SecondFrame extends JFrame implements ActionListener {
         this.Menu_Bar.add(this.Remove_Node);
         this.Menu_Bar.add(this.Remove_Edge);
         this.Menu_Bar.add(this.Add_Edge);
+        this.Menu_Bar.add(this.Load);
         this.Menu_Bar.add(this.Save);
 
     }
@@ -172,6 +149,12 @@ class SecondFrame extends JFrame implements ActionListener {
                 this.setJMenuBar(Menu_Bar);
                 this.Remove_Node.addActionListener(this::actionPerformed);
                 this.Remove_Edge.addActionListener(this::actionPerformed);
+                this.Add_Node.addActionListener(this::actionPerformed);
+                this.Add_Edge.addActionListener(this::actionPerformed);
+                this.Save.addActionListener(this::actionPerformed);
+                this.Load.addActionListener(this::actionPerformed);
+
+
             }
             this.add(m);
         }
@@ -347,6 +330,7 @@ class SecondFrame extends JFrame implements ActionListener {
         }
     }
 
+    //TODO: Update varibales
     private void update_x_y_pos() {
         Iterator nodes = this.graph.getGraph().nodeIter();
         NodeData curr_node;
@@ -363,7 +347,8 @@ class SecondFrame extends JFrame implements ActionListener {
             maxX = Math.max(maxX, x);
             maxY = Math.max(maxY, y);
         }
-        double uintX = this.screenSize.width / (maxX - minX) * 0.9;
+
+        double uintX = this.screenSize.width / (maxX - minX) * 0.8;
         double unitY = this.screenSize.height / (maxY - minY) * 0.8;
 
         nodes = this.graph.getGraph().nodeIter();
@@ -374,8 +359,8 @@ class SecondFrame extends JFrame implements ActionListener {
             x = (curr_geo.x() - minX) * uintX;
             y = (curr_geo.y() - minY) * unitY;
 
-            this.nodeXpos[curr_node.getKey()] = (int) x;
-            this.nodeYpos[curr_node.getKey()] = (int) y;
+            this.nodeXpos.put(curr_node.getKey(), (int) x);
+            this.nodeYpos.put(curr_node.getKey(), (int) y);
 
         }
     }
@@ -388,18 +373,21 @@ class SecondFrame extends JFrame implements ActionListener {
                 int id_int = Integer.parseInt(id);
                 this.graph.getGraph().removeNode(id_int);
                 this.getContentPane().removeAll();
+                this.nodeXpos.remove(id_int);
+                this.nodeYpos.remove(id_int);
+                this.update_x_y_pos();
                 DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
                 this.add(m);
                 this.repaint();
                 this.revalidate();
             }
         } catch (Exception E) {
-            JOptionPane.showMessageDialog(null, "Invalid, enter again");
+            JOptionPane.showMessageDialog(null, "Invalid, enter again", "", JOptionPane.ERROR_MESSAGE);
         }
 
         if (e.getSource() == this.Remove_Edge) {
             try {
-                String id = JOptionPane.showInputDialog(null, "Insert Edge src,dest ");
+                String id = JOptionPane.showInputDialog(null, "Insert Edge 'src,dest' ");
                 String[] items = id.split(",");
                 int src = Integer.parseInt(items[0]);
                 int dest = Integer.parseInt(items[1]);
@@ -413,16 +401,89 @@ class SecondFrame extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Invalid, enter again");
             }
         }
+        if (e.getSource() == this.Add_Node) {
+            try {
+                String id = JOptionPane.showInputDialog(null, "Insert 'ID,x,y' ");
+                String[] items = id.split(",");
+                int ID = Integer.parseInt(items[0]);
+                double x = Double.parseDouble(items[1]);
+                double y = Double.parseDouble(items[2]);
+                GeoLocation geo_loc = new Geo_Location(x, y, 0);
+                NodeData new_node = new Node_data(ID, (Geo_Location) geo_loc);
+                this.graph.getGraph().addNode(new_node);
+                this.nodeXpos.put(ID, (int) x);
+                this.nodeYpos.put(ID, (int) y);
+                this.update_x_y_pos();
+                this.getContentPane().removeAll();
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                this.add(m);
+                this.repaint();
+                this.revalidate();
+            } catch (Exception E) {
+                JOptionPane.showMessageDialog(null, "Invalid, enter again");
+            }
+        }
+        if (e.getSource() == this.Add_Edge) {
+            try {
+                String id = JOptionPane.showInputDialog(null, "Insert 'ID1,ID2,Weight' ");
+                String[] items = id.split(",");
+                int ID1 = Integer.parseInt(items[0]);
+                int ID2 = Integer.parseInt(items[1]);
+                double weight = Double.parseDouble(items[2]);
+                this.graph.getGraph().connect(ID1, ID2, weight);
+                this.update_x_y_pos();
+                this.getContentPane().removeAll();
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                this.add(m);
+                this.repaint();
+                this.revalidate();
+            } catch (Exception E) {
+                JOptionPane.showMessageDialog(null, "Invalid, enter again");
+            }
+        }
+        if (e.getSource() == this.Save) {
+            JFileChooser fc = new JFileChooser();
+            try {
+                fc.setCurrentDirectory(new File("./data"));
+            } catch (Exception E) {
+            }
+            fc.setDialogTitle("Saving File");
+            int selection= fc.showSaveDialog(null);
+            if (selection == JFileChooser.APPROVE_OPTION) {
+                String filepath = fc.getSelectedFile().getAbsolutePath();
+                System.out.println("Save as file: " + filepath);
+            }
+        }
+        if (e.getSource() == this.Load) {
+            JFileChooser fc = new JFileChooser();
+            try {
+                fc.setCurrentDirectory(new File("./data"));
+            } catch (Exception E) {
+            }
+            fc.setDialogTitle("Loading File");
+            int selection = fc.showOpenDialog(null);
+            if (selection == JFileChooser.APPROVE_OPTION) {
+                String filepath = fc.getSelectedFile().getPath();
+                this.graph = new DW_Graph_Algo();
+                this.graph.load(filepath);
+                this.getContentPane().removeAll();
+                this.update_x_y_pos();
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                this.add(m);
+                this.repaint();
+                this.revalidate();
+            }
+        }
     }
 }
 
 class DisplayGraphics extends Canvas {
     private DirectedWeightedGraphAlgorithms graph;
-    private int[] nodeXpos;
-    private int[] nodeYpos;
+    private HashMap<Integer, Integer> nodeXpos; // key loc, x value
+    private HashMap<Integer, Integer> nodeYpos; // key loc, y value
     private LinkedList<NodeData> path;
 
-    public DisplayGraphics(DirectedWeightedGraphAlgorithms graph, int[] nodeXpos, int[] nodeYpos, LinkedList<NodeData> path) {
+    public DisplayGraphics(DirectedWeightedGraphAlgorithms graph, HashMap<Integer, Integer> nodeXpos, HashMap<Integer, Integer> nodeYpos, LinkedList<NodeData> path) {
         this.graph = graph;
         this.nodeXpos = nodeXpos;
         this.nodeYpos = nodeYpos;
@@ -435,10 +496,10 @@ class DisplayGraphics extends Canvas {
         Iterator<EdgeData> edges = this.graph.getGraph().edgeIter();
         while (edges.hasNext()) {
             EdgeData edge = edges.next();
-            x1 = nodeXpos[edge.getSrc()];
-            y1 = nodeYpos[edge.getSrc()];
-            x2 = nodeXpos[edge.getDest()];
-            y2 = nodeYpos[edge.getDest()];
+            x1 = this.nodeXpos.get(edge.getSrc());
+            y1 = this.nodeYpos.get(edge.getSrc());
+            x2 = this.nodeXpos.get(edge.getDest());
+            y2 = this.nodeYpos.get(edge.getDest());
             g.setColor(Color.BLACK);
             this.drawArrowLine(g, x1, y1, x2, y2, 25, 8);
 
@@ -452,35 +513,46 @@ class DisplayGraphics extends Canvas {
             for (int x = 0; x < size; ++x) {
                 g.setColor(Color.RED);
                 NodeData curr_node1 = tmp.pop();
-                x1 = nodeXpos[curr_node1.getKey()];
-                y1 = nodeYpos[curr_node1.getKey()];
+                x1 = this.nodeXpos.get(curr_node1.getKey());
+                y1 = this.nodeYpos.get(curr_node1.getKey());
                 if (tmp.isEmpty()) {
                     break;
                 }
                 NodeData curr_node2 = tmp.peek();
                 if (graph.getGraph().getEdge(curr_node1.getKey(), curr_node2.getKey()) != null) {
-                    x2 = nodeXpos[curr_node2.getKey()];
-                    y2 = nodeYpos[curr_node2.getKey()];
+                    x2 = this.nodeXpos.get(curr_node2.getKey());
+                    y2 = this.nodeYpos.get(curr_node2.getKey());
                     g.drawLine(x1, y1, x2, y2);
                 }
             }
         }
         int i, j;
         i = j = 20;
-        for (int z = 0; z < this.graph.getGraph().nodeSize(); ++z) {
+        Iterator<NodeData> nodes = this.graph.getGraph().nodeIter();
+        while (nodes.hasNext()) {
+            NodeData curr_node = nodes.next();
             g.setColor(Color.BLACK);
-            g.fillOval(nodeXpos[z] - 8, nodeYpos[z] - 8, i, j);
+            g.fillOval(this.nodeXpos.get(curr_node.getKey()) - 8, this.nodeYpos.get(curr_node.getKey()) - 8, i, j);
             g.setColor(Color.MAGENTA);
-            if (z < 10) {
-                g.drawString(String.valueOf(z), nodeXpos[z], nodeYpos[z] + 8);
+            if (curr_node.getKey() < 10) {
+                g.drawString(String.valueOf(curr_node.getKey()), this.nodeXpos.get(curr_node.getKey()), this.nodeYpos.get(curr_node.getKey()) + 8);
             } else {
-                g.drawString(String.valueOf(z), nodeXpos[z] - 4, nodeYpos[z] + 8);
+                g.drawString(String.valueOf(curr_node.getKey()), this.nodeXpos.get(curr_node.getKey()) - 4, this.nodeYpos.get(curr_node.getKey()) + 8);
             }
         }
-
-
     }
 
+    /**
+     * I took this method from stackoverflow.
+     *
+     * @param g1
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param d
+     * @param h
+     */
     private void drawArrowLine(Graphics g1, int x1, int y1, int x2, int y2, int d, int h) {
         Graphics2D g2 = (Graphics2D) g1;
 

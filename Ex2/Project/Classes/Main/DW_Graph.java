@@ -4,6 +4,7 @@ import api.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * Authors - Yonatan Ratner & Shaked Levi
@@ -141,6 +142,8 @@ public class DW_Graph implements api.DirectedWeightedGraph {
                 Edge_data e = new Edge_data(src, dest, w);
                 this.Edges.get(src).put(dest, e);
             }
+        } else {
+            throw new IllegalArgumentException("Invalid src or dest position");
         }
         this.EdgesCounter++;
         this.MC++;
@@ -174,6 +177,22 @@ public class DW_Graph implements api.DirectedWeightedGraph {
                     throw new RuntimeException("graph was changed after iterator creation");
                 }
                 return it.next();
+            }
+
+            @Override
+            public void remove() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                it.remove();
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super NodeData> action) {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                it.forEachRemaining(action);
             }
         };
     }
@@ -214,6 +233,22 @@ public class DW_Graph implements api.DirectedWeightedGraph {
                 }
                 return it2.next();
             }
+
+            @Override
+            public void remove() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                it2.remove();
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super EdgeData> action) {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                it2.forEachRemaining(action);
+            }
         };
     }
 
@@ -247,6 +282,22 @@ public class DW_Graph implements api.DirectedWeightedGraph {
                 }
                 return it.next();
             }
+
+            @Override
+            public void remove() {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                it.remove();
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super EdgeData> action) {
+                if (this.starting_MC != MC) {
+                    throw new RuntimeException("graph was changed after iterator creation");
+                }
+                it.forEachRemaining(action);
+            }
         };
     }
 
@@ -260,14 +311,19 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     @Override
     public NodeData removeNode(int key) {
-        this.EdgesCounter -= this.Edges.get(key).size(); // decrease the amount of edges going out from this node(key)
-        this.Edges.remove(key); // remove the edges going out from this node(key)
-        //remove the edges going into this node(key)
-        this.Edges.forEach((src, HashMap) -> {
-            if (HashMap.containsKey(key))
+        if (this.Edges.containsKey(key)) {
+            this.Edges.remove(key);
+            this.EdgesCounter -= this.Edges.get(key).size();
+        }
+        EdgeData curr_edge;
+        Iterator<EdgeData> edges = this.edgeIter();
+        while (edges.hasNext()) {
+            curr_edge = edges.next();
+            if (this.Edges.get(curr_edge.getSrc()).containsKey(key)) {
+                this.Edges.get(curr_edge.getSrc()).remove(key);
                 this.EdgesCounter--;
-            HashMap.remove(key);
-        });
+            }
+        }
         this.MC++; // increase changes to graph
         return this.Nodes.remove(key); // simply remove the node
     }
@@ -281,10 +337,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @return - the removed edge.
      */
     public EdgeData removeEdge(int src, int dest) {
-        EdgeData e = this.Edges.get(src).get(dest); // gets the EDGE from the hashmap.
-        HashMap<Integer, EdgeData> tmp = new HashMap<>(); // creates a temporary Removable edge.
-        tmp.put(dest, e);
-        this.Edges.remove(src, tmp); //remove it.
+        EdgeData e = this.Edges.get(src).remove(dest);
         this.MC++; // increase changes to graph
         this.EdgesCounter--;
         return e; // returns the EDGE (null if none)
