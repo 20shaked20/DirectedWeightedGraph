@@ -48,6 +48,21 @@ which, given the location string of a .json file (which describes a graph) retur
 
 ## How To use
 
+- Do not move the Ex2.jar from its relative location! - this is critical.
+
+Firstly open the CMD (or equivalent) and navigate to the folder where the project is located, for example: </br>
+![image](https://user-images.githubusercontent.com/73063105/145261454-ea644745-ec46-4f2a-a607-e9dcccaea1fb.png)
+</br>
+Then, use this command syntax: ``` java -jar Ex2.jar JSON_NAME.json ```</br>
+for Example: </br>
+![image](https://user-images.githubusercontent.com/73063105/145261697-b026151b-70f9-4b5d-a2e1-faae3370e483.png)
+</br>
+Important: G1.json is just an example, you can use any json located in the data folder (Project/Ex2/data/)
+like ``` java -jar Ex2 G2.json``` or ``` java -jar Ex2 G3.json ``` </br>
+Very Important: running 1000Nodes.json and 10000Nodes.json is NOT RECOMMENDED AT ALL on nearly all home machines
+</br>
+Also worth noting that you will receive a FileNotFoundException if the file doesn't exist or if there is a typo
+
 ## File Hierarchy
 
 ![image](https://user-images.githubusercontent.com/73063105/145240195-f703b203-8a18-4e15-ae06-fa03b38470ba.png)
