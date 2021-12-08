@@ -3,6 +3,8 @@ package Main;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import gui.Menu;
+
+import java.io.File;
 // use > swing, dijkstra
 
 /**
@@ -45,9 +47,22 @@ public class Ex2 {
         Menu gui = new Menu(json_file);
     }
 
+
     public static void main(String[] args) {
-        String file_loc = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G3.json";
-        runGUI(file_loc);
+        try {
+            try {
+                File fileLocation = new File("");
+                runGUI(fileLocation.getAbsolutePath() + "/Ex2/data/"+args[0]);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                System.out.println("No such file or typo in name");
+            }
+
+        }
+        catch (IndexOutOfBoundsException e){
+            System.out.println("Please enter a file name and try again!");
+        }
         //System.out.println(getGrapgAlgo(file_loc).center());
         //System.out.println(getGrapgAlgo(file_loc).shortestPath(3,9));
     }

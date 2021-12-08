@@ -1,8 +1,10 @@
 # DirectedWeightedGraph
 
 This is a repository of DirectedWeightedGraph as part of an assignment in Ariel University 
+</br>
 
 ## Introduction
+- If you just want to know how to use this code please skip to the ``` How To Use ``` segment below.
 
 In this assignment we are expected to construct and implement solutions to known problems in the subject of Graphs, specifically Directed and Weighted graphs (see links at the end of the readme), and also represent the graph with a gui of our own making, in this exercise we were given free reign on things like which libraries to use and the worst case runtime complexity of algorithms (naturally we are expected to do our best and not concoct O(n!) solutions).
 
@@ -44,13 +46,39 @@ For nearly every class there is an interface object in the api folder, which goe
 This class Serialized and Deserializes .json files to the format given to us during the exercise, please see Ex2/data for 3 examples of such jsons, and it uses the Gson library to accomplish this
 - ``` Ex2 ```: </br>
 This class has 3 methods - ``` getGrapq(String json_file) ```, ``` getGrapgAlgo ```, and ``` runGUI(String json_file) ``` </br>
-which, given the location string of a .json file (which describes a graph) returns the appropriate object or runs the gui
+which, given the location string of a .json file (which describes a graph) returns the appropriate object or runs the gui.
 
 ## How To use
 
+- Do not move the Ex2.jar from its relative location! - this is critical.
+
+Firstly open the CMD (or equivalent) and navigate to the folder where the project is located, for example: </br>
+![image](https://user-images.githubusercontent.com/73063105/145261454-ea644745-ec46-4f2a-a607-e9dcccaea1fb.png)
+</br>
+Then, use this command syntax: ``` java -jar Ex2.jar JSON_NAME.json ```</br>
+for Example: </br>
+![image](https://user-images.githubusercontent.com/73063105/145261697-b026151b-70f9-4b5d-a2e1-faae3370e483.png)
+</br>
+Important: G1.json is just an example, you can use any json located in the data folder (Project/Ex2/data/)
+like ``` java -jar Ex2 G2.json``` or ``` java -jar Ex2 G3.json ``` </br>
+Very Important: running 1000Nodes.json and 10000Nodes.json is NOT RECOMMENDED AT ALL on nearly all home machines
+</br>
+Also worth noting that you will receive a FileNotFoundException if the file doesn't exist or if there is a typo.
+
+## Lessons Learned
+### things to improve
+- Better groundwork preparation
+- If we choose to use TDD than prepare tests before code 
+- More accurate tests
+
+### things to keep
+- Good source control
+- Proper divide of work
+- Keeping track of exercise additions and changes
+
 ## File Hierarchy
 
-![image](https://user-images.githubusercontent.com/73063105/145205941-3674ece7-454b-401f-8699-d1ad3f15bd63.png)
+![image](https://user-images.githubusercontent.com/73063105/145240195-f703b203-8a18-4e15-ae06-fa03b38470ba.png)
 
 
 ## Reading Material
