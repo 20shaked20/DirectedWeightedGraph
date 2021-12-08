@@ -46,7 +46,9 @@ public class Ex2 {
     }
 
     public static void main(String[] args) {
-        String file_loc = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
-        runGUI(file_loc);
+        String file_loc = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G3.json";
+        //runGUI(file_loc);
+        System.out.println(getGrapgAlgo(file_loc).center());
+        //System.out.println(getGrapgAlgo(file_loc).shortestPath(3,9));
     }
 }

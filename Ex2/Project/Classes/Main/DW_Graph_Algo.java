@@ -1,6 +1,7 @@
 package Main;
 
 import api.*;
+import org.w3c.dom.Node;
 
 import java.util.*;
 
@@ -189,6 +190,7 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
             nodesQ.add(src);
             while (!nodesQ.isEmpty()) {
                 NodeData poll_node = nodesQ.poll();
+                //System.out.println(poll_node.toString());
                 Iterator<EdgeData> curr_edges = this.graph.edgeIter(poll_node.getKey());
                 while (curr_edges.hasNext()) {
                     EdgeData curr_edge = curr_edges.next(); // if I don't create this, it will 'no such element exception' because of overlapping in iterator.
@@ -244,11 +246,11 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
      * Solves for the shortest path from src to every other node in the graph
      * using Dijkstra's algorithm
      *
-     * @param src  an integer representing the source
+     * @param src an integer representing the source
      * @return A double value representing the sum of the shortest distances
      */
     private double dijkstra_algo(NodeData src) {
-        if (src != null ) {
+        if (src != null) {
             double sum = 0;
             //Comparing by weight the nodes, hidden class.
             PriorityQueue<NodeData> nodesQ = new PriorityQueue<>(this.graph.nodeSize(), Comparator.comparingDouble(NodeData::getWeight));
@@ -279,44 +281,39 @@ public class DW_Graph_Algo implements DirectedWeightedGraphAlgorithms {
     /**
      * Finds the api.NodeData which minimizes the max distance to all the other nodes.
      * Assuming the graph isConnected, else return null. See: https://en.wikipedia.org/wiki/Graph_center
-     *
+     * //find all shortestpathdists from each node, get the maximum of each one.
+     *     // and then find the minimum
      * @return the Node data to which the shortest path to all the other nodes is minimized.
      */
     @Override
     public NodeData center() {
-        //TODO: check how to make this O(n^2)
         if (!isConnected()) {
-            return null; //if the graph is not strongly connected, then there is no center!
+            return null;
         }
-        double dist;
-        double avg;
-        double bestAverage = Double.MAX_VALUE;
-        int bestNode = 0; // Initialized to 0 just in case.
-        Iterator<NodeData> nodes = graph.nodeIter();
-        while (nodes.hasNext()) { //|V|
-            int node = nodes.next().getKey();
-            //dist = singleSourceDijkstraAlgo(node); //|V|^2 + nodes.next advances the Iterator.
-            avg = dijkstra_algo(graph.getNode(node))/(graph.nodeSize()-1);
-            this.tag_refresh();
-            this.info_refresh();
-            this.weight_refresh();
-            //double avg = average(dist); //|V|
-            if (avg < bestAverage) {
-                bestAverage = avg;
-                bestNode = node;
+        Iterator<NodeData> nodes = this.graph.nodeIter();
+        double tmp;
+        double min1 = Double.MAX_VALUE;
+        int node_id = -1;
+        while (nodes.hasNext()) {
+            NodeData curr_node = nodes.next();
+            Iterator<NodeData> nodes2 = this.graph.nodeIter();
+            double max1 = Double.MIN_VALUE;
+            while (nodes2.hasNext()) {
+                NodeData next_node = nodes2.next();
+                tmp = dijkstra_algo(curr_node, next_node);
+                this.tag_refresh();
+                this.info_refresh();
+                this.weight_refresh();
+                if (tmp > max1) {
+                    max1 = tmp;
+                }
+            }
+            if (min1 > max1) {
+                min1 = max1;
+                node_id = curr_node.getKey();
             }
         }
-        return graph.getNode(bestNode);
-    }
-
-    private double average(double[] dist) {
-        if (dist == null || dist.length == 0)
-            return Integer.MAX_VALUE;
-        double sum = 0;
-        for (double v : dist) {
-            sum += v; // note that we assume the graph is strongly connected, therefore no dist[i]=Max_Value!!!
-        }
-        return sum / dist.length;
+        return this.graph.getNode(node_id);
     }
 
     /**

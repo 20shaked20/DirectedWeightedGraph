@@ -125,3 +125,41 @@ This file contains 'legacy' methods that were used but are no longer a part of t
                 return Double.compare(this.cost, o.cost);
             }
         }
+
+        /// OLD CENTER :>
+        public NodeData center1() {
+                //TODO: check how to make this O(n^2)
+                if (!isConnected()) {
+                    return null; //if the graph is not strongly connected, then there is no center!
+                }
+                double dist;
+                double avg;
+                double bestAverage = Double.MAX_VALUE;
+                int bestNode = 0; // Initialized to 0 just in case.
+                Iterator<NodeData> nodes = graph.nodeIter();
+                while (nodes.hasNext()) { //|V|
+                    int node = nodes.next().getKey();
+                    //dist = singleSourceDijkstraAlgo(node); //|V|^2 + nodes.next advances the Iterator.
+                    avg = dijkstra_algo(graph.getNode(node)) / (graph.nodeSize() - 1);
+                    this.tag_refresh();
+                    this.info_refresh();
+                    this.weight_refresh();
+                    //double avg = average(dist); //|V|
+                    if (avg < bestAverage) {
+                        bestAverage = avg;
+                        bestNode = node;
+                    }
+                }
+                return graph.getNode(bestNode);
+            }
+
+
+            private double average(double[] dist) {
+                    if (dist == null || dist.length == 0)
+                        return Integer.MAX_VALUE;
+                    double sum = 0;
+                    for (double v : dist) {
+                        sum += v; // note that we assume the graph is strongly connected, therefore no dist[i]=Max_Value!!!
+                    }
+                    return sum / dist.length;
+                }
