@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class Menu extends JFrame implements ActionListener {
+public class Menu extends JFrame {
 
     private JPanel Screen = new JPanel(new GridLayout(6, 1, 0, 0));
     private JButton Json = new JButton("Load Json File");
@@ -112,10 +112,6 @@ public class Menu extends JFrame implements ActionListener {
         Screen.add(TSP);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
-
 
     public static void main(String[] args) {
         String file_loc = "/Users/Shaked/IdeaProjects/DirectedWeightedGraph/Ex2/data/G1.json";
@@ -129,7 +125,7 @@ public class Menu extends JFrame implements ActionListener {
 /**
  * This class is responsible for the second frame layout, it will pop up the new graphs using the algorithms.
  */
-class SecondFrame extends JFrame {
+class SecondFrame extends JFrame implements ActionListener {
     private DirectedWeightedGraphAlgorithms graph;
     private int[] nodeXpos;
     private int[] nodeYpos;
@@ -139,6 +135,11 @@ class SecondFrame extends JFrame {
     private String operation; // what to activate.
 
     private JMenuBar Menu_Bar = new JMenuBar();
+    private JMenuItem Add_Node = new JMenuItem("Add Node"); // create
+    private JMenuItem Remove_Node = new JMenuItem("Remove Node"); // working > Fix to make it
+    private JMenuItem Save = new JMenuItem("Save Graph"); // create
+    private JMenuItem Remove_Edge = new JMenuItem("Remove Edge"); // create
+    private JMenuItem Add_Edge = new JMenuItem("Connect Edge"); // create
 
     public SecondFrame(DirectedWeightedGraphAlgorithms graph, String operation, LinkedList<NodeData> path) {
         this.graph = graph;
@@ -147,17 +148,31 @@ class SecondFrame extends JFrame {
         this.nodeXpos = new int[this.graph.getGraph().nodeSize()];
         this.nodeYpos = new int[this.graph.getGraph().nodeSize()];
         this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setJMenuBar(Menu_Bar);
         this.update_x_y_pos();
         this.operations();
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
+    private void MenuBar() {
+        this.Menu_Bar.add(this.Add_Node);
+        this.Menu_Bar.add(this.Remove_Node);
+        this.Menu_Bar.add(this.Remove_Edge);
+        this.Menu_Bar.add(this.Add_Edge);
+        this.Menu_Bar.add(this.Save);
+
+    }
+
     private void operations() {
         if (this.operation.equals("ShowGraph")) {
             DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
             this.setSize(this.screenSize.width, this.screenSize.height);
+            if (this.path == null) { // only add menu when showing graph.
+                this.MenuBar();
+                this.setJMenuBar(Menu_Bar);
+                this.Remove_Node.addActionListener(this::actionPerformed);
+                this.Remove_Edge.addActionListener(this::actionPerformed);
+            }
             this.add(m);
         }
 
@@ -364,6 +379,41 @@ class SecondFrame extends JFrame {
 
         }
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            if (e.getSource() == this.Remove_Node) {
+                String id = JOptionPane.showInputDialog(null, "Insert Node id");
+                int id_int = Integer.parseInt(id);
+                this.graph.getGraph().removeNode(id_int);
+                this.getContentPane().removeAll();
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                this.add(m);
+                this.repaint();
+                this.revalidate();
+            }
+        } catch (Exception E) {
+            JOptionPane.showMessageDialog(null, "Invalid, enter again");
+        }
+
+        if (e.getSource() == this.Remove_Edge) {
+            try {
+                String id = JOptionPane.showInputDialog(null, "Insert Edge src,dest ");
+                String[] items = id.split(",");
+                int src = Integer.parseInt(items[0]);
+                int dest = Integer.parseInt(items[1]);
+                this.graph.getGraph().removeEdge(src, dest);
+                this.getContentPane().removeAll();
+                DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeXpos, this.nodeYpos, this.path);
+                this.add(m);
+                this.repaint();
+                this.revalidate();
+            } catch (Exception E) {
+                JOptionPane.showMessageDialog(null, "Invalid, enter again");
+            }
+        }
+    }
 }
 
 class DisplayGraphics extends Canvas {
@@ -433,26 +483,6 @@ class DisplayGraphics extends Canvas {
 
     private void drawArrowLine(Graphics g1, int x1, int y1, int x2, int y2, int d, int h) {
         Graphics2D g2 = (Graphics2D) g1;
-
-//        /* */
-//        double m = (y_1 - y_2) / (x_1 - x_2); // F(x) = mx + c
-//        double c = y_1 - m * x_1; // F(x) = y iff y - mx = c
-        /*todo: try to change before calling this function*/
-//        /*
-//        x1 += 0.01; // note that is addition
-//        x2 -= 0.01; // and this is subtraction
-//        y1 =(int)Math.round(m*x1+c);
-//        y2 =(int)Math.round(m*x2+c);
-//
-//         */
-//
-//
-//        // now we know F(x) and can alter x1,x2,y1,y2:
-//        int x1 = x_1 + 1; // note that is addition
-//        int x2 = x_2 - 1; // and this is subtraction
-//        int y1 =(int)(m*x1+c);
-//        int y2 =(int)(m*x2+c);
-
 
         int dx = x2 - x1, dy = y2 - y1;
         double D = Math.sqrt(dx * dx + dy * dy);

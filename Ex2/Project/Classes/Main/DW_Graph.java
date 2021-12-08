@@ -131,13 +131,12 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     public void connect(int src, int dest, double w) {
         if (this.Nodes.containsKey(src) && this.Nodes.containsKey(dest)) {
-           // System.out.println("src: " + src + " , " + "dest: " + dest);
+            // System.out.println("src: " + src + " , " + "dest: " + dest);
 
             if (this.Edges.containsKey(src)) {
                 Edge_data e = new Edge_data(src, dest, w);
                 this.Edges.get(src).put(dest, e);
-            }
-            else {
+            } else {
                 this.Edges.put(src, new HashMap<>());
                 Edge_data e = new Edge_data(src, dest, w);
                 this.Edges.get(src).put(dest, e);
@@ -210,7 +209,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
                     throw new RuntimeException("graph was changed after iterator creation");
                 }
                 //if (it2 == null || !(it2.hasNext())) {
-                if ( !it2.hasNext() && it1.hasNext() ) {
+                if (!it2.hasNext() && it1.hasNext()) {
                     it2 = it1.next().values().iterator();
                 }
                 return it2.next();
@@ -261,13 +260,16 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      */
     @Override
     public NodeData removeNode(int key) {
-        NodeData temp = this.Nodes.remove(key);
-        int edgesDeleted = Edges.get(key).size();
-        Edges.remove(key);
-        this.MC += edgesDeleted + 1; //+1 for node delete
-        this.EdgesCounter -= edgesDeleted;
-        this.NodesCounter--;
-        return temp;
+        this.EdgesCounter -= this.Edges.get(key).size(); // decrease the amount of edges going out from this node(key)
+        this.Edges.remove(key); // remove the edges going out from this node(key)
+        //remove the edges going into this node(key)
+        this.Edges.forEach((src, HashMap) -> {
+            if (HashMap.containsKey(key))
+                this.EdgesCounter--;
+            HashMap.remove(key);
+        });
+        this.MC++; // increase changes to graph
+        return this.Nodes.remove(key); // simply remove the node
     }
 
     /**

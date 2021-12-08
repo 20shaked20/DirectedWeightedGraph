@@ -163,3 +163,22 @@ This file contains 'legacy' methods that were used but are no longer a part of t
                     }
                     return sum / dist.length;
                 }
+
+                //        /* */
+                //        double m = (y_1 - y_2) / (x_1 - x_2); // F(x) = mx + c
+                //        double c = y_1 - m * x_1; // F(x) = y iff y - mx = c
+                        /*todo: try to change before calling this function*/
+                //        /*
+                //        x1 += 0.01; // note that is addition
+                //        x2 -= 0.01; // and this is subtraction
+                //        y1 =(int)Math.round(m*x1+c);
+                //        y2 =(int)Math.round(m*x2+c);
+                //
+                //         */
+                //
+                //
+                //        // now we know F(x) and can alter x1,x2,y1,y2:
+                //        int x1 = x_1 + 1; // note that is addition
+                //        int x2 = x_2 - 1; // and this is subtraction
+                //        int y1 =(int)(m*x1+c);
+                //        int y2 =(int)(m*x2+c);
