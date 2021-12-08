@@ -1,6 +1,10 @@
 # DirectedWeightedGraph
+
 This is a repository of DirectedWeightedGraph as part of an assignment in Ariel University 
+
 ## Introduction
+
+In this assignment we are expected to construct and implement solutions to known problems in the subject of Graphs, specifically Directed and Weighted graphs (see links at the end of the readme), and also represent the graph with a gui of our own making, in this exercise we were given free reign on things like which libraries to use and the worst case runtime complexity of algorithms (naturally we are expected to do our best and not concoct O(n!) solutions).
 
 ## Approach
 
@@ -29,10 +33,25 @@ Therefore we used a heuristic and greedy algorithm that does not guarantee a sol
 This algorithm attempts to travel from a node to every other node while taking the cheapest neighbour to travel to, with a heavy bias towards unvisited nodes, this is calculated for every node, and then the best path is evaluated and returned, However this algorithm is flawed for specific graphs where it has trouble 'escaping' circles and can be optimized with a topographical sort and other methods, in short - this is a good, but improvable attempt.
 
 ## The Classes
+For nearly every class there is an interface object in the api folder, which goes into detail about the methods the classes must have and what they do, so unless it's not stated somewhere we will not elaborate
+
+- ``` DW_Graph implements DirectedWeightedGraph  ```
+- ``` DW_Graph_Algo implements DirectedWeightedGraphAlgorithms ```
+- ``` Edge_data implements EdgeData ``` 
+- ``` Node_data implements NodeData ``` 
+- ``` Geo_Location implements GeoLocation ```
+- ``` Json_Helper ``` : </br>
+This class Serialized and Deserializes .json files to the format given to us during the exercise, please see Ex2/data for 3 examples of such jsons, and it uses the Gson library to accomplish this
+- ``` Ex2 ```: </br>
+This class has 3 methods - ``` getGrapq(String json_file) ```, ``` getGrapgAlgo ```, and ``` runGUI(String json_file) ``` </br>
+which, given the location string of a .json file (which describes a graph) returns the appropriate object or runs the gui
 
 ## How To use
 
 ## File Hierarchy
+
+![image](https://user-images.githubusercontent.com/73063105/145205941-3674ece7-454b-401f-8699-d1ad3f15bd63.png)
+
 
 ## Reading Material
 - About Directed, Weighted, and Directed + Weighted graphs: http://math.oxford.emory.edu/site/cs171/directedAndEdgeWeightedGraphs/
