@@ -50,7 +50,7 @@ which, given the location string of a .json file (which describes a graph) retur
 
 ## File Hierarchy
 
-![image](https://user-images.githubusercontent.com/73063105/145205941-3674ece7-454b-401f-8699-d1ad3f15bd63.png)
+![image](https://user-images.githubusercontent.com/73063105/145240195-f703b203-8a18-4e15-ae06-fa03b38470ba.png)
 
 
 ## Reading Material
