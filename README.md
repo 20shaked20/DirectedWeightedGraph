@@ -61,7 +61,7 @@ for Example: </br>
 </br>
 Important: G1.json is just an example, you can use any json located in the data folder (Project/Ex2/data/)
 like ``` java -jar Ex2 G2.json``` or ``` java -jar Ex2 G3.json ``` </br>
-Very Important: running 1000Nodes.json and 10000Nodes.json is NOT RECOMMENDED AT ALL on nearly all home machines
+Very Important: running 1000Nodes.json and 10000Nodes.json is NOT RECOMMENDED AT ALL on nearly all home machines as they have *thousands* of edges
 </br>
 Also worth noting that you will receive a FileNotFoundException if the file doesn't exist or if there is a typo.
 
