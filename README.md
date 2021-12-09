@@ -65,6 +65,19 @@ Very Important: running 1000Nodes.json and 10000Nodes.json is NOT RECOMMENDED AT
 </br>
 Also worth noting that you will receive a FileNotFoundException if the file doesn't exist or if there is a typo.
 
+** Results
+- around 100 vertices 100 edges: </br>
+![image](https://user-images.githubusercontent.com/73063105/145450951-8910ee8d-86b1-421c-b0c2-a115f3c41132.png)
+- From here on out ``` center() ``` and ``` tsp() ``` timeout </br>
+- 1,000 vertices 10,000 edges: </br>
+![image](https://user-images.githubusercontent.com/73063105/145440649-9d462e86-d7b0-4127-81b2-3d0d2d570f9f.png)
+- 10,000 vertices 100,000 edges: </br>
+![image](https://user-images.githubusercontent.com/73063105/145441559-ca7f4b0e-5265-4d9e-a4bd-0ecd2b83bf7a.png)
+- 100,000 vertices 1,000,000 edges: </br>
+![image](https://user-images.githubusercontent.com/73063105/145446296-f40fa505-a24b-4571-9071-c2b6f1c78036.png)
+Checking connection timed out for this case
+
+
 ## Lessons Learned
 ### things to improve
 - Better groundwork preparation
