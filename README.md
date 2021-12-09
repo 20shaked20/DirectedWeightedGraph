@@ -67,7 +67,7 @@ Also worth noting that you will receive a FileNotFoundException if the file does
 
 ## Results
 - around 100 vertices 100 edges: </br>
-![image](https://user-images.githubusercontent.com/73063105/145450951-8910ee8d-86b1-421c-b0c2-a115f3c41132.png)
+![image](https://user-images.githubusercontent.com/73063105/145451815-92a4be0c-600c-47bb-a8d3-81fedaf69f99.png)
 - From here on out ``` center() ``` and ``` tsp() ``` timeout </br>
 - 1,000 vertices 10,000 edges: </br>
 ![image](https://user-images.githubusercontent.com/73063105/145440649-9d462e86-d7b0-4127-81b2-3d0d2d570f9f.png)
