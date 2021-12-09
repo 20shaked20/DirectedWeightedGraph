@@ -77,7 +77,6 @@ public class DW_Graph implements api.DirectedWeightedGraph {
         EdgeData tmp_edge;
         HashMap<Integer, EdgeData> tmp_map;
         while (e.hasNext()) {
-            // tmp_edge = g.getEdge(e.next().getSrc(), e.next().getDest());
             tmp_edge = e.next();
             tmp_map = new HashMap<>();
             tmp_map.put(tmp_edge.getDest(), tmp_edge);
@@ -153,7 +152,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * This is an implementation of the interface Iterator.
      *
      * @return -> an iterator for all the nodes in the graph, with the usage of:
-     * hasNext, next methods.
+     * hasNext, next,remove,for each remaining methods
      */
     @Override
     public Iterator<NodeData> nodeIter() {
@@ -201,7 +200,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * This is an implementation of the interface Iterator.
      *
      * @return -> an iterator for all the edges in the graph, with the usage of:
-     * hasNext, next methods.
+     * hasNext, next ,remove,for each remaining methods
      */
     @Override
     public Iterator<EdgeData> edgeIter() {
@@ -257,7 +256,7 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      *
      * @param node_id -> Integer representing a node_id in the graph.
      * @return -> an iterator for all the edges getting out of a certain node in the graph, with the usage of:
-     * hasNext, next methods.
+     * hasNext, next ,remove,for each remaining methods
      */
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
@@ -310,22 +309,21 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @return -> the removed node.
      */
     @Override
+    //TODO : USE Iterator on this.
     public NodeData removeNode(int key) {
         if (this.Edges.containsKey(key)) {
-            this.Edges.remove(key);
-            this.EdgesCounter -= this.Edges.get(key).size();
-        }
-        EdgeData curr_edge;
-        Iterator<EdgeData> edges = this.edgeIter();
-        while (edges.hasNext()) {
-            curr_edge = edges.next();
-            if (this.Edges.get(curr_edge.getSrc()).containsKey(key)) {
-                this.Edges.get(curr_edge.getSrc()).remove(key);
-                this.EdgesCounter--;
-            }
+            this.EdgesCounter -= this.Edges.get(key).size(); // decrease the amount of edges going out from this node(key)
+            this.Edges.remove(key); // remove the edges going out from this node(key)
+            //remove the edges going into this node(key)
+            this.Edges.forEach((src, HashMap) -> {
+                if (HashMap.containsKey(key))
+                    this.EdgesCounter--;
+                HashMap.remove(key);
+            });
         }
         this.MC++; // increase changes to graph
         return this.Nodes.remove(key); // simply remove the node
+
     }
 
     /**

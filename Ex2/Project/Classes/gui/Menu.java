@@ -12,27 +12,45 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class Menu extends JFrame {
+/**
+ * This class is the representation of the First Jframe opened.
+ * It's a Menu Allowing to user to :
+ * Load a new graph.
+ * Find the shortest path distance(i,j) to the current graph
+ * Find the shortest path(i,j) to the current graph
+ * Find the center of the current graph
+ * Check if the graph is strongly connected.
+ * Given a list of NODES check the TSP (not working properly, but it's a simple implementation we tried).
+ */
+public class Menu extends JFrame implements ActionListener {
 
-    private JPanel Screen = new JPanel(new GridLayout(6, 1, 0, 0));
+    private JPanel Screen = new JPanel(new GridLayout(7, 1, 0, 0));
     private JButton ShowGraph = new JButton("Show Graph");
     private JButton ShortestPathDist = new JButton("Run ShortestPathDist");
     private JButton ShortestPath = new JButton("Run ShortestPath");
     private JButton Center = new JButton("Run Center");
+    private JButton Connected = new JButton("Check Connectivity");
     private JButton TSP = new JButton("Run TSP");
+    private JButton Load = new JButton("Load Graph");
 
-    private DirectedWeightedGraph graph = new DW_Graph();
-    private DirectedWeightedGraphAlgorithms graph_algo = new DW_Graph_Algo();
+    private DirectedWeightedGraph graph;
+    private DirectedWeightedGraphAlgorithms graph_algo;
 
-
+    /**
+     * Menu constructor, to init all methods & the JFRAME.
+     *
+     * @param file_location gets a json file location from the user.
+     */
     public Menu(String file_location) {
-        this.graph_algo.init(graph);
+        this.setTitle("Graph Operations");
+        this.graph_algo = new DW_Graph_Algo();
         this.graph_algo.load(file_location);
         this.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER)); // center the buttons.
         this.ActionListener();
         this.setColor();
         this.Addons();
         this.setSize();
+        this.setBackground(Color.MAGENTA);
         this.Screen.setSize(300, 300);
         this.Screen.setVisible(true);
         this.add(Screen);
@@ -41,7 +59,12 @@ public class Menu extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Private method, adding action Listeners to each JButton.
+     */
     private void ActionListener() {
+        this.Load.addActionListener(this::actionPerformed);
+
         this.ShowGraph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new SecondFrame(graph_algo, "ShowGraph", null);
@@ -62,6 +85,11 @@ public class Menu extends JFrame {
                 new SecondFrame(graph_algo, "Center", null);
             }
         });
+        this.Connected.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                new SecondFrame(graph_algo, "Connectivity", null);
+            }
+        });
         this.TSP.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new SecondFrame(graph_algo, "TSP", null);
@@ -69,33 +97,68 @@ public class Menu extends JFrame {
         });
     }
 
+    /**
+     * Private method, setting colors to each JButton.
+     */
     private void setColor() {
         ShowGraph.setForeground(Color.RED);
         ShortestPathDist.setForeground(Color.RED);
         ShortestPath.setForeground(Color.RED);
         Center.setForeground(Color.RED);
+        Connected.setForeground(Color.RED);
         TSP.setForeground(Color.RED);
     }
 
+    /**
+     * Private method, setting sizes to each JButton.
+     */
     private void setSize() {
         ShowGraph.setSize(220, 30);
         ShortestPathDist.setSize(220, 30);
         ShortestPath.setSize(220, 30);
         Center.setSize(220, 30);
+        Connected.setSize(220, 30);
         TSP.setSize(220, 30);
     }
 
+    /**
+     * Private method, which adds all the JButtons to the screen.
+     */
     private void Addons() {
+        Screen.add(Load);
         Screen.add(ShowGraph);
         Screen.add(ShortestPathDist);
         Screen.add(ShortestPath);
         Screen.add(Center);
+        Screen.add(Connected);
         Screen.add(TSP);
+
+    }
+
+    /**
+     * This method is mainly responsible for loading a new graph for usage in the ALGORITHMS.
+     *
+     * @param e gets an Action event.
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == this.Load) {
+            JFileChooser fc = new JFileChooser();
+            try {
+                fc.setCurrentDirectory(new File("./data"));
+            } catch (Exception E) {
+            }
+            fc.setDialogTitle("Loading File");
+            int selection = fc.showOpenDialog(null);
+            if (selection == JFileChooser.APPROVE_OPTION) {
+                String filepath = fc.getSelectedFile().getPath();
+                this.graph_algo = new DW_Graph_Algo();
+                this.graph_algo.load(filepath);
+            }
+        }
     }
 
 }
-
-// SecondFrame.java
 
 /**
  * This class is responsible for the second frame layout, it will pop up the new graphs using the algorithms.
@@ -110,26 +173,37 @@ class SecondFrame extends JFrame implements ActionListener {
     private String operation; // what to activate.
 
     private JMenuBar Menu_Bar = new JMenuBar();
-    private JButton Add_Node = new JButton("Add Node"); // create
-    private JButton Remove_Node = new JButton("Remove Node"); // working > Fix to make it
-    private JButton Save = new JButton("Save Graph"); // create
+    private JButton Add_Node = new JButton("Add Node");
+    private JButton Remove_Node = new JButton("Remove Node");
+    private JButton Save = new JButton("Save Graph");
     private JButton Load = new JButton("Load Graph");
-    private JButton Remove_Edge = new JButton("Remove Edge"); // create
-    private JButton Add_Edge = new JButton("Connect Edge"); // create
+    private JButton Remove_Edge = new JButton("Remove Edge");
+    private JButton Add_Edge = new JButton("Connect Edge");
 
+    /**
+     * Second Frame constructor, this is responsible for popping up the second JFrame.
+     *
+     * @param graph     getting a graph to operate on.
+     * @param operation String representing an operation to active.
+     * @param path      a path, used mostly in coloring the ShortestPath Algorithm.
+     */
     public SecondFrame(DirectedWeightedGraphAlgorithms graph, String operation, LinkedList<NodeData> path) {
         this.graph = graph;
         this.operation = operation;
         this.path = path;
+        this.setBackground(Color.MAGENTA);
+        this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.nodeX_Scale = new HashMap<>();
         this.nodeY_Scale = new HashMap<>();
-        this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.operations();
         this.update_x_y_pos();
+        this.operations();
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
+    /**
+     * Private method adding all the JButtons to the Menu_Bar.
+     */
     private void MenuBar() {
         this.Menu_Bar.add(this.Add_Node);
         this.Menu_Bar.add(this.Remove_Node);
@@ -140,23 +214,34 @@ class SecondFrame extends JFrame implements ActionListener {
 
     }
 
+    /**
+     * Private method adding action Listeners to the JButtons.
+     */
+    private void ActionListener() {
+        this.Remove_Node.addActionListener(this::actionPerformed);
+        this.Remove_Edge.addActionListener(this::actionPerformed);
+        this.Add_Node.addActionListener(this::actionPerformed);
+        this.Add_Edge.addActionListener(this::actionPerformed);
+        this.Save.addActionListener(this::actionPerformed);
+        this.Load.addActionListener(this::actionPerformed);
+    }
+
+    /**
+     * Private method which is responsible for graph MENU operations.
+     * each click will direct the Program to execute a different method.
+     */
     private void operations() {
         if (this.operation.equals("ShowGraph")) {
+            this.setTitle("Graph Showcase");
             DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
             this.setSize(this.screenSize.width, this.screenSize.height);
             if (this.path == null) { // only add menu when showing graph.
                 this.MenuBar();
                 this.setJMenuBar(Menu_Bar);
-                this.Remove_Node.addActionListener(this::actionPerformed);
-                this.Remove_Edge.addActionListener(this::actionPerformed);
-                this.Add_Node.addActionListener(this::actionPerformed);
-                this.Add_Edge.addActionListener(this::actionPerformed);
-                this.Save.addActionListener(this::actionPerformed);
-                this.Load.addActionListener(this::actionPerformed);
-
-
+                this.ActionListener();
             }
             this.add(m);
+
         }
 
         if (this.operation.equals("ShortestPathDist")) {
@@ -275,10 +360,38 @@ class SecondFrame extends JFrame implements ActionListener {
             getContentPane().add(panel);
             panel.setLayout(null);
             NodeData center = this.graph.center();
-            JLabel Node1 = new JLabel("The Center Of The Graph IS: " + "\n" + "( " + center.getKey() + " )");
+            JLabel Node1 = new JLabel();
+            if (center != null) {
+                Node1 = new JLabel("The Center Of The Graph IS: " + "\n" + "( " + center.getKey() + " )");
+            } else {
+                Node1 = new JLabel("No center, graph is not connected");
+            }
             Node1.setBounds(20, 75, 250, 50);
             panel.add(Node1);
 
+        }
+
+        if (this.operation.equals("Connectivity")) {
+            this.setTitle("Graph Connectivity");
+            this.setSize(250, 250);
+            toolkit = getToolkit();
+            Dimension size = toolkit.getScreenSize();
+            setLocation((size.width - getWidth()) / 2, (size.height - getHeight()) / 2);
+            this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            JPanel panel = new JPanel();
+            getContentPane().add(panel);
+            panel.setLayout(null);
+            boolean flag = this.graph.isConnected();
+            JLabel Node1 = new JLabel();
+            if (flag) {
+                Node1 = new JLabel("The Graph is Strongly Connected!");
+                Node1.setBounds(20, 75, 250, 50);
+            } else {
+                Node1 = new JLabel("The Graph is NOT Strongly Connected!");
+                Node1.setBounds(5, 75, 250, 50);
+            }
+
+            panel.add(Node1);
         }
 
         if (this.operation.equals("TSP")) {
@@ -330,13 +443,17 @@ class SecondFrame extends JFrame implements ActionListener {
         }
     }
 
-    //TODO: Update varibales
+    /**
+     * This private method is used for X,Y position SCALING,
+     * i got help to create this from a friend in mathematics.
+     */
     private void update_x_y_pos() {
+        Iterator nodes = this.graph.getGraph().nodeIter();
         NodeData curr_node;
         GeoLocation curr_geo;
         double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE, maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
         double x, y;
-        Iterator nodes = this.graph.getGraph().nodeIter();
+
         while (nodes.hasNext()) {
             curr_node = (NodeData) nodes.next();
             curr_geo = curr_node.getLocation();
@@ -364,24 +481,30 @@ class SecondFrame extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * This method is responsible for the "ShowGraph" MenuBAR operations.
+     * Each event is responsible for a different method, Removing,adding,loading,saving.
+     *
+     * @param e ActionEvent click.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            if (e.getSource() == this.Remove_Node) {
+        if (e.getSource() == this.Remove_Node) {
+            try {
                 String id = JOptionPane.showInputDialog(null, "Insert Node id");
                 int id_int = Integer.parseInt(id);
                 this.graph.getGraph().removeNode(id_int);
                 this.getContentPane().removeAll();
                 this.nodeX_Scale.remove(id_int);
                 this.nodeY_Scale.remove(id_int);
-                this.update_x_y_pos();
+                this.update_x_y_pos(); // responsible for moving the graph after changes
                 DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
                 this.add(m);
                 this.repaint();
                 this.revalidate();
+            } catch (Exception E) {
+                JOptionPane.showMessageDialog(null, "Invalid, enter again");
             }
-        } catch (Exception E) {
-            JOptionPane.showMessageDialog(null, "Invalid, enter again", "", JOptionPane.ERROR_MESSAGE);
         }
 
         if (e.getSource() == this.Remove_Edge) {
@@ -392,6 +515,7 @@ class SecondFrame extends JFrame implements ActionListener {
                 int dest = Integer.parseInt(items[1]);
                 this.graph.getGraph().removeEdge(src, dest);
                 this.getContentPane().removeAll();
+                this.update_x_y_pos();
                 DisplayGraphics m = new DisplayGraphics(this.graph, this.nodeX_Scale, this.nodeY_Scale, this.path);
                 this.add(m);
                 this.repaint();
@@ -407,8 +531,8 @@ class SecondFrame extends JFrame implements ActionListener {
                 int ID = Integer.parseInt(items[0]);
                 double x = Double.parseDouble(items[1]);
                 double y = Double.parseDouble(items[2]);
-                GeoLocation geo_loc = new Geo_Location(x, y, 0);
-                NodeData new_node = new Node_data(ID, (Geo_Location) geo_loc);
+                Geo_Location geo_loc = new Geo_Location(x, y, 0);
+                NodeData new_node = new Node_data(ID, geo_loc);
                 this.graph.getGraph().addNode(new_node);
                 this.nodeX_Scale.put(ID, (int) x);
                 this.nodeY_Scale.put(ID, (int) y);
@@ -478,29 +602,47 @@ class SecondFrame extends JFrame implements ActionListener {
     }
 }
 
+/**
+ * This Class is responsible for the Graph Drawings:
+ * Edges,Nodes,Arrows,Lines & Coloring.
+ */
 class DisplayGraphics extends Canvas {
     private DirectedWeightedGraphAlgorithms graph;
-    private HashMap<Integer, Integer> nodeXpos; // key loc, x value
-    private HashMap<Integer, Integer> nodeYpos; // key loc, y value
+    private HashMap<Integer, Integer> nodeX_Scale; // key loc, x value
+    private HashMap<Integer, Integer> nodeY_Scale; // key loc, y value
     private LinkedList<NodeData> path;
 
-    public DisplayGraphics(DirectedWeightedGraphAlgorithms graph, HashMap<Integer, Integer> nodeXpos, HashMap<Integer, Integer> nodeYpos, LinkedList<NodeData> path) {
+    /**
+     * DisplayGraphics constructor.
+     *
+     * @param graph       the graph we operath on.
+     * @param nodeX_Scale Hashmap of the x_Scaling positions(node)
+     * @param nodeY_Scale Hashmap of the y_Scaling positions(node)
+     * @param path        a path, used mostly in coloring the ShortestPath Algorithm.
+     */
+    public DisplayGraphics(DirectedWeightedGraphAlgorithms graph, HashMap<Integer, Integer> nodeX_Scale, HashMap<Integer, Integer> nodeY_Scale, LinkedList<NodeData> path) {
         this.graph = graph;
-        this.nodeXpos = nodeXpos;
-        this.nodeYpos = nodeYpos;
+        this.nodeX_Scale = nodeX_Scale;
+        this.nodeY_Scale = nodeY_Scale;
         this.path = path;
     }
 
+    /**
+     * This method is responsible for painting the graph on the Canvas:
+     * Edges,Nodes, And if needed showing the shortest path in a diffrenet color.
+     *
+     * @param g Graphics.
+     */
     public void paint(Graphics g) {
         int x1, y1;
         int x2, y2;
         Iterator<EdgeData> edges = this.graph.getGraph().edgeIter();
         while (edges.hasNext()) {
             EdgeData edge = edges.next();
-            x1 = this.nodeXpos.get(edge.getSrc());
-            y1 = this.nodeYpos.get(edge.getSrc());
-            x2 = this.nodeXpos.get(edge.getDest());
-            y2 = this.nodeYpos.get(edge.getDest());
+            x1 = this.nodeX_Scale.get(edge.getSrc());
+            y1 = this.nodeY_Scale.get(edge.getSrc());
+            x2 = this.nodeX_Scale.get(edge.getDest());
+            y2 = this.nodeY_Scale.get(edge.getDest());
             g.setColor(Color.BLACK);
             this.drawArrowLine(g, x1, y1, x2, y2, 25, 8);
 
@@ -514,15 +656,15 @@ class DisplayGraphics extends Canvas {
             for (int x = 0; x < size; ++x) {
                 g.setColor(Color.RED);
                 NodeData curr_node1 = tmp.pop();
-                x1 = this.nodeXpos.get(curr_node1.getKey());
-                y1 = this.nodeYpos.get(curr_node1.getKey());
+                x1 = this.nodeX_Scale.get(curr_node1.getKey());
+                y1 = this.nodeY_Scale.get(curr_node1.getKey());
                 if (tmp.isEmpty()) {
                     break;
                 }
                 NodeData curr_node2 = tmp.peek();
                 if (graph.getGraph().getEdge(curr_node1.getKey(), curr_node2.getKey()) != null) {
-                    x2 = this.nodeXpos.get(curr_node2.getKey());
-                    y2 = this.nodeYpos.get(curr_node2.getKey());
+                    x2 = this.nodeX_Scale.get(curr_node2.getKey());
+                    y2 = this.nodeY_Scale.get(curr_node2.getKey());
                     g.drawLine(x1, y1, x2, y2);
                 }
             }
@@ -533,18 +675,18 @@ class DisplayGraphics extends Canvas {
         while (nodes.hasNext()) {
             NodeData curr_node = nodes.next();
             g.setColor(Color.BLACK);
-            g.fillOval(this.nodeXpos.get(curr_node.getKey()) - 8, this.nodeYpos.get(curr_node.getKey()) - 8, i, j);
+            g.fillOval(this.nodeX_Scale.get(curr_node.getKey()) - 8, this.nodeY_Scale.get(curr_node.getKey()) - 8, i, j);
             g.setColor(Color.MAGENTA);
             if (curr_node.getKey() < 10) {
-                g.drawString(String.valueOf(curr_node.getKey()), this.nodeXpos.get(curr_node.getKey()), this.nodeYpos.get(curr_node.getKey()) + 8);
+                g.drawString(String.valueOf(curr_node.getKey()), this.nodeX_Scale.get(curr_node.getKey()), this.nodeY_Scale.get(curr_node.getKey()) + 8);
             } else {
-                g.drawString(String.valueOf(curr_node.getKey()), this.nodeXpos.get(curr_node.getKey()) - 4, this.nodeYpos.get(curr_node.getKey()) + 8);
+                g.drawString(String.valueOf(curr_node.getKey()), this.nodeX_Scale.get(curr_node.getKey()) - 4, this.nodeY_Scale.get(curr_node.getKey()) + 8);
             }
         }
     }
 
     /**
-     * I took this method from stackoverflow.
+     * This method is a method I took from stack overflow, it draws an arrow_line using mathematics.
      */
     private void drawArrowLine(Graphics g1, int x1, int y1, int x2, int y2, int d, int h) {
         Graphics2D g2 = (Graphics2D) g1;

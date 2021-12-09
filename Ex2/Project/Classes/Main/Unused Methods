@@ -182,3 +182,39 @@ This file contains 'legacy' methods that were used but are no longer a part of t
                 //        int x2 = x_2 - 1; // and this is subtraction
                 //        int y1 =(int)(m*x1+c);
                 //        int y2 =(int)(m*x2+c);
+
+                    /**
+                     * Solves for the shortest path from src to every other node in the graph
+                     * using Dijkstra's algorithm
+                     * // U
+                     * @param src an integer representing the source
+                     * @return A double value representing the sum of the shortest distances
+                     */
+                    private double dijkstra_algo(NodeData src) {
+                        if (src != null) {
+                            double sum = 0;
+                            //Comparing by weight the nodes, hidden class.
+                            PriorityQueue<NodeData> nodesQ = new PriorityQueue<>(this.graph.nodeSize(), Comparator.comparingDouble(NodeData::getWeight));
+                            src.setWeight(0.0);
+                            nodesQ.add(src);
+                            while (!nodesQ.isEmpty()) {
+                                NodeData poll_node = nodesQ.poll();
+                                Iterator<EdgeData> curr_edges = this.graph.edgeIter(poll_node.getKey());
+                                while (curr_edges.hasNext()) {
+                                    EdgeData curr_edge = curr_edges.next();
+                                    NodeData n = this.graph.getNode(curr_edge.getDest()); // points on the next destination.
+                                    if (n.getInfo().equals("Unvisited")) {
+                                        if (n.getWeight() > poll_node.getWeight() + curr_edge.getWeight()) {
+                                            n.setWeight(poll_node.getWeight() + curr_edge.getWeight());
+                                            n.setTag(poll_node.getKey());
+                                        }
+                                        nodesQ.add(n);
+                                    }
+                                }
+                                poll_node.setInfo("Visited");
+                                sum += poll_node.getWeight();
+                            }
+                            return sum;
+                        }
+                        return -1;
+                    }
