@@ -66,6 +66,7 @@ Very Important: running 1000Nodes.json and 10000Nodes.json is NOT RECOMMENDED AT
 Also worth noting that you will receive a FileNotFoundException if the file doesn't exist or if there is a typo.
 
 ## Results
+*please note that all the times include loading time, so subtract that to get the real time of the operation*
 - around 100 vertices 100 edges: </br>
 ![image](https://user-images.githubusercontent.com/73063105/145451815-92a4be0c-600c-47bb-a8d3-81fedaf69f99.png)
 - From here on out ``` center() ``` and ``` tsp() ``` timeout </br>
