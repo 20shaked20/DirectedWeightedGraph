@@ -309,20 +309,19 @@ public class DW_Graph implements api.DirectedWeightedGraph {
      * @return -> the removed node.
      */
     @Override
-    //TODO : USE Iterator on this.
     public NodeData removeNode(int key) {
         if (this.Edges.containsKey(key)) {
-            this.EdgesCounter -= this.Edges.get(key).size(); // decrease the amount of edges going out from this node(key)
-            this.Edges.remove(key); // remove the edges going out from this node(key)
-            //remove the edges going into this node(key)
-            this.Edges.forEach((src, HashMap) -> {
+            this.EdgesCounter -= this.Edges.get(key).size(); 
+            this.Edges.remove(key); // removes the edge from the node.
+           
+            this.Edges.forEach((src, HashMap) -> { //removes the edges which are connected to src(key)
                 if (HashMap.containsKey(key))
                     this.EdgesCounter--;
                 HashMap.remove(key);
             });
         }
-        this.MC++; // increase changes to graph
-        return this.Nodes.remove(key); // simply remove the node
+        this.MC++; 
+        return this.Nodes.remove(key); //remove the node
 
     }
 
